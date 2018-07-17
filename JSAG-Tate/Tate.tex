@@ -1,0 +1,286 @@
+\documentclass[twoside,12pt, leqno]{amsart}
+\usepackage{amsmath,amscd,amsthm,amssymb,amsxtra,latexsym,epsfig,epic,graphics}
+\usepackage[matrix,arrow,curve]{xy}
+\usepackage{graphicx}
+\usepackage{diagrams}
+%\usepackage{pgfplots}
+\usepackage{tikz}  %TikZ
+\usepackage{color} 
+\usetikzlibrary{arrows,calc} 
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{decorations.markings} 
+\usetikzlibrary{decorations.pathreplacing} 
+\usetikzlibrary{plothandlers}
+
+
+%\usepackage{amsrefs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\textwidth16cm
+%\textheig\codim20cm
+%\topmargin-2cm
+\oddsidemargin.8cm
+\evensidemargin1cm
+
+%%%%%Definitions
+\input preamble.tex
+\def\e{{\epsilon}}
+\def\TU{{\bf U}}
+\def\AA{{\mathbb A}}
+\def\BB{{\mathbb B}}
+\def\bB{{\mathbb B}}
+\def\PP{{\mathbb P}}
+\def\P{{\mathbb P}}
+\def\QQ{{\mathbb Q}}
+\def\FF{{\mathbb F}}
+\def\facet{{\bf facet}}
+\def\image{{\rm image}}
+\def\name{{\rm name}}
+\def\cE{{\cal E}}
+\def\cF{{\cal F}}
+\def\cG{{\cal G}}
+\def\cH{{\cal H}}
+\def\cHom{{{\cal H}om}}
+\def\fix#1{{\bf ***Fix:} #1 {\bf ***}}
+\def\david#1{{\bf *** David:} #1 {\bf ***}}
+\DeclareMathOperator{\rH}{{\rm H}}
+\def\fC{{\mathfrak C}}
+\def\Tr{{\rm Tr}}
+\def\bC{{\mathbb C}}
+\def\Gr{{\rm Gr}}
+\def\CI{{\mathcal I}}
+\def\CH{{\mathcal H}}
+%\def\CCH{{\mathcal {CNT}}}
+\def\CCH{{\mathcal {HC}}}
+\def\rH{{\rm H}}
+
+\def\soc{{\rm soc\,}}
+\def\jacobian{{\rm Jac}}
+\def\Rbar{{\overline R}}
+\def\Ibar{{\overline I}}
+\def\mm{{\frak m}}
+\def\RR{{\mathcal R}}
+\def\Trace{{\rm Tr}}
+
+\def\CO{{\mathcal O}}
+\def\CT{{\mathcal T}}
+\def\CHom{{\mathcal Hom}}
+\def\Spec{{{\rm Spec}\,}}
+\def\cone{{{\rm cone}\,}}
+
+\def\tR{{\tilde R}}
+\def\tI{{\tilde I}}
+\def\tJ{{\tilde J}}
+\def\tK{{\tilde K}}
+\def\tH{{\tilde H}}
+\def\tF{{\tilde F}}
+
+\newarrow{Iso} -----
+
+\def\Abar{{\overline A}}
+\def\Rbar{{\overline R}}
+\def\Ibar{{\overline I}}
+\def\Jbar{{\overline J}}
+\def\Kbar{{\overline K}}
+\def\abar{{\overline \alpha}}
+\def\bbar{{\overline \beta}}
+\def\m{{\frak m}}
+\def\Rbar{{\overline R}}
+
+\def\gr{{\rm gr}}
+\def\init{{\rm in}}
+
+
+\def\frank#1{{\bf *** Frank:} #1 {\bf ***}}
+\def\david#1{{\bf *** David:} #1 {\bf ***}}
+\def\lbracket{{[\kern-1.5pt[}}
+\def\rbracket{{]\kern-1.5pt]}}
+
+\def\seq#1#2{{#1_{1},\dots,#1_{#2}}}
+\def\ff#1{{f_{1},\dots, f_{#1}}}
+
+\makeatletter
+\def\Ddots{\mathinner{\mkern1mu\raise\p@
+\vbox{\kern7\p@\hbox{.}}\mkern2mu
+\raise4\p@\hbox{.}\mkern2mu\raise7\p@\hbox{.}\mkern1mu}}
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%Silvio's macros for the diagrams
+\usepackage{times}
+\newdimen\x \x=12pt
+
+%\usepackage{mat\codimime}
+\usepackage{color}
+
+%\usepackage{color}
+%\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\usepackage[breaklinks,bookmarksopen,bookmarksnumbered,urlcolor=blue]{hyperref}
+\hypersetup{colorlinks=true,backref=true,citecolor=blue}
+
+%\pagestyle{MYheadings}
+%\date{April 2013-December 2015}
+\author[David Eisenbud]{David Eisenbud}
+\address{Department of Mathematics, University of California at Berkeley and the Mathematical
+Sciences Research Institute, Berkeley, CA 94720, USA}
+\email{de@msri.org}
+
+\author{Daniel Erman}
+\address{Department of Mathematics, University of Wisconsin,
+	Madison, WI, ****, USA}
+\email{derman@math.wisc.edu}
+
+
+\author[Frank-Olaf Schreyer]{Frank-Olaf Schreyer}
+\address{Fachbereich Mathematik, Universit\"at des Saarlandes, Campus E2 4, D-66123 Saar\-br\"ucken, Germany}
+\email{schreyer@math.uni-sb.de}
+
+
+
+\title{Tate Resolutions on Products of Projective Spaces: Cohomology and PushForward Complexes}
+\begin{document}
+
+\begin{abstract}
+We describe the  Macaulay2 package TateOnProducts and its capabilities, which include computing cohomology tables of sheaves
+on products of projective spaces and the derived category pushForward of a sheaf under a morphism from a projective scheme to
+a projective space.
+\end{abstract}
+
+\maketitle
+
+\section*{Introduction} 
+\let\thefootnote\relax\footnote{
+\noindent AMS Subject Classification:
+Primary: 14H99 ????,
+Secondary: 13D02????, 14H51???? \smallbreak
+Keywords: *******\smallbreak
+The first author is grateful to the
+National Science Foundation for partial support. This work is a contribution to Project I.6 of the second author within the SFB-TRR 195 "Symbolic Tools in Mathematics and their Application" of the German Research Foundation (DFG).}
+
+
+\section*{Introduction}
+
+\section{The Tate Resolution and its properties}
+
+strands etc
+
+\section{Computing Cohomology Tables}
+
+illustrate the functions
+
+\section{ $R\pi_*$ of a Sheaf}
+
+illustrate the function
+
+\bibliographystyle{ABC99}
+\begin{thebibliography}{ABC99}
+
+%\bibitem{Bass1963} Bass, Hyman
+%On the ubiquity of Gorenstein rings.
+%Math. Z. 82 1963 8\UTF{2013}28.
+
+
+
+%\bibitem[A05]{A} M.~Aprodu: Remarks on syzygies of d-gonal curves Green's conjecture for curves,  Math. Res. Lett. 12 (2005), no. 2-3, 387--400.
+%
+%\bibitem[AF11]{AF} M.~Aprodu and G.~Farkas: Green's conjecture for curves on arbitrary {$K3$} surfaces, Compos. Math. 147 (2011), 839--851.
+%
+% \bibitem[AFPRW]{AFPRW} M.~Aprodu, G.~Farkas, S.~Papadima, C.~Raicu and J.~Weyman: In preparation.
+%
+%\bibitem[AB58]{AB} M.~Auslander and D.~Buchsbaum: Codimension and Multiplicity. Annals of Mathematics 68 (1958) 625--657.
+%
+%
+%\bibitem[BE95]{BE} D.~Bayer and D.~Eisenbud: Ribbons and their canonical embeddings. Trans. Amer. Math. Soc. 347 (1995) 719--756. 
+%
+%
+%\bibitem[BS15]{BS15}C.~Berkesch and F.-O.~Schreyer:
+%Syzygies, finite length modules, and random curves, in:
+%Commutative algebra and noncommutative algebraic geometry, {V}ol. {I},
+%Math. Sci. Res. Inst. Publ.,
+%67 (2015),
+%25--52.
+%
+%\bibitem[B17]{Bopp} C.~Bopp: Canonical curves, Scrolls and K3 surfaces. \href{https://publikationen.sulb.uni-saarland.de/bitstream/20.500.11880/26917/1/phd_bopp.pdf}{Dissertation, Saarbr\"ucken Fall 2017}.
+%
+%\bibitem[BH15]{BH15} C.~Bopp and M.~Hoff: Resolutions of general canonical curves on rational normal scrolls. Archiv der Mathematik (Basel) 105 (2015) 239--249.
+%
+%\bibitem[BH17]{BH17} C.~Bopp and M.~Hoff: Moduli of lattice polarized K3 surfaces via relative canonical resolutions. Preprint \href{https://arxiv.org/abs/1704.02753}{arXiv:1704.02753}.
+%
+%
+%
+%
+%\bibitem[BS18]{BS18} C.~Bopp and F.-O.~Schreyer:  A version of Green's conjecture over fields of finite characteristic. Preprint \href{https://arxiv.org/abs/1803.10481}{arXiv:1803.10481}.
+%
+%\bibitem[BH93]{BH93} W.~Bruns and J.~Herzog, J\"urgen:
+%Cohen-{M}acaulay rings
+%Cambridge Studies in Advanced Mathematics 39, Cambridge University Press. xi, 403 p. (1993). 
+%
+%\bibitem[D15]{D} A.~Deopurkar: The canonical syzygy conjecture for ribbons. \href{https://arxiv.org/abs/1510.07755}{arXiv:1510.07755}
+%
+%\bibitem[DFS16]{DFS} A.~Deopurkar, M.~ Fedorchuk and D.~Swinarski: Toward GIT stability of syzygies of canonical curves.
+% Algebr. Geom.  3  (2016),  no. 1, 1--22.
+%
+%\bibitem[E97]{E} D.~Eisenbud: Commutative Algebra with a View toward Algebraic Geometry. GTM 150, Springer-Verlag NY, 1997.
+%
+%\bibitem[E05]{E05} D.~Eisenbud: The Geometry of Syzygies. GTM 229, Springer-Verlag NY, 2005.
+%
+%\bibitem[EH87]{EH} D.~Eisenbud and J.~Harris: Varieties of Minimal Degree (a centennial account). Algebraic geometry, 
+%Proc. Sympos. Pure Math., 46, Part 1, pp. 3-13. Amer. Math. Soc., Providence, RI, 1987. 
+%
+%
+%
+%\bibitem[EiSa]{EiSa} D.~Eisenbud and A.~Sammartano: Correspondence Scrolls. In preparation.
+%
+%\bibitem[ES18]{ES18} D.~Eisenbud and F.-O.~Schreyer: K3Carpets , a Macaulay2 package to investigate K3 carpets.
+%Available at\\ \href{https://www.math.uni-sb.de/ag/schreyer/index.php/computeralgebra}{https://www.math.uni-sb.de/ag/schreyer/index.php/computeralgebra}.
+%
+%\bibitem[EMSS16]{EMSS} B.~Erocal, O.~Motsak, F.-O.~Schreyer and A.~Steenpass: 
+%Refined Algorithms to Compute Syzygies. J. Symb. Comput. 74 (2016), 308--327.
+%
+%\bibitem[F69]{F69} W.~Fulton: Hurwitz schemes and irreducibility of moduli of algebraic curves. Ann. Math. (2)
+%90 (1969), 542--575.
+%
+%\bibitem[GP97]{GP}  F.J.~Gallego and B.~Purnaprajna, Degenerations of K3 surfaces in projective space.
+%Trans. Amer. Math. Soc. 349 (1997) 2477--2492.
+%
+%\bibitem[M2]{M2} D.R.~ Grayson and M.E.~ Stillman,
+%          Macaulay2, a software system for research in algebraic geometry.
+%          Available at \href{https://faculty.math.illinois.edu/Macaulay2/}{https://faculty.math.illinois.edu/Macaulay2/}
+%      
+%\bibitem[M95]{Muk}   S.~Mukai, Curves and symmetric spaces I. Amer. J. Math 117 (1995), 1627--1644.
+%
+%\bibitem[S86]{S86} F.-O.~Schreyer: Syzygies of canonical curves and special linear series. Math. Ann. 275 (1986), 105--137.
+%
+%\bibitem[S88]{S88} F.-O.~Schreyer: Green's conjecture for the general p-gonal curve of large genus. In: Algebraic curves and projective geometry, Proceedings Trento 1988, Springer Lecture Notes 1389, 254--260.
+%
+%\bibitem[S91]{S91} F.-O.~Schreyer: A standard basis approach to syzygies of canonical curves. J. reine angew. Math. 421 (1991), 83--123.
+%
+%
+%\bibitem[V05]{V05} C.~Voisin: 
+%Green's canonical syzygy conjecture for generic curves of odd genus. Compos. Math. 141 (2005) 1163--1190. 
+
+\end{thebibliography}
+
+%\bigskip
+%
+%%\author[David Eisenbud]{David Eisenbud}
+%%\address{ Department of mathematics, University of California at Berkeley, Berkeley, CA 94720, USA, and 
+%%The Mathematical Sciences Research Institute}
+%%\email{de@msri.org}
+%%
+%%\author[Frank-Olaf Schreyer]{Frank-Olaf Schreyer}
+%%\address{Fachbereich Mathematik, Universit\"at des Saarlandes, Campus E2 4, D-66123 Saar\-br\"ucken, Germany}
+%%\email{schreyer@math.uni-sb.de}
+%%
+%%\vbox{\noindent Author Addresses:\par
+%%\smallskip
+%%\noindent{David Eisenbud}\par
+%%\noindent{Mathematical Sciences Research Institute,
+%%Berkeley, CA 94720, USA}\par
+%%\noindent{de@msri.org}\par
+%%}
+
+\end{document}
+
+
+
