@@ -160,6 +160,24 @@ National Science Foundation for partial support. This work is a contribution to 
 
 \section*{Introduction}
 
+In their 1978 papers Beilinson and Bernstein-Gelfand-Gelfand both gave a description of the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$.
+
+The heart of Beilinson argument is that both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
+$\{ \Lambda^k U | k=0, \ldots, n\}$ form  what is nowadays called  a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP^n)$.
+Here $U$ denotes the universal rank $n$ subbundle on $\PP^n$:
+$$ 0 \to U \to \sO^{n+1} \to \sO(1) \to 0.$$ 
+A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
+$$ 
+0 \to \Lambda^n U \boxtimes \sO(-n) \to \ldots \to U \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
+$$
+where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
+
+The heart of the argument of BGG is a pair of adjoint functors. Let $S=K[x_0,\ldots,x_n]$ denote the homogeneous coordinate ring of $\PP^n=\PP(W)$ and let $E = \Lambda V$ with $V=W^*$ denote the Koszul dual exterior algebra \cite{Koszul duality}.
+The there exists a pair of functors $L$ from the category of finitely generated graded $E$-modules to the category of linear complex of $S$-modules
+$$ L: grmod(E) \to linCplx(S)$$
+$$ P =\oplus_i P_i \mapsto  \ldots \to P_i \otimes_K S(i) \to P_{i-1} \otimes _K S(i+1) \to \ldots $$
+
+
 \section{The Tate Resolution and its properties}
 
 strands etc
