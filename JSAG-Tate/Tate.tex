@@ -45,6 +45,8 @@
 \DeclareMathOperator{\rH}{{\rm H}}
 \def\fC{{\mathfrak C}}
 \def\Tr{{\rm Tr}}
+\def\bT{{\bf T}}
+\def\bU{{\bf U}}
 \def\bC{{\mathbb C}}
 \def\Gr{{\rm Gr}}
 \def\CI{{\mathcal I}}
@@ -52,7 +54,6 @@
 %\def\CCH{{\mathcal {CNT}}}
 \def\CCH{{\mathcal {HC}}}
 \def\rH{{\rm H}}
-
 \def\soc{{\rm soc\,}}
 \def\jacobian{{\rm Jac}}
 \def\Rbar{{\overline R}}
@@ -161,35 +162,37 @@ National Science Foundation for partial support. This work is a contribution to 
 \section*{Introduction}
 
 This package exploits the Koszul duality between polynomial rings and exterior algebras to turn questions of cohomology of sheaves on a product of projective space into questions about free resolutions of modules over an exterior algebra. This was done for the case of a sheaf on $\PP^n$ in
-****. The case of products of projective spaces is treated in ****. For a product of two or more projective
+\cite{EFS}. The case of products of projective spaces is treated in \cite{EES}. For a product of two or more projective
 spaces there is major technical difficulty, in that the term in the free resolutions that the theory
 associates to sheaves are generally all infinite-dimensional. In this package we compute only a sufficient
 part of this infinite object.
 
 The theory begins with two elementary observations:
 \begin{itemize}
- \item If $V,M_1, M_2$ are finite-dimensional vector spaces over a field $k$, then there is a one-to-one correspondence between homomorphisms $V\otimes_kM_1\to M_2$ and homomorphisms
-$ M_1 \to M_2 \otimes V^*$.
-\item Consider the polynomial ring $S = \Sym_kV$, with $V$ in degree 1, and the exterior algebra $E = \wedge_kV^*$, with $V^*$ in degree $-1$.
+ \item If $W,M_1, M_2$ are finite-dimensional vector spaces over a field $k$, then there is a one-to-one correspondence between homomorphisms $W\otimes_kM_1\to M_2$ and homomorphisms
+$ M_1 \to M_2 \otimes W^*$.
+\item Consider the polynomial ring $S = \oplus_k \Sym_kW$ and the exterior algebra $E = \Lambda V= \oplus_k \Lambda^kV$, with $V=W^*$.
 If $M = \oplus_{i\geq i_0} M_i$ is a finitely generated graded module over $S$, then the sequence of maps 
 $$
-V\otimes M_i \to M_{i+1}
+W\otimes M_i \to M_{i+1}
 $$
  defining the module structure give rise, by the correspondence above,
-to a sequence of maps $M_i\to M_{i+1}\otimes V^*$, which in turn correspond to a sequence of
+to a sequence of maps $M_i\to M_{i+1}\otimes V$, which in turn correspond to a sequence of
 linear maps of graded free $E$-modules 
 $$ 
 bgg(M): \cdots \to M_i\otimes E(i) \to M_{i+1}\otimes E(i+1)\to \cdots
 $$
+\end{itemize}
+
 One checks easily that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
 
 In exactly the same way, a graded $E$-module $N$ gives rise to a linear  complex of free $S$-modules
 $bgg(N)$.
-\end{itemize}
+
 
 It is interesting to ask when these complexes are resolutions:
 
-\begin{theorem}[Reciprocity \cite{EES}] With notation as above:
+\begin{theorem}[Reciprocity \cite{ES}] With notation as above:
 \begin{enumerate}
  \item $bgg(M)$ is an injective resolution of the $E$-module $N$ if and only if
 $bgg(N)$ is a free resolution of $M$.
@@ -198,27 +201,46 @@ $bgg(N)$ is a free resolution of $M$.
 \end{enumerate}
 \end{theorem}
 
-define bgg for one proj space. 
 
-Where the cohomology appears.
-
-****
-
-Discovered/Used by  BGG 
-
-In their 1978 paper Bernstein-Gelfand-Gelfand used this correspondence  to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with stable module category of $E$ module. In the same volume Beilinson described
+In their 1978 paper Bernstein-Gelfand-Gelfand \cite{BGG} used this correspondence  to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with stable module category of $E$ module. In the same volume Beilinson \cite{Bei} described
 $D^b(\PP^n)$ in terms of exceptional sequences:
 Both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
 $\{ \Lambda^k U | k=0, \ldots, n\}$ form  what is nowadays called  a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP^n)$.
-Here $U$ denotes the universal rank $n$ subbundle on $\PP^n$:
-$$ 0 \to U \to \sO^{n+1} \to \sO(1) \to 0.$$ 
+Here $U$ denotes the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
+$$ 0 \to U \to W\otimes \sO \to \sO(1) \to 0.$$ 
 A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
 $$ 
 0 \to \Lambda^n U \boxtimes \sO(-n) \to \ldots \to U \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
 $$
 where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
 
-To connect these two approaches a key role is played by what we call the Tate resolution:
+To connect these two approaches a key role is played by what we call the Tate resolution $\bf T(\sF)$: Let $M=\oplus M_d$ represent the coherent sheaf $\sF$ on $\PP^n$. Then the truncation $M_{\ge r} = \oplus_{d \ge r}M_d$ represents the same sheaf and the linear complex
+$$bgg(M_{\ge r}) : M_r\otimes E(r) \to M_{r+1}\otimes E(r+1) \to \ldots$$ 
+is acyclic if $r \gg 0$. Combining this injective resolution with a minimal free resolution of $P=\ker(M_r\otimes E(r) \to M_{r+1}\otimes E(r+1))$
+yields an infinite exact complex
+$${\bT}(\sF):   \ldots \to T^{r-2} \to T^{r-1} \to T^r \to T^{r+1} \to \ldots$$
+of free $E$-modules, which depends only on $\sF$. By \cite[Theorem x.y] {EFS} the terms of this complex are
+$$T^d=T^d(\sF) = \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
+ Hence syzygy computation over the exterior algebra $E$ allows us to compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range
+ $a \le k \le b$. The Beilinson monad $\bU(\sF)$ of $\sF$ is obtained from its Tate resolution by applying the functor
+ $$
+ cut and paste
+ $$
+ to $\bT(\sF)$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
+ One of Beilinson's main theorems says that the complex $\bU(\sF)$ is exact except at position $0$:
+ $$ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF$$
+ 
+ \medskip
+
+The theory of Tate resolution on 
+$$
+\PP = \PP^{n_1}\times \ldots \times \PP^{n_t}
+$$
+similarly will allow to compute for twist $d = (d_1,\ldots,d_t)$ in a bounded range
+$$ a \le d \le b$$
+the computation of all cohomology groups
+$ H^j(\PP, \sF(d))$.
+
 
 Let $M$ be a graded $S$-module representing a coherent sheaf on $\PP^n$
 Challenge of toric varieties.
