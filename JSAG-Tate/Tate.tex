@@ -138,7 +138,7 @@ Sciences Research Institute, Berkeley, CA 94720, USA}
 
 
 
-\title{Tate Resolutions on Products of Projective Spaces: Cohomology and PushForward Complexes}
+\title{Tate Resolutions on Products of Projective Spaces: \\ Cohomology and PushForward Complexes}
 \begin{document}
 
 \begin{abstract}
@@ -221,8 +221,8 @@ yields an infinite exact complex
 $${\bT}(\sF):   \ldots \to T^{r-2} \to T^{r-1} \to T^r \to T^{r+1} \to \ldots$$
 of free $E$-modules, which depends only on $\sF$. By \cite[Theorem x.y] {EFS} the terms of this complex are
 $$T^d=T^d(\sF) = \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
- Hence syzygy computation over the exterior algebra $E$ allows us to compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range
- $a \le k \le b$. The Beilinson monad $\bU(\sF)$ of $\sF$ is obtained from its Tate resolution by applying the functor
+ Hence syzygy computation over the exterior algebra $E$ allows us to compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range for $low,high \in \ZZ$
+ $low \le k \le high$. The Beilinson monad $\bU(\sF)$ of $\sF$ is obtained from its Tate resolution by applying the functor
  $$
  cut and paste
  $$
@@ -236,16 +236,38 @@ The theory of Tate resolution on
 $$
 \PP = \PP^{n_1}\times \ldots \times \PP^{n_t}
 $$
-similarly will allow to compute for twist $d = (d_1,\ldots,d_t)$ in a bounded range
-$$ a \le d \le b$$
-the computation of all cohomology groups
-$ H^j(\PP, \sF(d))$.
+similarly will allows to compute similarly for twist $a = (a_1,\ldots,a_t)$ in a bounded range
+$$ low \le a \le high$$
+for $low,high \in ZZ^t$ the computation of all cohomology groups
+$ H^j(\PP, \sF(a))$.
+We consider again a pair of Koszul dual symmetric and exterior algebra:
+If $\PP^{n_i}= \PP(W_i)$ then we consider the $\ZZ^t$ graded polynomial ring 
+$
+S=Sym(W_1 \oplus \ldots \oplus W_t)
+$
+and the $\ZZ^t$ graded algebra $E= \Lambda(V_1 \oplus \ldots \oplus V_t)$ where $V_i =W_i^*$.
 
+If $M$ is a graded $S$-module representing $\sF$ then the Tate resolution $\bT(\sF)$ in this case is a
+exact complex of free $E$-modules with terms
+$$
+\bT^d(\sF)= \sum_{a \in \ZZ^t} H^{d-|a|}(\PP,\sF(a)) \otimes E(a),
+$$
+where $|a|=a_1+\ldots+a_n$ denotes the total degree.
+One of the difficulties to over come is thus that these $E$-modules are no longer finitely generated. We explain in section \ref{TateRes}
+how we can compute the subquotient complex covering any desired range
+$$ low \le a \le high$$
+for $low, high \in \ZZ^t$ nevertheless by a finite computation.
 
-Let $M$ be a graded $S$-module representing a coherent sheaf on $\PP^n$
+There are some minor difference in the notation of the package and this article with the notation of \cite{EES}.
+\begin{itemize}
+\item the exterior algebra E is positively graded.
+\item we use E instead of $\omega_E:=\Lambda W_1 \oplus \ldots \oplus W_t)$
+\item all complexes are chain complexes instead of cochain complexes.
+\end{itemize}
+
 Challenge of toric varieties.
 
-\section{The Tate Resolution and its properties}
+\section{The Tate Resolution and its properties}\label{TateRes}
 
 The definition.  Say the terms.
 strands etc
