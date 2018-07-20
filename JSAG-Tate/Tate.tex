@@ -189,7 +189,7 @@ where $\omega_E:=\Lambda W=\Hom(E,K)$ is the free $E$-module generated in degree
 One checks easily that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
 
 In exactly the same way, a graded $E$-module $N$ gives rise to a linear  complex of free $S$-modules
-$$bgg(N): \ldots \to N_i \otimes E \to N_{i-1} \otimes  E \to \ldots $$
+$$bgg(N): \ldots \to N_i \otimes S \to N_{i-1} \otimes  S \to \ldots $$
 
 
 It is interesting to ask when these complexes are resolutions:
@@ -230,10 +230,10 @@ $$\bT^d(\sF) =T^d= \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
  
  
  $$\diagram
- \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
-  &E(i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
+ \bU: &\{ \hbox{free $\omega_E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
+  &\omega_E(i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
 &\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
-&E(j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
+&\omega_E(j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
 \enddiagram
 $$
  to $\bT(\sF)$ for $a \in \Lambda^{i-j} V \subset E$ a homogeneous element of degree $j-i$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
@@ -246,97 +246,78 @@ The theory of Tate resolution on
 $$
 \PP = \PP^{n_1}\times \ldots \times \PP^{n_t}
 $$
-similarly will allows to compute similarly for twist $a = (a_1,\ldots,a_t)$ in a bounded range
+ will similarly allow us to compute all the cohomology groups
+$ H^j(\PP, \sF(a))$, for twists $a = (a_1,\ldots,a_t)$ in a bounded range
 $$ low \le a \le high$$
-for $low,high \in \ZZ^t$ the computation of all cohomology groups
-$ H^j(\PP, \sF(a))$.
-We consider again a pair of Koszul dual symmetric and exterior algebra:
+for $low,high \in \ZZ^t$.
+We consider again a pair of Koszul dual symmetric and exterior algebras:
 If $\PP^{n_i}= \PP(W_i)$ then we consider the $\ZZ^t$-graded polynomial ring 
 $$
 S=\Sym(W_1 \oplus \ldots \oplus W_t)
 $$
 and the $\ZZ^t$-graded algebra $E= \Lambda(V_1 \oplus \ldots \oplus V_t)$ where $V_i =W_i^*$.
 
-If $M$ is a graded $S$-module representing $\sF$ then the Tate resolution $\bT(\sF)$ in this case is a
+If $M$ is a graded $S$-module representing $\sF$ then the Tate resolution $\bT(\sF)$ is an
 exact complex of free $E$-modules with terms
 $$
-\bT^d(\sF)= \sum_{a \in \ZZ^t} H^{d-|a|}(\PP,\sF(a)) \otimes E(a),
+\bT^d(\sF)= \sum_{a \in \ZZ^t} H^{d-|a|}(\PP,\sF(a)) \otimes \omega_E,
 $$
 where $|a|=a_1+\ldots+a_n$ denotes the total degree.
-One of the difficulties to over come is thus that these $E$-modules are no longer finitely generated. We explain in section \ref{TateRes}
-how we can compute the subquotient complex covering any desired range
-$$ low \le a \le high$$
-for $low, high \in \ZZ^t$ nevertheless by a finite computation.
+One of the difficulties to overcome is  that, when $t>1$, these $E$-modules are not finitely generated. We explain in Section \ref{TateRes}
+how we can effectively compute the subquotient complex covering a finite  range
+$$ 
+low \le a \le high.
+$$
 
-There are some minor difference in the notation of the package with this article and of \cite{EES}. Don't ask why!
+There are some minor differences between the notation of the package and of \cite{EES}.  In the package:
 \begin{itemize}
-\item the exterior algebra E is positively graded.
-\item we use E instead of $\omega_E:=\Lambda(W_1 \oplus \ldots \oplus W_t)$
-\item all complexes are chain complexes instead of cochain complexes.
+\item The exterior algebra E is positively graded.
+\item We use E instead of $\omega_E.$
+\item All complexes are chain complexes instead of cochain complexes.
 \end{itemize}
-Most likely, the user will notice the difference.
-
+Don't ask why!
 %Challenge of toric varieties.
-
-\section{The Tate Resolution and its properties}\label{TateRes}
-
-The definition of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S=\Sym(W_1 \oplus \ldots \oplus W_t)$-module $M$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is azyclic.
-Then taking $N$ to be the kernel of the multiplication map
-$$ M_c \otimes E \to \oplus_{j=1}^t M_{(c_1,\ldots,c_j+1,\ldots,c_t)} \otimes E $$
-then the free resolution of $N(1,\ldots,1)$ is the part of the Tate resolution  with terms corresponding to cohomology groups
-$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_1\le c_1 +1, \ldots, a_t \le c_t+1$. 
-Note that this is an infinite complex with finitely generated $E$ modules.
-The complete Tate resolution is obtained by taking the limit of these complexes for $c \to infty$.
-
-
-strands etc
 
 \section{Computing Cohomology Tables}
 
+To compactly represent the dimensions of all the cohomology vector spaces of a given coherent sheaf $\sF$ we introduce the ``cohomology polynomial''
+$$
+\sum_{i\geq 0} (\dim H^i(\PP, \sF)h^i\in \ZZ[h].
+$$
+To shorten the notation, we usually write $H^i(\sF)$ in place of $H^i(\PP, \sF)$.
+Let $M$ be a finitely generated $\ZZ^t$-graded $S$-module, and let $\sF$ be the 
+corresponding sheaf on $\PP$. Let
+$low\leq high\in \ZZ^t$ be multi-degrees defining an interval. We can compute
+all the cohomology vector spaces of all the twists $\sF(a)$ for $low\leq a\leq high$ with the function 
 \begin{verbatim}
- 
- * Usage: H=cohomologyMatrix(M,low,high)
-       * Inputs:
-            * M, a module, graded module representing a sheaf on a product of projective spaces
-        low=\{a_1,a_2\}, high=\{b_1,b_2\} representing bidegrees
-       * Outputs:
-           * H, a matrix, a (1+b1-a1)x(1+b2-a2) matrix of ring elements in $\mathbb Z[h,k]$
-
- 
-     If M is a bigraded module over a bigraded polynomial ring representing a sheaf F on P^{n_1} x P^{n_2},
-     the script returns a block of the cohomology table, represented as a table of "cohomology polynomials" in
-     $\mathbb Z[h,k]$ of the form $$\sum_{i=0}^{|n|} \, dim H^i(\mathcal F(c_1,c_2)) * h^i$$ in each position
-     \{c_1,c_2\} for $a_1 \le c_1 \le b_1$ and $a_2 \le c_2 \le b_2$. 
-     
-     The polynomial for \{b_1,b_2\} sits in the north-east corner, the one corresponding to (a_1,a_2) in the
-     south-west corner.
-
-     In the case of a product of more (or fewer) projective spaces, or if a hash table output is desired, use
-     cohomologyHashTable or eulerPolynomialTable instead.
-
-      We build the example from Section 4 of the paper
-      @ HREF("https://arxiv.org/abs/1411.5724","Tate Resolutions on Products of Projective Spaces") @
-      which corresponds to a rank 3 vector bundle on P^1xP^1. 
-
-o14 M = cokernel 
-               {2, 0} | x_(1,1)  -x_(1,0) 0       0        |
-               {1, 1} | -x_(0,0) 0        x_(1,0) 0        |
-               {1, 1} | 0        -x_(0,0) x_(1,1) 0        |
-               {1, 1} | -x_(0,1) 0        0       x_(1,0)  |
-               {1, 1} | 0        -x_(0,1) 0       x_(1,1)  |
-               {0, 2} | 0        0        x_(0,1) -x_(0,0) |
-   
-cohomologyMatrix(M,low,high)
-
-o19 = | 28h  18h  8h  2  12  22  32  |
-      | 20h  13h  6h  1  8   15  22  |
-      | 12h  8h   4h  0  4   8   12  |
-      | 4h   3h   2h  h  0   1   2   |
-      | 4h2  2h2  0   2h 4h  6h  8h  |
-      | 12h2 7h2  2h2 3h 8h  13h 18h |
-      | 20h2 12h2 4h2 4h 12h 20h 28h |   
-      
-    \end{verbatim}
+ cohomologyHashTable(M,low,high)
+\end{verbatim}
+The output of this function is hash table consisting of the pairs
+$$ 
+a \Rightarrow \sum_{i\geq 0} (\dim H^i(\PP, \sF(a))h^i.
+$$
+In the case $t=2$ we can display the hash table as a matrix with function
+\begin{verbatim}
+ cohomologyMatrix(M,low,high)
+\end{verbatim}
+where the upper right hand corner of the table corresponds to the multi-index $high$.
+For example, we can represent $\sF = \sO_{\PP^1\times \PP^2}$ with the module
+$S^1$:
+\begin{verbatim}
+ (S,E) = productOfProjectiveSpaces{1,2}
+ low  = {-3,-3};high = {3,3};
+ cohomologyMatrix(S^1, low,high)
+\end{verbatim}
+which gives output
+\begin{verbatim}
+     | 20h 10h 0 10 20  30  40  |
+     | 12h 6h  0 6  12  18  24  |
+     | 6h  3h  0 3  6   9   12  |
+     | 2h  h   0 1  2   3   4   |
+     | 0   0   0 0  0   0   0   |
+     | 0   0   0 0  0   0   0   |
+     | 2h3 h3  0 h2 2h2 3h2 4h2 |
+\end{verbatim}
 
 
      
@@ -551,6 +532,21 @@ o48 : T-module, free, degrees {-4, -5}
 
 i49 :        We conclude that the sheaf represented by R0 is O(-4)+O(-5) on P^1. 
 \end{verbatim}
+
+
+
+\section{The Tate Resolution and its properties}\label{TateRes}
+
+The definition of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S=\Sym(W_1 \oplus \ldots \oplus W_t)$-module $M$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is azyclic.
+Then taking $N$ to be the kernel of the multiplication map
+$$ M_c \otimes E \to \oplus_{j=1}^t M_{(c_1,\ldots,c_j+1,\ldots,c_t)} \otimes E $$
+then the free resolution of $N(1,\ldots,1)$ is the part of the Tate resolution  with terms corresponding to cohomology groups
+$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_1\le c_1 +1, \ldots, a_t \le c_t+1$. 
+Note that this is an infinite complex with finitely generated $E$ modules.
+The complete Tate resolution is obtained by taking the limit of these complexes for $c \to \infty$.
+
+
+strands etc
 
 \bibliographystyle{ABC99}
 \begin{thebibliography}{ABC99}
