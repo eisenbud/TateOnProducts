@@ -218,15 +218,23 @@ To connect these two approaches a key role is played by what we call the Tate re
 $$bgg(M_{\ge r}) : M_r\otimes E(r) \to M_{r+1}\otimes E(r+1) \to \ldots$$ 
 is acyclic if $r \gg 0$. Combining this injective resolution with a minimal free resolution of $P=\ker(M_r\otimes E(r) \to M_{r+1}\otimes E(r+1))$
 yields an infinite exact complex
-$${\bT}(\sF):   \ldots \to T^{r-2} \to T^{r-1} \to T^r \to T^{r+1} \to \ldots$$
+$$
+\bT(\sF):   \ldots \to T^{r-2} \to T^{r-1} \to T^r \to T^{r+1} \to \ldots
+$$
 of free $E$-modules, which depends only on $\sF$. By \cite[Theorem x.y] {EFS} the terms of this complex are
 $$\bT^d(\sF) =T^d= \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
  Hence syzygy computation over the exterior algebra $E$ allows us to compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range $low \le k \le high$ for $low,high \in \ZZ$.
   The Beilinson monad $\bU(\sF)$ of $\sF$ is obtained from its Tate resolution by applying the functor
- $$
- cut and paste
- $$
- to $\bT(\sF)$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
+ 
+ 
+ $$\diagram
+ \bU:&\{ \hbox{ free $E$-modules }\} & \rTo & \{ \hbox{ coherent sheaves on $\PP^n$ } \}   \cr
+  &E(-i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
+&\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
+&E(-j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
+\enddiagram
+$$
+ to $\bT(\sF)$ for $a \in \Lambda^{j-i} V$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
  One of Beilinson's main theorems says that the complex $\bU(\sF)$ is exact except at position $0$:
  $$ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$$
  
@@ -258,14 +266,14 @@ how we can compute the subquotient complex covering any desired range
 $$ low \le a \le high$$
 for $low, high \in \ZZ^t$ nevertheless by a finite computation.
 
-There are some minor difference in the notation of the package and this article with the notation of \cite{EES}.
+There are some minor difference in the notation of the package and this article with the notation of \cite{EES}. Don't ask why!
 \begin{itemize}
 \item the exterior algebra E is positively graded.
 \item we use E instead of $\omega_E:=\Lambda(W_1 \oplus \ldots \oplus W_t)$
 \item all complexes are chain complexes instead of cochain complexes.
 \end{itemize}
 
-Challenge of toric varieties.
+%Challenge of toric varieties.
 
 \section{The Tate Resolution and its properties}\label{TateRes}
 
