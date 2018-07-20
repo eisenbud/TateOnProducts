@@ -41,6 +41,7 @@ export {
     "regionComplex",
     "strand",
     -- beilinson functor
+    "beilinsonMonad",
     "beilinsonContraction",
     "beilinsonBundle",
     "beilinson",
@@ -93,6 +94,7 @@ protect ChangeBases
 ----------------------------------------------
 -- from graded modules to Tate resolutions  --
 ----------------------------------------------
+
 
 -- Helper functions for findMatrixCorners
 extendRows = (I, r) -> (S := ring I; transpose (transpose I | matrix map(S^(numColumns I), S^r, 0)))
@@ -2556,7 +2558,21 @@ isIsomorphic(Mc',Mc)
 
 
 
+
+
 ///
+
+beilinsonMonad = method(Options => options beilinson)
+beilinsonMonad Module := opts -> M -> (
+    n:= (ringData ((ring M).TateData#Rings_0))_2;
+    low := -n; 
+    high := 0*n;
+    T:=tateResolution(M,low,high);
+    beilinson(T)--,BundleType => opts.BundleType
+    )
+
+
+
 --------------------------
 -- Begin of the documentation
 ------------------------
@@ -2583,6 +2599,7 @@ document {
 	TO tateResolution,
 	TO tateExtension,
 	TO beilinson,
+	TO beilinsonMonad,
 	TO bgg,
 	TO directImageComplex,
 	TO composedFunctions
@@ -2744,7 +2761,7 @@ doc ///
       the original square of the maximal ideal of E from the differential of of the first quadrant complex uQ
       in this specific case.
      Example
-      uQ.dd_(-1)pp
+      uQ.dd_(-1)
      Text
       Next we test reciprocity.
      Example
@@ -4236,6 +4253,58 @@ doc ///
 
 doc ///
   Key
+    beilinsonMonad
+    (beilinsonMonad,Module)
+    [beilinsonMonad,BundleType]
+  Headline
+    compute the Beilinson monad of a S-module
+  Usage
+    B=beilinsonMonad M
+  Inputs
+    M: Module
+       a module over the symmetric algebra S 
+    BundleType => Symbol
+       the possible values are SubBundle or PrunedQuotient
+  Outputs
+   C: ChainComplex
+       a chain complex of S-modules
+  Description
+     Text
+       The Beilinson monad is the presentation of a coherent sheaf as the
+       homology of a complex with terms from the full exceptional sequence $\{ U^a \}$
+       on 
+       PP = P^{n_1} \times ... \times P^{n_t} of t projective spaces, see e.g.
+       @ HREF("http://arxiv.org/abs/1411.5724","Tate Resolutions on Products of Projective Spaces") @.
+
+       The function returns a chain complex of S-modules, whose sheafication
+       is the monad.
+     Example
+        (S,E) = productOfProjectiveSpaces {1,2}
+	low = {-3,-3}
+        high = {3,3}
+	M = ker vars S;
+        cohomologyMatrix (M,low, high)
+	B=beilinsonMonad M
+	dim HH^1 B,dim HH^0 B
+	isIsomorphic(M, HH^0 B)
+	T = tateResolution(M, low,high);
+	B'=beilinsonWindow T
+	cohomologyMatrix(B',low,high)	
+  SeeAlso
+    tateResolution 
+    beilinsonWindow
+    beilinson
+    BundleType
+    SubBundle
+    PrunedQuotient
+///
+
+
+
+
+
+doc ///
+  Key
     beilinsonBundle
     (beilinsonBundle,ZZ,ZZ,Ring)
     (beilinsonBundle,List,Ring)
@@ -5474,9 +5543,10 @@ end--
 restart
 uninstallPackage"TateOnProducts"
 installPackage"TateOnProducts"
---loadPackage("TateOnProducts",Reload=>true)
+loadPackage("TateOnProducts",Reload=>true)
 viewHelp TateOnProducts
-viewHelp
+peek loadedFiles
+
 netList cornerCohomologyTablesOfUa({1,2})
 
 restart
@@ -5670,26 +5740,25 @@ res((ideal vars E)^2, LengthLimit =>12)
 
 ------------
 --for the JSAG article:
+--debug TateOnProducts
 (S,E) = productOfProjectiveSpaces{1,2}
 low = {-3,-3}
 high = {3,3}
 cohomologyMatrix(S^1,low,high)
 
 M = ker vars S
+
 cohomologyMatrix (M,low, high)
-beilinson tateResolution(M
-options beilinson
-   code methods beilinson
-beilinsonMonad = method(Options => options beilinson)
-beilinsonMonad Module := opts -> M -> (
-(S,E) := (tateData ring M)#Rings;
-n = (ringData S)_2;
-low = -n 
-high = 0*n
+T=tateResolution(M,low,high)
+B=beilinson T
+beilinsonMonad M
+
+
+
+   
+
 twist = {2,2}
 trunc = {0,0}
 B = beilinson tateResolution(S^{twist}**M,low,high);
 betti B
 isIsomorphic (truncate(trunc,HH^0 B),truncate(trunc,S^{twist}**M))
-debug = false
-restart
