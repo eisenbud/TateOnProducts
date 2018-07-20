@@ -181,19 +181,20 @@ $$
 to a sequence of maps $M_i\to M_{i+1}\otimes V$, which in turn correspond to a sequence of
 linear maps of graded free $E$-modules 
 $$ 
-bgg(M): \cdots \to M_i\otimes E(-i) \to M_{i+1}\otimes E(-(i+1))\to \cdots
+bgg(M): \cdots \to M_i\otimes \omega_E \to M_{i+1}\otimes \omega_E \to \cdots
 $$
+where $\omega_E:=\Lambda W=\Hom(E,K)$ is the free $E$-module generated in degree $n+1$, and as $M_j$ a $K$-vectorspace in degree $j$
 \end{itemize}
 
 One checks easily that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
 
 In exactly the same way, a graded $E$-module $N$ gives rise to a linear  complex of free $S$-modules
-$bgg(N)$.
+$$bgg(N): \ldots \to N_i \otimes E \to N_{i-1} \otimes  E \to \ldots $$
 
 
 It is interesting to ask when these complexes are resolutions:
 
-\begin{theorem}[Reciprocity \cite{ES}] With notation as above:
+\begin{theorem}[Reciprocity] \cite[Theorem x.y] {EFS}. With notation as above:
 \begin{enumerate}
  \item $bgg(M)$ is an injective resolution of the $E$-module $N$ if and only if
 $bgg(N)$ is a free resolution of $M$.
@@ -203,7 +204,7 @@ $bgg(N)$ is a free resolution of $M$.
 \end{theorem}
 
 
-In their 1978 paper Bernstein-Gelfand-Gelfand \cite{BGG} used this correspondence  to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with stable module category of $E$ module. In the same volume Beilinson \cite{Bei} described
+In their 1978 paper Bernstein-Gelfand-Gelfand \cite{BGG} used this correspondence  to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with stable module category of $E$ module. In the same volume \cite{Bei} Beilinson  described
 $D^b(\PP^n)$ in terms of exceptional sequences:
 Both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
 $\{ \Lambda^k U | k=0, \ldots, n\}$ form  what is nowadays called  a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP^n)$.
@@ -229,7 +230,7 @@ $$\bT^d(\sF) =T^d= \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
  
  
  $$\diagram
- \bU:&\{ \hbox{ free $E$-modules }\} & \rTo & \{ \hbox{ coherent sheaves on $\PP^n$ } \}   \cr
+ \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
   &E(i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
 &\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
 &E(j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
@@ -267,18 +268,27 @@ how we can compute the subquotient complex covering any desired range
 $$ low \le a \le high$$
 for $low, high \in \ZZ^t$ nevertheless by a finite computation.
 
-There are some minor difference in the notation of the package and this article with the notation of \cite{EES}. Don't ask why!
+There are some minor difference in the notation of the package with this article and of \cite{EES}. Don't ask why!
 \begin{itemize}
 \item the exterior algebra E is positively graded.
 \item we use E instead of $\omega_E:=\Lambda(W_1 \oplus \ldots \oplus W_t)$
 \item all complexes are chain complexes instead of cochain complexes.
 \end{itemize}
+Most likely, the user will notice the difference.
 
 %Challenge of toric varieties.
 
 \section{The Tate Resolution and its properties}\label{TateRes}
 
-The definition.  Say the terms.
+The definition of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S=\Sym(W_1 \oplus \ldots \oplus W_t)$-module $M$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is azyclic.
+Then taking $N$ to be the kernel of the multiplication map
+$$ M_c \otimes E \to \oplus_{j=1}^t M_{(c_1,\ldots,c_j+1,\ldots,c_t)} \otimes E $$
+then the free resolution of $N(1,\ldots,1)$ is the part of the Tate resolution  with terms corresponding to cohomology groups
+$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_1\le c_1 +1, \ldots, a_t \le c_t+1$. 
+Note that this is an infinite complex with finitely generated $E$ modules.
+The complete Tate resolution is obtained by taking the limit of these complexes for $c \to infty$.
+
+
 strands etc
 
 \section{Computing Cohomology Tables}
