@@ -171,7 +171,8 @@ The theory begins with two elementary observations:
 \begin{itemize}
  \item If $W,M_1, M_2$ are finite-dimensional vector spaces over a field $k$, then there is a one-to-one correspondence between homomorphisms $W\otimes_kM_1\to M_2$ and homomorphisms
 $ M_1 \to M_2 \otimes W^*$.
-\item Consider the polynomial ring $S = \oplus_k \Sym_kW$ and the exterior algebra $E = \Lambda V= \oplus_k \Lambda^kV$, with $V=W^*$.
+\item Consider the polynomial ring $S = \oplus_k \Sym_kW$ with generators in degree $1$ and the exterior algebra $E = \Lambda V= \oplus_k \Lambda^kV$, with $V=W^*$ and generators in degree -1.
+
 If $M = \oplus_{i\geq i_0} M_i$ is a finitely generated graded module over $S$, then the sequence of maps 
 $$
 W\otimes M_i \to M_{i+1}
@@ -180,7 +181,7 @@ $$
 to a sequence of maps $M_i\to M_{i+1}\otimes V$, which in turn correspond to a sequence of
 linear maps of graded free $E$-modules 
 $$ 
-bgg(M): \cdots \to M_i\otimes E(i) \to M_{i+1}\otimes E(i+1)\to \cdots
+bgg(M): \cdots \to M_i\otimes E(-i) \to M_{i+1}\otimes E(-(i+1))\to \cdots
 $$
 \end{itemize}
 
@@ -229,12 +230,12 @@ $$\bT^d(\sF) =T^d= \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
  
  $$\diagram
  \bU:&\{ \hbox{ free $E$-modules }\} & \rTo & \{ \hbox{ coherent sheaves on $\PP^n$ } \}   \cr
-  &E(-i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
+  &E(i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
 &\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
-&E(-j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
+&E(j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
 \enddiagram
 $$
- to $\bT(\sF)$ for $a \in \Lambda^{j-i} V$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
+ to $\bT(\sF)$ for $a \in \Lambda^{i-j} V \subset E$ a homogeneous element of degree $j-i$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
  One of Beilinson's main theorems says that the complex $\bU(\sF)$ is exact except at position $0$:
  $$ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$$
  
