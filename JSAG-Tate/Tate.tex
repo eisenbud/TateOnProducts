@@ -319,67 +319,77 @@ which gives output
      | 2h3 h3  0 h2 2h2 3h2 4h2 |
 \end{verbatim}
 As a further example we consider
+\begin{verbatim}
+M =  S^{{1,1}} ** ker vars S 
+cohomologyMatrix (M,low, high)
+\end{verbatim}
+which outputs
+\begin{verbatim}
+      | 75h 30h 15  60  105 150  195  |
+      | 48h 20h 8   36  64  92   120  |
+      | 27h 12h 3   18  33  48   63   |
+      | 12h 6h  0   6   12  18   24   |
+      | 3h  2h  h   0   1   2    3    |
+      | 0   0   0   0   0   0    0    |
+      | 3h3 0   3h2 6h2 9h2 12h2 15h2 |
+\end{verbatim}
 
      
 \section{Computing the Beilinson Monad}
 
+Continuing with the example above, we compute the Beilinson Monad of the 
+sheaf corresponding to $M$:
 \begin{verbatim}
+B = beilinsonMonad M
+\end{verbatim}
+which gives the complex
+\begin{verbatim}     
+ 6
+S  <-- cokernel {1, 1} | x_(1,2)  |
+                {1, 1} | -x_(1,1) |
+                {1, 1} | x_(1,0)  |
+\end{verbatim}
+whose differential is given by the matrix
+\begin{verbatim}
+| x_(0,1)x_(1,1)  x_(0,1)x_(1,2)  0               | 
+| -x_(0,0)x_(1,1) -x_(0,0)x_(1,2) 0               | 
+| -x_(0,1)x_(1,0) 0               x_(0,1)x_(1,2)  |
+| x_(0,0)x_(1,0)  0               -x_(0,0)x_(1,2) |
+| 0               -x_(0,1)x_(1,0) -x_(0,1)x_(1,1) |
+| 0               x_(0,0)x_(1,0)  x_(0,0)x_(1,1)  |
+\end{verbatim}
+Macaulay2 computes this by first computing the Tate resolution, a complex 
+over the exterior algebra, with sufficiently many terms and extracting just the terms
+that belong to the "Beilinson window", and then applying the Beilinson functor.
+We can also take the cohomology matrix of the Beilinson window to understand
+the terms that are there:
+\begin{verbatim}
+T=tateResolution(M,low,high);
+W = beilinsonWindow T
  
-i20 :       T = tateResolution(M,low,high) 
+ 6      1
+E  <-- E
 
-       136      55      32      44      39      36      54      91      136      184      239      304      382      476      589
-o20 = E    <-- E   <-- E   <-- E   <-- E   <-- E   <-- E   <-- E   <-- E    <-- E    <-- E    <-- E    <-- E    <-- E    <-- E
-                                                                                                                              
-      -8       -7      -6      -5      -4      -3      -2      -1      0        1        2        3        4        5        6
+ cohomologyMatrix(W,low, high)
+| 0 0 0 0 0 0 0 |
+| 0 0 0 0 0 0 0 |
+| 0 0 0 0 0 0 0 |
+| 0 0 0 6 0 0 0 |
+| 0 0 h 0 0 0 0 |
+| 0 0 0 0 0 0 0 |
+| 0 0 0 0 0 0 0 |
+ \end{verbatim}
+The 0th-cohomology of the Beilinson monad represents the original sheaf,
+while the other cohomology is trivial as a sheaf. This is not necessarily true as modules,
+however. In this case, M has a generator in degree $\{-1,1\}$, but ${\rm H}^0 B$ does not.
+To see that they are the same sheaves, we need only truncate high enough.
+\begin{verbatim}
+ isIsomorphic(HH^0 B ,M)
+false
 
-o20 : ChainComplex
-
-i21 :       cohomologyMatrix(T,low,high)
-
-o21 = | 28h  18h  8h  2  12  22  32  |
-      | 20h  13h  6h  1  8   15  22  |
-      | 12h  8h   4h  0  4   8   12  |
-      | 4h   3h   2h  h  0   1   2   |
-      | 4h2  2h2  0   2h 4h  6h  8h  |
-      | 12h2 7h2  2h2 3h 8h  13h 18h |
-      | 20h2 12h2 4h2 4h 12h 20h 28h |
-
-                       7                7
-o21 : Matrix (ZZ[h, k])  <--- (ZZ[h, k])
-
-i22 :       B=beilinson T
-
-       1      4
-o22 = S  <-- S
-              
-      -1     0
-
-o22 : ChainComplex
-
-i23 :       M'=prune HH^0 B
-
-o23 = cokernel {1, 1} | -x_(1,1) 0        0        -x_(0,1) |
-               {0, 2} | x_(0,0)  x_(0,1)  0        0        |
-               {1, 1} | -x_(1,0) 0        -x_(0,1) 0        |
-               {1, 1} | 0        -x_(1,0) x_(0,0)  0        |
-               {1, 1} | 0        -x_(1,1) 0        x_(0,0)  |
-               {2, 0} | 0        0        -x_(1,1) x_(1,0)  |
-
-                             6
-o23 : S-module, quotient of S
-
-i24 :       prune HH^1 B
-
-o24 = cokernel | x_(1,1) x_(1,0) x_(0,1) x_(0,0) |
-
-                             1
-o24 : S-module, quotient of S
-
-i25 :       isIsomorphic(M,M')
-
-o25 = true
-  \end{verbatim}
-
+isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
+true
+\end{verbatim}
 
 \section{Computing $R\pi_*$ of a Sheaf}
 \begin{verbatim}

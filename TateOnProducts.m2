@@ -5741,24 +5741,21 @@ res((ideal vars E)^2, LengthLimit =>12)
 ------------
 --for the JSAG article:
 --debug TateOnProducts
+restart
+loadPackage("TateOnProducts",Reload=>true)
 (S,E) = productOfProjectiveSpaces{1,2}
 low = {-3,-3}
 high = {3,3}
 cohomologyMatrix(S^1,low,high)
 
-M = ker vars S
-
+M =  S^{{1,1}}** ker vars S
 cohomologyMatrix (M,low, high)
-T=tateResolution(M,low,high)
-B=beilinson T
-beilinsonMonad M
+B = beilinsonMonad M
+T=tateResolution(M,low,high);
+W = beilinsonWindow T
+cohomologyMatrix(W,low, high)
 
-
-
-   
-
-twist = {2,2}
+isIsomorphic(HH^0 B ,M)
 trunc = {0,0}
-B = beilinson tateResolution(S^{twist}**M,low,high);
-betti B
-isIsomorphic (truncate(trunc,HH^0 B),truncate(trunc,S^{twist}**M))
+isIsomorphic (truncate(trunc,HH^0 B),truncate(trunc,M))
+--M' has a generator in degree {-1,1}, but HH^0 B' does not.
