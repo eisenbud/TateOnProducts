@@ -222,7 +222,7 @@ $$
 A formal computation confirms that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
 
 In exactly the same way, a graded $E$-module $N$ gives rise to a linear  complex of free $S$-modules
-$$bgg(N): \ldots \to N_i \otimes S(-i) \to N_{i-1} \otimes  S(-i+1) \to \ldots $$
+$$bgg(N): \ldots \to N_i \otimes S(i) \to N_{i+1} \otimes  S(i+1) \to \ldots $$
 
 \daniel{I don't know why we stated the reciprocity theorem here, so I commented it out.}
 %
@@ -285,13 +285,13 @@ By simply reading off Betti numbers of $\bT(\sF)$, we can then immediately compu
 \subsection{Products of projective spaces}
 We now consider a product of projective spaces $\PP = \PP^{n_1}\times \ldots \times \PP^{n_t}$.  The Cox ring of $\PP$ is a $\ZZ^{t}$-graded polynomial ring $S=\Sym (W_1\oplus W_2 \oplus \cdots \oplus W_t)$ where $\dim W_i=n_i+1$ and where the elements of $W_1$ have degree $(1,0,\dots,0)$, the elements of $W_2$ have degree $(0,1,0,\dots,0)$ and so on.  As before, we let $V_i=W_i^*$ for all $i$, and define a $\ZZ^{t}$-graded exterior algebra $E=\Lambda (V_1\oplus V_2\oplus \cdots \oplus V_t)$ where $\deg(W_i)=\deg(V_i)$.  When comparing multidegrees in $\ZZ^t$, we always take the termwise partial order.  
 
-By a nearly identical computation as before, the BGG correspondence $M\mapsto bgg(M)$ sends a multigraded $S$-module to a linear, mulitgraded, free, $t$-fold multil-complex of $E$-modules.  For instance, if $t=2$, then $bgg(M)$ is a double complex:
-\[
-\xymatrix{
- \cdots \ar[r]& M_{i,j}\otimes E(i,j) \ar[r]& M_{i+1,j}\otimes E(i+1,j) \ar[r]& \cdots\\
- \cdots \ar[r]& M_{i,j-1}\otimes E(i,j-1) \ar[r]\ar[u]& M_{i+1,j-1}\otimes E(i+1,j-1) \ar[r]\ar[u]& \cdots
-}.
-\]
+By a nearly identical computation as before, the BGG correspondence $M\mapsto bgg(M)$ sends a multigraded $S$-module to a linear, mulitgraded, free, $t$-fold multil-complex of $E$-modules.  For instance, if $t=2$, then $bgg(M_{\ge(i,j)})$ is a total complex of  double complex:
+\begin{equation}\label{eqn:uppercorner}
+\xymatrix{ \vdots & \vdots & \\
+ M_{i,j+1}\otimes E(i,j+1) \ar[r]\ar[u]& M_{i+1,j+1}\otimes E(i+1,j+1)\ar[u] \ar[r] & \cdots \\
+ M_{i,j}\otimes E(i,j) \ar[r]\ar[u]& M_{i+1,j}\otimes E(i+1,j) \ar[u]  \ar[r] & \cdots \\
+}
+\end{equation}
 If $t=3$ then $bgg(M)$ is a triple complex, and so on.
 
 
@@ -315,19 +315,16 @@ $
 \PP$ is developed in~\cite{EES}.  If $M$ is a graded $S$-module representing $\sF$, then the Tate resolution $\bT(\sF)$ is an
 exact complex of free $E$-modules with terms
 \begin{equation}\label{eqn:Tate products}
-\bT^d(\sF)= \sum_{a \in \ZZ^t} H^{d-|a|}(\PP,\sF(a)) \otimes \omega_E,
+\bT^d(\sF)= \sum_{a \in \ZZ^t} H^{d-|a|}(\PP,\sF(a)) \otimes E(a),
 \end{equation}
 where $|a|=a_1+\ldots+a_n$ denotes the total degree.
-This shows that computing the Tate resolution would allow us to compute all the cohomology groups
-$ H^j(\PP, \sF(a))$, for twists $a = (a_1,\ldots,a_t)$ in a bounded range
-$ low \le a \le high$
-for $low,high \in \ZZ^t$.  
-
+This shows that the Tate resolution encodes all the cohomology groups
+$ H^j(\PP, \sF(a))$.
 However, \eqref{eqn:Tate products} also shows that, when $t>1$, each term $\bT^d(\sF)$ of the Tate resolution will be an infinitely generated $E$-module. Computing the entire Tate resolution $\bT^d(\sF)$ is thus infeasible.  We can nevertheless  effectively compute the subquotient complex of $\bT^d(\sF)$ which consists of all terms in a finite range
 $
-low \le a \le high,
+low \le a \le high
 $
-of multidegrees, and this is sufficient for all of our applications.
+of multidegrees with $low, \, high \in \ZZ^t $ and this is sufficient for all of our applications.
 
 
 %Challenge of toric varieties.
@@ -439,13 +436,13 @@ Beilinson's results carry over immediately to products of projective spaces as w
 $$
 \Lambda^a \CU := \boxtimes_{i=1}^t \Lambda^{a_i} \CU_i=\pi_1^*\Lambda^{a_1}\CU_1 \otimes \cdots \otimes \pi_t^*\Lambda^{a_t} \CU_t,
 $$
-the tensor product of the pullbacks to $\PP$ of exterior powers of the $\CU_i$. The set $\{\Lambda^a \CU | 0 \leq a \leq (n_1,n_2,\dots,n_t)\}$ forms a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP)$, and the Beilinson monad for $\PP$ represents a sheaf $\sF$ in terms of this exceptional collection.  See~\cite[\S2]{EES} for more details.
+the tensor product of the pullbacks to $\PP$ of exterior powers of the $\CU_i$. The set $\{\Lambda^a \CU | 0 \leq a \leq n=(n_1,n_2,\dots,n_t)\}$ forms a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP)$, and the Beilinson monad for $\PP$ represents a sheaf $\sF$ in terms of this exceptional collection.  See~\cite[\S2]{EES} for more details.
 
 Beilinson monads can also easily be computed from a bounded part of a Tate resolution.  A key observation is that $\Hom(\Lambda^a \CU,\Lambda^b\CU) \cong E_{a-b}$.  Writing $\neg z$ for the map corresponding to $z\in E$, there is thus a functor:
 \[
 \xymatrix{
 \bU: &\{ \hbox{free $E$-modules}\} \ar[r]& \{ \hbox{coherent sheaves on $\PP$} \}  \\
-&E(-a)\ar[r]^-{\bU}\ar[d]^-{\cdot z}&\Lambda^a \CU\ar[d]\\
+&E(-a)\ar[r]^-{\bU}\ar[d]^-{\cdot z}&\Lambda^a \CU\ar[d]^{\neg z}\\
 &E(-b)\ar[r]^-{\bU}&\Lambda^b \CU\\
 }
 \]
