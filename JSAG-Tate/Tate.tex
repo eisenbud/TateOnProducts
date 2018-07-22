@@ -304,9 +304,9 @@ where the upper right hand corner of the table corresponds to the multi-index $h
 For example, we can represent $\sF = \sO_{\PP^1\times \PP^2}$ with the module
 $S^1$:
 \begin{verbatim}
- (S,E) = productOfProjectiveSpaces{1,2}
- low  = {-3,-3};high = {3,3};
- cohomologyMatrix(S^1, low,high)
+  (S,E) = productOfProjectiveSpaces{1,2}
+  low = {-3,-3};high = {3,3};
+  cohomologyMatrix(S^1, low,high)
 \end{verbatim}
 which gives output
 \begin{verbatim}
@@ -319,11 +319,13 @@ which gives output
      | 2h3 h3  0 h2 2h2 3h2 4h2 |
 \end{verbatim}
 As a further example we consider
+{\small
 \begin{verbatim}
-M =  S^{{1,1}} ** ker vars S 
-cohomologyMatrix (M,low, high)
-\end{verbatim}
+  M =  S^{{1,1}} ** ker vars S 
+  cohomologyMatrix (M,low, high)
+\end{verbatim}}
 which outputs
+{\small
 \begin{verbatim}
       | 75h 30h 15  60  105 150  195  |
       | 48h 20h 8   36  64  92   120  |
@@ -332,64 +334,63 @@ which outputs
       | 3h  2h  h   0   1   2    3    |
       | 0   0   0   0   0   0    0    |
       | 3h3 0   3h2 6h2 9h2 12h2 15h2 |
-\end{verbatim}
+\end{verbatim}}
 
      
 \section{Computing the Beilinson Monad}
 
-Continuing with the example above, we compute the Beilinson Monad of the 
+Continuing with the example above, we compute the Beilinson monad of the 
 sheaf corresponding to $M$:
+{\small
 \begin{verbatim}
-B = beilinsonMonad M
-\end{verbatim}
+  B = beilinsonMonad M
+\end{verbatim}}
+
+\noindent
 which gives the complex
-\begin{verbatim}     
- 6
-S  <-- cokernel {1, 1} | x_(1,2)  |
-                {1, 1} | -x_(1,1) |
-                {1, 1} | x_(1,0)  |
-\end{verbatim}
+{\small
+\begin{verbatim}   
+   6
+  S  <-- cokernel {1, 1} | x_(1,2)  |
+   	              {1, 1} | -x_(1,1) |
+  	               {1, 1} | x_(1,0)  |
+\end{verbatim}}
 whose differential is given by the matrix
+{\small
 \begin{verbatim}
-| x_(0,1)x_(1,1)  x_(0,1)x_(1,2)  0               | 
-| -x_(0,0)x_(1,1) -x_(0,0)x_(1,2) 0               | 
-| -x_(0,1)x_(1,0) 0               x_(0,1)x_(1,2)  |
-| x_(0,0)x_(1,0)  0               -x_(0,0)x_(1,2) |
-| 0               -x_(0,1)x_(1,0) -x_(0,1)x_(1,1) |
-| 0               x_(0,0)x_(1,0)  x_(0,0)x_(1,1)  |
+   | x_(0,1)x_(1,1)  x_(0,1)x_(1,2)  0               | 
+   | -x_(0,0)x_(1,1) -x_(0,0)x_(1,2) 0               | 
+   | -x_(0,1)x_(1,0) 0               x_(0,1)x_(1,2)  |
+   | x_(0,0)x_(1,0)  0               -x_(0,0)x_(1,2) |
+   | 0               -x_(0,1)x_(1,0) -x_(0,1)x_(1,1) |
+   | 0               x_(0,0)x_(1,0)  x_(0,0)x_(1,1)  |
 \end{verbatim}
+}
 Macaulay2 computes this by first computing the Tate resolution, a complex 
 over the exterior algebra, with sufficiently many terms and extracting just the terms
 that belong to the "Beilinson window", and then applying the Beilinson functor.
 We can also take the cohomology matrix of the Beilinson window to understand
 the terms that are there:
+{\small
 \begin{verbatim}
-T=tateResolution(M,low,high);
-W = beilinsonWindow T
- 
- 6      1
-E  <-- E
-
- cohomologyMatrix(W,low, high)
-| 0 0 0 0 0 0 0 |
-| 0 0 0 0 0 0 0 |
-| 0 0 0 0 0 0 0 |
-| 0 0 0 6 0 0 0 |
-| 0 0 h 0 0 0 0 |
-| 0 0 0 0 0 0 0 |
-| 0 0 0 0 0 0 0 |
- \end{verbatim}
+  T=tateResolution(M,low,high);
+  W = beilinsonWindow T
+        6      1       E  <-- E                      0      1
+  cohomologyMatrix(W,low, high)
+     | 0 0 0 0 0 0 0 |     | 0 0 0 0 0 0 0 |     | 0 0 0 0 0 0 0 |     | 0 0 0 6 0 0 0 |     | 0 0 h 0 0 0 0 |
+     | 0 0 0 0 0 0 0 |     | 0 0 0 0 0 0 0 |
+ \end{verbatim}}
 The 0th-cohomology of the Beilinson monad represents the original sheaf,
 while the other cohomology is trivial as a sheaf. This is not necessarily true as modules,
 however. In this case, M has a generator in degree $\{-1,1\}$, but ${\rm H}^0 B$ does not.
 To see that they are the same sheaves, we need only truncate high enough.
+{\small
 \begin{verbatim}
  isIsomorphic(HH^0 B ,M)
-false
-
-isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
-true
-\end{verbatim}
+   false
+ isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
+   true
+\end{verbatim}}
 
 \section{Computing $R\pi_*$ of a Sheaf}
 \begin{verbatim}
