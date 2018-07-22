@@ -11,6 +11,7 @@
 \usetikzlibrary{decorations.markings} 
 \usetikzlibrary{decorations.pathreplacing} 
 \usetikzlibrary{plothandlers}
+\usepackage[alphabetic,lite]{amsrefs} % for bibliography
 
 
 %\usepackage{amsrefs}
@@ -62,6 +63,7 @@
 \def\RR{{\mathcal R}}
 \def\Trace{{\rm Tr}}
 
+\def\CU{{\mathcal U}}
 \def\CO{{\mathcal O}}
 \def\CT{{\mathcal T}}
 \def\CHom{{\mathcal Hom}}
@@ -93,6 +95,7 @@
 
 \def\frank#1{{\bf *** Frank:} #1 {\bf ***}}
 \def\david#1{{\bf *** David:} #1 {\bf ***}}
+\def\daniel#1{{\bf *** Daniel:} #1 {\bf ***}}
 \def\lbracket{{[\kern-1.5pt[}}
 \def\rbracket{{]\kern-1.5pt]}}
 
@@ -108,7 +111,7 @@
 
 %%%%%%%%%%%%%%%%%%Silvio's macros for the diagrams
 \usepackage{times}
-\newdimen\x \x=12pt
+%\newdimen\x \x=12pt
 
 %\usepackage{mat\codimime}
 \usepackage{color}
@@ -128,7 +131,7 @@ Sciences Research Institute, Berkeley, CA 94720, USA}
 
 \author{Daniel Erman}
 \address{Department of Mathematics, University of Wisconsin,
-	Madison, WI, ****, USA}
+  Madison, Wisconsin, 53706, USA}
 \email{derman@math.wisc.edu}
 
 
@@ -138,18 +141,17 @@ Sciences Research Institute, Berkeley, CA 94720, USA}
 
 
 
-\title{Tate Resolutions on Products of Projective Spaces: \\ Cohomology and PushForward Complexes}
+\title[Tate Resolutions on Products of Projective Spaces]{Tate Resolutions on Products of Projective Spaces: \\ Cohomology and PushForward Complexes}
 \begin{document}
 
 \begin{abstract}
 We describe the  Macaulay2 package TateOnProducts and its capabilities, which include computing cohomology tables of sheaves
-on products of projective spaces and the derived category pushForward of a sheaf under a morphism from a projective scheme to
-a projective space.
+on products of projective spaces and the derived category pushForward of a sheaf under a morphism from a projective scheme to a projective space.
 \end{abstract}
 
 \maketitle
 
-\section*{Introduction} 
+%\section*{Introduction} 
 \let\thefootnote\relax\footnote{
 \noindent AMS Subject Classification:
 Primary: 14H99 ????,
@@ -160,129 +162,200 @@ National Science Foundation for partial support. This work is a contribution to 
 
 
 \section*{Introduction}
+This package implements three main applications related to sheaf cohomology on products of projective spaces.
+\begin{enumerate}
+	\item  {\tt cohomologyHashTable} computes all of the cohomology groups of a coherent sheaf within a specified range of multidegrees.
+	\item  {\tt beilinsonMonad} computes the Beilinson monad of a sheaf on a product of projective spaces.
+	\item {\tt pushForward} computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
+\end{enumerate}
+%First, the code cohomologyTable computes all of the graded cohomology groups of a coherent sheaf within a specified range of multidegrees.  Second, the code beilinsonMonad computes the Beilinson monad of a sheaf on a product of projective spaces (see for background on this construction).  Third, the code pushForward computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
 
-This package exploits the Koszul duality between polynomial rings and exterior algebras to turn questions of cohomology of sheaves on a product of projective space into questions about free resolutions of modules over an exterior algebra. This was done for the case of a sheaf on $\PP^n$ in
-\cite{EFS}. The case of products of projective spaces is treated in \cite{EES}. For a product of two or more projective
-spaces there is major technical difficulty, in that the term in the free resolutions that the theory
-associates to sheaves are generally all infinite-dimensional. In this package we compute only a sufficient
-part of this infinite object.
+These algorithms all exploit the Koszul duality between polynomial rings and exterior algebras, thus turning questions of cohomology of sheaves on a product of projective space into questions about free resolutions of modules over an exterior algebra.  In fact, the core algorithm of the package is the computation of the {\bf Tate resolution} of a coherent sheaf, which is a doubly infinite, multigraded, free complex of modules over an exterior algebra.  The various applications mentioned above then follow immediately from the computation of the Tate resolution, as we will describe throughout this note.
 
-The theory begins with two elementary observations:
-\begin{itemize}
- \item If $W,M_1, M_2$ are finite-dimensional vector spaces over a field $k$, then there is a one-to-one correspondence between homomorphisms $W\otimes_kM_1\to M_2$ and homomorphisms
-$ M_1 \to M_2 \otimes W^*$.
-\item Consider the polynomial ring $S = \oplus_k \Sym_kW$ with generators in degree $1$ and the exterior algebra $E = \Lambda V= \oplus_k \Lambda^kV$, with $V=W^*$ and generators in degree -1.
+Tate resolutions were introduced for sheaves on $\PP^n$ in \cite{EFS}.  The Macaulay2 package {\tt BGG} implemented an algorithm for computing Tate resolutions on $\PP^n$, and for using this to compute sheaf cohomology and Beilinson monads~\cite{M2-BGG}.  Tate resolutions for products of projective spaces are treated in \cite{EES}, and one significant new difficulty arises in this context: for a product of two or more projective spaces, each term of the Tate resolution is a free module of infinite rank.  Thus, in this package we compute only a part of this infinite object, known as a {\bf corner complex}.  The theory of corner complexes plays an essential roles in \cite{EES}, and they are sufficient for our various applications.
 
-If $M = \oplus_{i\geq i_0} M_i$ is a finitely generated graded module over $S$, then the sequence of maps 
-$$
-W\otimes M_i \to M_{i+1}
-$$
- defining the module structure give rise, by the correspondence above,
-to a sequence of maps $M_i\to M_{i+1}\otimes V$, which in turn correspond to a sequence of
+This paper is organized as follows.  In Section~\ref{sec:background} we briefly review the BGG correspondence and Tate resolutions.  In Section~\ref{sec:tate resolutions} we describe how to compute a bounded part of a Tate resolution, as this computation underlies all of our applications.  In Section~\ref{sec:cohom tables}, we discuss the command {\tt cohomologyTable}.  
+ In Section~\ref{sec:beilinson monad}, we provide a brief discussion of Beilinson monads, and discuss the command {\tt beilinsonMonad}.  In Section~\ref{sec:push forward}, we discuss derived push forward algorithms.
+ 
+%a sinstead of computing the entire Tate resolution in specified homological e thus compute instead of computing , \cite{EES} also shows that certain quotientThus the theory that worked for $\PP^n$, which relied 
+%associates to sheaves are generally all infinite-dimensional. In this package we compute .
+%
+
+\section{The BGG correspondence and Tate resolutions}\label{sec:background}
+%This 
+
+%This package exploits the Koszul duality between polynomial rings and exterior algebras to turn questions of cohomology of sheaves on a product of projective space into questions about free resolutions of modules over an exterior algebra. This was done for the case of a sheaf on $\PP^n$ in
+%\cite{EFS}. The case of products of projective spaces is treated in \cite{EES}. For a product of two or more projective
+%spaces there is major technical difficulty, in that the term in the free resolutions that the theory
+%associates to sheaves are generally all infinite-dimensional. In this package we compute only a sufficient
+%part of this infinite object.
+
+\subsection{Projective space}
+Fix a field $k$ and an $(n+1)$-dimensional vector space $W$.  We let $S=\Sym W$ be the symmetric algebra, with generators in degree $1$.  We also set $V=W^*$ and let $E=\Lambda V$ be the exterior algebra on $E$, with generators in degree $1$.\footnote{Our conventions in this paper are consistent with the conventions in the Macaulay2 packages {\tt BGG} and {\tt TateOnProducts}.  See Remark~\ref{rmk:conventions} for a detailed comparison of how these conventions differ from those in \cite{EFS,EES}.}  The BGG correspondence stems from two simple observations.
+
+First, if $A, B, C$ are finite-dimensional vector spaces over $k$, then there is a natural bijection between  homomorphisms $A\otimes_kB\to C$ and homomorphisms
+$ B \to C\otimes_k A^*$.
+
+Second, if $M = \oplus_{i\geq i_0} M_i$ is a finitely generated graded $S$-module, then the module structure induces a sequence of map $W\otimes M_i \to M_{i+1}$.  By the correspondence above, this yields a sequence of maps $M_i\to M_{i+1}\otimes V$, which induces a sequence of
 linear maps of graded free $E$-modules 
 $$ 
-bgg(M): \cdots \to M_i\otimes \omega_E \to M_{i+1}\otimes \omega_E \to \cdots
+bgg(M): \cdots \to M_i\otimes E(i) \to M_{i+1}\otimes E(i+1) \to \cdots
 $$
-where $\omega_E:=\Lambda W=\Hom(E,K)$ is the free $E$-module generated in degree $n+1$, and as $M_j$ a $K$-vectorspace in degree $j$
-\end{itemize}
-
-One checks easily that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
+%\daniel{If we are using $E$ instead of $\omega_E$ then let's at least be consistent.  Also why no grading here?}
+%Applying the first observation, this  naturally
+%\begin{enumerate}
+% \item If $A, B, C$ are finite-dimensional vector spaces over $k$, then there is a natural bijection between  homomorphisms $A\otimes_kB\to C$ and homomorphisms
+%$ B \to C\otimes A^*$.
+%\item %Consider the polynomial ring $S = \oplus_k \Sym_kW$ with generators in degree $1$ and the exterior algebra $E = \Lambda V= \oplus_k \Lambda^kV$, with $V=W^*$ and generators in degree -1.
+%If $M = \oplus_{i\geq i_0} M_i$ is a finitely generated graded module over $S$, then the sequence of maps 
+%$$
+%W\otimes M_i \to M_{i+1}
+%$$
+% defining the module structure give rise, by the correspondence above,
+%to a sequence of maps $M_i\to M_{i+1}\otimes V$, which in turn correspond to a sequence of
+%linear maps of graded free $E$-modules 
+%$$ 
+%bgg(M): \cdots \to M_i\otimes \omega_E \to M_{i+1}\otimes \omega_E \to \cdots
+%$$
+%where $\omega_E:=\Lambda W=\Hom(E,K)$ is the free $E$-module generated in degree $n+1$, and as $M_j$ a $K$-vectorspace in degree $j$
+%\end{itemize}
+A formal computation confirms that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
 
 In exactly the same way, a graded $E$-module $N$ gives rise to a linear  complex of free $S$-modules
-$$bgg(N): \ldots \to N_i \otimes S \to N_{i-1} \otimes  S \to \ldots $$
+$$bgg(N): \ldots \to N_i \otimes S(-i) \to N_{i-1} \otimes  S(-i+1) \to \ldots $$
 
+\daniel{I don't know why we stated the reciprocity theorem here, so I commented it out.}
+%
+%It is interesting to ask when these complexes are resolutions:
+%
+%\begin{theorem}[Reciprocity] \cite[Theorem x.y] {EFS}. With notation as above:
+%\begin{enumerate}
+% \item $bgg(M)$ is an injective resolution of the $E$-module $N$ if and only if
+%$bgg(N)$ is a free resolution of $M$.
+%
+%\item These conditions are satisfies if and only if the Castelnuovo-Mumford regularity of $M$ is 0 and $M$ has no submodule of finite length.
+%\end{enumerate}
+%\end{theorem}
+%
 
-It is interesting to ask when these complexes are resolutions:
+In their 1978 paper, Bernstein-Gelfand-Gelfand \cite{BGG} used this correspondence to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with stable module category of $E$ module. In the same volume \cite{beilinson} Beilinson  described
+$D^b(\PP^n)$ in terms of exceptional sequences.  (See~\ref{sec:beilinson monad} for more on Beilinson's work.)
 
-\begin{theorem}[Reciprocity] \cite[Theorem x.y] {EFS}. With notation as above:
-\begin{enumerate}
- \item $bgg(M)$ is an injective resolution of the $E$-module $N$ if and only if
-$bgg(N)$ is a free resolution of $M$.
+%Namely, let 
+%$\CU$ denote the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
+%$$ 0 \to U \to W\otimes \sO \to \sO(1) \to 0.$$ 
+%\daniel{$U$ looked like a vector space here, so I changed it to $\CU$.}
+%Beilinson shows that both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
+%$\{ \Lambda^k \CU | k=0, \ldots, n\}$ form what is nowadays called  a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP^n)$.
+%A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
+%$$ 
+%0 \to \Lambda^n \CU \boxtimes \sO(-n) \to \ldots \to \CU \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
+%$$
+%where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
 
-\item These conditions are satisfies if and only if the Castelnuovo-Mumford regularity of $M$ is 0 and $M$ has no submodule of finite length.
-\end{enumerate}
-\end{theorem}
-
-
-In their 1978 paper Bernstein-Gelfand-Gelfand \cite{BGG} used this correspondence  to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with stable module category of $E$ module. In the same volume \cite{Bei} Beilinson  described
-$D^b(\PP^n)$ in terms of exceptional sequences:
-Both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
-$\{ \Lambda^k U | k=0, \ldots, n\}$ form  what is nowadays called  a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP^n)$.
-Here $U$ denotes the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
-$$ 0 \to U \to W\otimes \sO \to \sO(1) \to 0.$$ 
-A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
-$$ 
-0 \to \Lambda^n U \boxtimes \sO(-n) \to \ldots \to U \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
-$$
-where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
-
-To connect these two approaches a key role is played by what we call the Tate resolution $\bf T(\sF)$: Let $M=\oplus M_d$ represent the coherent sheaf $\sF$ on $\PP^n$. Then the truncation $M_{\ge r} = \oplus_{d \ge r}M_d$ represents the same sheaf and the linear complex
+Tate resolutions, as introduced in~\cite{EFS}, connect the approaches of~\cite{BGG} and \cite{beilinson} and provide the foundation for the package~\cite{M2-BGG}.
+Let $M=\oplus M_d$ be a graded $S$-module representing the coherent sheaf $\sF$ on $\PP^n$. For any $r$, the truncation $M_{\ge r} = \oplus_{d \ge r}M_d$ represents the same sheaf.  If $r\gg 0$, then the linear complex
 $$bgg(M_{\ge r}) : M_r\otimes E(r) \to M_{r+1}\otimes E(r+1) \to \ldots$$ 
-is acyclic if $r \gg 0$. Combining this injective resolution with a minimal free resolution of $P=\ker(M_r\otimes E(r) \to M_{r+1}\otimes E(r+1))$
-yields an infinite exact complex
+is acyclic~\cite[????]{EFS}. By combining this injective resolution with a minimal free resolution of $P=\ker(M_r\otimes E(r) \to M_{r+1}\otimes E(r+1))$, we obtain an infinite exact complex
 $$
 \bT(\sF):   \ldots \to T^{r-2} \to T^{r-1} \to T^r \to T^{r+1} \to \ldots
 $$
-of free $E$-modules, which depends only on $\sF$. By \cite[Theorem x.y] {EFS} the terms of this complex are
+of free $E$-modules, which depends only on $\sF$.  This is called the {\bf Tate resolution of $\sF$}.
+
+By \cite[Theorem x.y] {EFS}, the Betti numbers of $\bT(\sF)$ encode the ranks of the sheaf cohomology groups of $\sF$ via the following formula:
 $$\bT^d(\sF) =T^d= \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
- Hence syzygy computation over the exterior algebra $E$ allows us to compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range $low \le k \le high$ for $low,high \in \ZZ$.
-  The Beilinson monad $\bU(\sF)$ of $\sF$ is obtained from its Tate resolution by applying the functor
- 
- 
- $$\diagram
- \bU: &\{ \hbox{free $\omega_E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
-  &\omega_E(i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
-&\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
-&\omega_E(j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
-\enddiagram
-$$
- to $\bT(\sF)$ for $a \in \Lambda^{i-j} V \subset E$ a homogeneous element of degree $j-i$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
- One of Beilinson's main theorems says that the complex $\bU(\sF)$ is exact except at position $0$:
- $$ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$$
- 
- \medskip
+Computing (a part of) $\bT(\sF)$ thus amounts to a syzygy computation over the exterior algebra $E$.  
 
-The theory of Tate resolution on 
-$$
-\PP = \PP^{n_1}\times \ldots \times \PP^{n_t}
-$$
- will similarly allow us to compute all the cohomology groups
-$ H^j(\PP, \sF(a))$, for twists $a = (a_1,\ldots,a_t)$ in a bounded range
-$$ low \le a \le high$$
-for $low,high \in \ZZ^t$.
-We consider again a pair of Koszul dual symmetric and exterior algebras:
-If $\PP^{n_i}= \PP(W_i)$ then we consider the $\ZZ^t$-graded polynomial ring 
-$$
-S=\Sym(W_1 \oplus \ldots \oplus W_t)
-$$
-and the $\ZZ^t$-graded algebra $E= \Lambda(V_1 \oplus \ldots \oplus V_t)$ where $V_i =W_i^*$.
+By simply reading off Betti numbers of $\bT(\sF)$, we can then immediately compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range $low \le k \le high$ for $low,high \in \ZZ$.  The Beilinson monad of $\sF$ is also easily obtained from its Tate resolution, as discussed in Section~~\ref{sec:beilinson monad}.
 
-If $M$ is a graded $S$-module representing $\sF$ then the Tate resolution $\bT(\sF)$ is an
-exact complex of free $E$-modules with terms
-$$
-\bT^d(\sF)= \sum_{a \in \ZZ^t} H^{d-|a|}(\PP,\sF(a)) \otimes \omega_E,
-$$
-where $|a|=a_1+\ldots+a_n$ denotes the total degree.
-One of the difficulties to overcome is  that, when $t>1$, these $E$-modules are not finitely generated. We explain in Section \ref{TateRes}
-how we can effectively compute the subquotient complex covering a finite  range
-$$ 
-low \le a \le high.
-$$
+% 
+% $$\diagram
+% \bU: &\{ \hbox{free $\omega_E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
+%  &\omega_E(i) & \mapsto & \Lambda^i U \subset \Lambda^i W \otimes \sO \cr
+%&\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
+%&\omega_E(j) &\mapsto& \Lambda^j U \subset \Lambda^j W \otimes \sO \cr
+%\enddiagram
+%$$
+% to $\bT(\sF)$ for $a \in \Lambda^{i-j} V \subset E$ a homogeneous element of degree $j-i$. Since this $\Lambda^i U \not=0$ for $0 \le i \le n$, the complex $\bU(\sF)$ depends only on a bounded part of $\bT(\sF)$.
+% One of Beilinson's main theorems says that the complex $\bU(\sF)$ is exact except at position $0$:
+% $$ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$$
+% 
+% \medskip
 
-There are some minor differences between the notation of the package and of \cite{EES}.  In the package:
+\subsection{Products of projective spaces}
+We now consider a product of projective spaces $\PP = \PP^{n_1}\times \ldots \times \PP^{n_t}$.  The Cox ring of $\PP$ is a $\ZZ^{t}$-graded polynomial ring $S=\Sym (W_1\oplus W_2 \oplus \cdots \oplus W_t)$ where $\dim W_i=n_i+1$ and where the elements of $W_1$ have degree $(1,0,\dots,0)$, the elements of $W_2$ have degree $(0,1,0,\dots,0)$ and so on.  As before, we let $V_i=W_i^*$ for all $i$, and define a $\ZZ^{t}$-graded exterior algebra $E=\Lambda (V_1\oplus V_2\oplus \cdots \oplus V_t)$ where $\deg(W_i)=\deg(V_i)$.  When comparing multidegrees in $\ZZ^t$, we always take the termwise partial order.  
+
+By a nearly identical computation as before, the BGG correspondence $M\mapsto bgg(M)$ sends a multigraded $S$-module to a linear, mulitgraded, free, $t$-fold multil-complex of $E$-modules.  For instance, if $t=2$, then $bgg(M)$ is a double complex:
+\[
+\xymatrix{
+ \cdots \ar[r]& M_{i,j}\otimes E(i,j) \ar[r]& M_{i+1,j}\otimes E(i+1,j) \ar[r]& \cdots\\
+ \cdots \ar[r]& M_{i,j-1}\otimes E(i,j-1) \ar[r]\ar[u]& M_{i+1,j-1}\otimes E(i+1,j-1) \ar[r]\ar[u]& \cdots
+}.
+\]
+If $t=3$ then $bgg(M)$ is a triple complex, and so on.
+
+
+\begin{remark}\label{rmk:conventions}
+We follow the conventions of the package \cite{TateOnProducts}, which differs from the conventions of \cite{EES}. In particular, in the paper:
 \begin{itemize}
-\item The exterior algebra E is positively graded.
-\item We use E instead of $\omega_E.$
-\item All complexes are chain complexes instead of cochain complexes.
+\item The exterior algebra $E$ is negatively graded.
+\item We use $\omega_E$ instead of $E.$
+\item Tate resolutions are cochain complexes instead of chain complexes.
 \end{itemize}
-Don't ask why!
+\end{remark}
+%We consider again a pair of Koszul dual symmetric and exterior algebras:
+%If $\PP^{n_i}= \PP(W_i)$ then we consider the $\ZZ^t$-graded polynomial ring 
+%$$
+%S=\Sym(W_1 \oplus \ldots \oplus W_t)
+%$$
+%and the $\ZZ^t$-graded algebra $E= \Lambda(V_1 \oplus \ldots \oplus V_t)$ where $V_i =W_i^*$.
+
+The theory of Tate resolutions for 
+$
+\PP$ is developed in~\cite{EES}.  If $M$ is a graded $S$-module representing $\sF$, then the Tate resolution $\bT(\sF)$ is an
+exact complex of free $E$-modules with terms
+\begin{equation}\label{eqn:Tate products}
+\bT^d(\sF)= \sum_{a \in \ZZ^t} H^{d-|a|}(\PP,\sF(a)) \otimes \omega_E,
+\end{equation}
+where $|a|=a_1+\ldots+a_n$ denotes the total degree.
+This shows that computing the Tate resolution would allow us to compute all the cohomology groups
+$ H^j(\PP, \sF(a))$, for twists $a = (a_1,\ldots,a_t)$ in a bounded range
+$ low \le a \le high$
+for $low,high \in \ZZ^t$.  
+
+However, \eqref{eqn:Tate products} also shows that, when $t>1$, each term $\bT^d(\sF)$ of the Tate resolution will be an infinitely generated $E$-module. Computing the entire Tate resolution $\bT^d(\sF)$ is thus infeasible.  We can nevertheless  effectively compute the subquotient complex of $\bT^d(\sF)$ which consists of all terms in a finite range
+$
+low \le a \le high,
+$
+of multidegrees, and this is sufficient for all of our applications.
+
+
 %Challenge of toric varieties.
 
-\section{Computing Cohomology Tables}
 
+\section{Computing Tate Resolutions}\label{sec:tate resolutions}
+Each of the major applications in this package stem from the computation of a bounded part of the Tate resolution.
+Let $M$ be a finitely generated $\ZZ^t$-graded $S$-module, and let $\sF$ be the 
+corresponding sheaf on $\PP$. Let
+$low\leq high\in \ZZ^t$ be multi-degrees defining an interval.  The function
+\begin{verbatim}
+tateResolution(M,low,high)
+\end{verbatim}
+computes a subquotient complex of $\bT(\sF)$ that contains all summands generated in degrees $low\leq a \leq  high$.  To compute this, Macaulay2 first find some $b\gg 0$ such that the total complex of $bgg(M_{\geq b})$ is acyclic.  	Then, we resolve the kernel of $bgg(M_{\geq b})$, continuing until we have covered all of the degrees in the desired range.  This yield a multigraded complex $T$ of finitely generated, free $E$-modules.  In the specified degrees, the subquotient complexes of $T$ and $\bT(\sF$) coincide.  This coincidence is essential to the computability of $\bT(\sF)$ within the desired range, and it relies on the somewhat subtle theory of corner complexes, as described in~\cite{EES}.
+
+For example, let $\PP=\PP^1\times \PP^2$ and let $M=S^1$ be a module representing $\sF=\cO_{\PP^1\times \PP^2}$.  The input
+\begin{verbatim}
+tateResolution(M,{-3,-3},{0,0})
+\end{verbatim}
+produces the output
+
+
+
+
+\section{Computing Cohomology Tables}\label{sec:cohom tables}
 To compactly represent the dimensions of all the cohomology vector spaces of a given coherent sheaf $\sF$ we introduce the ``cohomology polynomial''
 $$
-\sum_{i\geq 0} (\dim H^i(\PP, \sF)h^i\in \ZZ[h].
+\sum_{i\geq 0} (\dim H^i(\PP, \sF))h^i\in \ZZ[h].
 $$
 To shorten the notation, we usually write $H^i(\sF)$ in place of $H^i(\PP, \sF)$.
 Let $M$ be a finitely generated $\ZZ^t$-graded $S$-module, and let $\sF$ be the 
@@ -290,25 +363,41 @@ corresponding sheaf on $\PP$. Let
 $low\leq high\in \ZZ^t$ be multi-degrees defining an interval. We can compute
 all the cohomology vector spaces of all the twists $\sF(a)$ for $low\leq a\leq high$ with the function 
 \begin{verbatim}
- cohomologyHashTable(M,low,high)
+cohomologyHashTable(M,low,high)
 \end{verbatim}
-The output of this function is hash table consisting of the pairs
+The output of this function is a hash table consisting of the pairs
 $$ 
 a \Rightarrow \sum_{i\geq 0} (\dim H^i(\PP, \sF(a))h^i.
 $$
-In the case $t=2$ we can display the hash table as a matrix with function
+Macaulay2 computes this by reading off the Betti numbers from the bounded part of the Tate resolution computed in Section~\ref{sec:tate resolutions}.
+
+For example, we let $\PP=\PP^1\times \PP^2$ and we represent $\sF = \sO_{\PP^1\times \PP^2}$ with the module
+$S^1$.  We compute:
 \begin{verbatim}
- cohomologyMatrix(M,low,high)
-\end{verbatim}
-where the upper right hand corner of the table corresponds to the multi-index $high$.
-For example, we can represent $\sF = \sO_{\PP^1\times \PP^2}$ with the module
-$S^1$:
-\begin{verbatim}
-  (S,E) = productOfProjectiveSpaces{1,2}
-  low = {-3,-3};high = {3,3};
-  cohomologyMatrix(S^1, low,high)
+ (S,E) = productOfProjectiveSpaces{1,2}
+ low  = {-3,-3};high = {3,3};
+ CT = cohomologyHashTable(S^1, low,high);
+ CT#(2,-3)
 \end{verbatim}
 which gives output
+\begin{verb}
+3h2
+\end{verb}
+indicating that $H^2(\sF(2,-3))$ has rank $3$ and that $H^i(\sF(2,-3)) = 0$ for $i\ne 2$.
+
+In the case $t=2$, we can display the hash table as a matrix using the function
+\begin{verb}
+ cohomologyMatrix(M,low,high)
+\end{verb},
+where the upper right hand corner of the table corresponds to the multi-index $high$.
+
+Continuing with previous example, computing:
+% represent $\sF = \sO_{\PP^1\times \PP^2}$ with the module
+%$S^1$:
+\begin{verbatim}
+cohomologyMatrix(S^1, low,high)
+\end{verbatim}
+gives output
 \begin{verbatim}
      | 20h 10h 0 10 20  30  40  |
      | 12h 6h  0 6  12  18  24  |
@@ -318,14 +407,71 @@ which gives output
      | 0   0   0 0  0   0   0   |
      | 2h3 h3  0 h2 2h2 3h2 4h2 |
 \end{verbatim}
-As a further example we consider
-{\small
+The blocks of zeroes indicate that $\sF(i,j)$ has no cohomology whatsoever when $i=-1$ or when $j=-1$ or $-2$.
+
+\daniel{If we are going to do a further example, maybe we should do one which does not have natural cohomology?  I moved this example to later.}
+
+     
+\section{Computing the Beilinson Monad}\label{sec:beilinson monad}
+Let $\sF$ be a coherent sheaf on $\PP^n$. 
+Let $\CU$ denote the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
+$$ 0 \to \CU \to W\otimes \sO \to \sO(1) \to 0.$$ 
+In~\cite{beilinson}, Beilinson shows that both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
+$\{ \Lambda^k \CU | k=0, \ldots, n\}$ form what is nowadays called a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP^n)$.
+%A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
+%$$ 
+%0 \to \Lambda^n \CU \boxtimes \sO(-n) \to \ldots \to \CU \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
+%$$
+%where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
+The Beilinson monad of $\sF$ provides a way to represent $\sF$ in terms of the second of these exceptional collections $\CU$.  See~\cite{beilinson,ancona-ottaviani,???} for discussion of Beilinson monads.
+
+%There is a functor:
+% $$\diagram
+% \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
+%  &\omega_E(i) & \mapsto & \Lambda^i \CU \subset \Lambda^i W \otimes \sO \cr
+%&\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
+%&\omega_E(j) &\mapsto& \Lambda^j \CU \subset \Lambda^j W \otimes \sO \cr
+%\enddiagram
+%$$
+
+
+Beilinson's results carry over immediately to products of projective spaces as well.  We let $\CU_i$ denote the universal rank $n_i$ subbundle on $\PP^{n_i}$.  For $a\in \ZZ^{t}$ we set
+$$
+\Lambda^a \CU := \boxtimes_{i=1}^t \Lambda^{a_i} \CU_i=\pi_1^*\Lambda^{a_1}\CU_1 \otimes \cdots \otimes \pi_t^*\Lambda^{a_t} \CU_t,
+$$
+the tensor product of the pullbacks to $\PP$ of exterior powers of the $\CU_i$. The set $\{\Lambda^a \CU | 0 \leq a \leq (n_1,n_2,\dots,n_t)\}$ forms a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP)$, and the Beilinson monad for $\PP$ represents a sheaf $\sF$ in terms of this exceptional collection.  See~\cite[\S2]{EES} for more details.
+
+Beilinson monads can also easily be computed from a bounded part of a Tate resolution.  A key observation is that $\Hom(\Lambda^a \CU,\Lambda^b\CU) \cong E_{a-b}$.  Writing $\neg z$ for the map corresponding to $z\in E$, there is thus a functor:
+\[
+\xymatrix{
+\bU: &\{ \hbox{free $E$-modules}\} \ar[r]& \{ \hbox{coherent sheaves on $\PP$} \}  \\
+&E(-a)\ar[r]^-{\bU}\ar[d]^-{\cdot z}&\Lambda^a \CU\ar[d]\\
+&E(-b)\ar[r]^-{\bU}&\Lambda^b \CU\\
+}
+\]
+% $$\diagram
+% \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP$} \}   \cr
+%  &E(a) & \mapsto & \Lambda^a \CU \cr
+%&\dTo^{z\cdot}&&   \dTo_{\neg z} \cr
+%&E(b) &\mapsto& \Lambda^b \CU  \cr
+%\enddiagram.
+%$$
+ %to $\bT(\sF)$ for $a \in \Lambda^{i-j} V \subset E$ a homogeneous element of degree $j-i$. 
+One of Beilinson's main theorems implies that the complex $\bU(\sF)$ is quasi-isomorphic to the original sheaf $\sF$.  Namely: $\bU(\sF)$ only has homology at position $0$, and there we have $ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$
+
+
+Since this $\Lambda^a \CU$ is only nonzero for $a$ in the range $0 \le a \le n$, the complex $\bU(\sF)$ depends only on the bounded part of $\bT(\sF)$ generated in degrees $0\lq a \le n$.  This range is known as the {\bf Beilinson window}.  We can thus easily computed a Beilinson monad for $\sF$ from any piece of the Tate resolution $\bT(\sF)$ which contains the Beilinson.
+
+We now turn to the commands.  If $M$ is a module representing the coherent sheaf $\sF$ on $\PP$, then
 \begin{verbatim}
-  M =  S^{{1,1}} ** ker vars S 
-  cohomologyMatrix (M,low, high)
-\end{verbatim}}
-which outputs
-{\small
+B = beilinsonMonad M
+\end{verbatim}
+produces a complex $B$ of graded $S$-modules such that the corresponding complex $\widetilde{B}$ of sheaves on $\PP$ is the Beilinson monad $\bU(\sF)$.  For example, on $\PP^1\times \PP^2$, consider the following example:
+\begin{verbatim}
+M =  S^{{1,1}} ** ker vars S 
+cohomologyMatrix (M,{-3,-3}, {3,3})
+\end{verbatim}
+which outputs:
 \begin{verbatim}
       | 75h 30h 15  60  105 150  195  |
       | 48h 20h 8   36  64  92   120  |
@@ -334,27 +480,42 @@ which outputs
       | 3h  2h  h   0   1   2    3    |
       | 0   0   0   0   0   0    0    |
       | 3h3 0   3h2 6h2 9h2 12h2 15h2 |
-\end{verbatim}}
-
+\end{verbatim}
      
-\section{Computing the Beilinson Monad}
 
-Continuing with the example above, we compute the Beilinson monad of the 
-sheaf corresponding to $M$:
-{\small
+Since $\bU E(a)$ is nonzero only when $a$ is in the range $-n\leq a \leq 0$, the output of the functor $\bU$ only depends on the piece of $\bT(\sF)$ with generators lying in the Beilinson window.  The command \verb beilinsonWindow \ computes the corresponding subquotient complex of the Tate resolution:
 \begin{verbatim}
-  B = beilinsonMonad M
+T=tateResolution(M,low,high);
+W = beilinsonWindow T
+ 
+ 6      1
+E  <-- E
+\end{verbatim}
+%
+%cohomologyMatrix(W,low, high)
+%| 0 0 0 0 0 0 0 |
+%| 0 0 0 0 0 0 0 |
+%| 0 0 0 0 0 0 0 |
+%| 0 0 0 6 0 0 0 |
+%| 0 0 h 0 0 0 0 |
+%| 0 0 0 0 0 0 0 |
+%| 0 0 0 0 0 0 0 |
+% \end{verbatim}
+
+The Beilinson monad itself is obtained by applying the $\bU$ functor to any piece of $\bT(\sF)$ which contains the Beilinson window.  This can be computed directly from the module $M$ via:
+\begin{verbatim}
+B = beilinsonMonad M
+\end{verbatim}
+which, in this case, gives a two-term complex:
+{\small
+\begin{verbatim}     
+ 6
+S  <-- cokernel {1, 1} | x_(1,2)  |
+                {1, 1} | -x_(1,1) |
+                {1, 1} | x_(1,0)  |
 \end{verbatim}}
 
 \noindent
-which gives the complex
-{\small
-\begin{verbatim}   
-   6
-  S  <-- cokernel {1, 1} | x_(1,2)  |
-   	              {1, 1} | -x_(1,1) |
-  	               {1, 1} | x_(1,0)  |
-\end{verbatim}}
 whose differential is given by the matrix
 {\small
 \begin{verbatim}
@@ -366,6 +527,7 @@ whose differential is given by the matrix
    | 0               x_(0,0)x_(1,0)  x_(0,0)x_(1,1)  |
 \end{verbatim}
 }
+
 Macaulay2 computes this by first computing the Tate resolution, a complex 
 over the exterior algebra, with sufficiently many terms and extracting just the terms
 that belong to the "Beilinson window", and then applying the Beilinson functor.
@@ -375,14 +537,22 @@ the terms that are there:
 \begin{verbatim}
   T=tateResolution(M,low,high);
   W = beilinsonWindow T
-        6      1       E  <-- E                      0      1
+        6      1
+       E  <-- E
+               
+       0      1
   cohomologyMatrix(W,low, high)
-     | 0 0 0 0 0 0 0 |     | 0 0 0 0 0 0 0 |     | 0 0 0 0 0 0 0 |     | 0 0 0 6 0 0 0 |     | 0 0 h 0 0 0 0 |
-     | 0 0 0 0 0 0 0 |     | 0 0 0 0 0 0 0 |
+     | 0 0 0 0 0 0 0 |
+     | 0 0 0 0 0 0 0 |
+     | 0 0 0 0 0 0 0 |
+     | 0 0 0 6 0 0 0 |
+     | 0 0 h 0 0 0 0 |
+     | 0 0 0 0 0 0 0 |
+     | 0 0 0 0 0 0 0 |
  \end{verbatim}}
+
 The 0th-cohomology of the Beilinson monad represents the original sheaf,
-while the other cohomology is trivial as a sheaf. This is not necessarily true as modules,
-however. In this case, M has a generator in degree $\{-1,1\}$, but ${\rm H}^0 B$ does not.
+while the other cohomology is trivial as a sheaf. However, one should be careful as this is not necessarily true as modules! In our example, $M$ has a generator in degree $\{-1,1\}$, but ${\rm H}^0 B$ does not.
 To see that they are the same sheaves, we need only truncate high enough.
 {\small
 \begin{verbatim}
@@ -392,7 +562,8 @@ To see that they are the same sheaves, we need only truncate high enough.
    true
 \end{verbatim}}
 
-\section{Computing $R\pi_*$ of a Sheaf}
+
+\section{Computing $R\pi_*$ of a Sheaf}\label{sec:push forward}
 \begin{verbatim}
  
   Key
@@ -545,22 +716,138 @@ i49 :        We conclude that the sheaf represented by R0 is O(-4)+O(-5) on P^1.
 \end{verbatim}
 
 
+%
+%\section{The Tate Resolution and its properties}\label{TateRes}
+%
+%The definition of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S=\Sym(W_1 \oplus \ldots \oplus W_t)$-module $M$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is azyclic.
+%Then taking $N$ to be the kernel of the multiplication map
+%$$ M_c \otimes E \to \oplus_{j=1}^t M_{(c_1,\ldots,c_j+1,\ldots,c_t)} \otimes E $$
+%then the free resolution of $N(1,\ldots,1)$ is the part of the Tate resolution  with terms corresponding to cohomology groups
+%$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_1\le c_1 +1, \ldots, a_t \le c_t+1$. 
+%Note that this is an infinite complex with finitely generated $E$ modules.
+%The complete Tate resolution is obtained by taking the limit of these complexes for $c \to \infty$.
+%
+%
+%strands etc
 
-\section{The Tate Resolution and its properties}\label{TateRes}
 
-The definition of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S=\Sym(W_1 \oplus \ldots \oplus W_t)$-module $M$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is azyclic.
-Then taking $N$ to be the kernel of the multiplication map
-$$ M_c \otimes E \to \oplus_{j=1}^t M_{(c_1,\ldots,c_j+1,\ldots,c_t)} \otimes E $$
-then the free resolution of $N(1,\ldots,1)$ is the part of the Tate resolution  with terms corresponding to cohomology groups
-$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_1\le c_1 +1, \ldots, a_t \le c_t+1$. 
-Note that this is an infinite complex with finitely generated $E$ modules.
-The complete Tate resolution is obtained by taking the limit of these complexes for $c \to \infty$.
+\begin{bibdiv}
+\begin{biblist}
+\bib{beilinson}{article}{
+   author={Be{\u\i}linson, A. A.},
+   title={Coherent sheaves on ${\bf P}^{n}$ and problems in linear
+   algebra},
+   language={Russian},
+   journal={Funktsional. Anal. i Prilozhen.},
+   volume={12},
+   date={1978},
+   number={3},
+   pages={68--69},
+   issn={0374-1990},
+   review={\MR{509388 (80c:14010b)}},
+}
 
 
-strands etc
+\bib{BGG}{article}{
+   author={Bern{\v{s}}te{\u\i}n, I. N.},
+   author={Gelfand, I. M.},
+   author={Gelfand, S. I.},
+%   author={Gel{\cprime}fand, I. M.},
+%   author={Gel{\cprime}fand, S. I.},
+   title={Algebraic vector bundles on ${\bf P}^{n}$ and problems of linear
+   algebra},
+   language={Russian},
+   journal={Funktsional. Anal. i Prilozhen.},
+   volume={12},
+   date={1978},
+   number={3},
+   pages={66--67},
+   issn={0374-1990},
+   review={\MR{509387 (80c:14010a)}},
+}
 
-\bibliographystyle{ABC99}
-\begin{thebibliography}{ABC99}
+	
+	
+\bib{EES}{article}{
+  author={Eisenbud, David},
+  author={Erman, Daniel},
+  author={Schreyer, Frank-Olaf},
+  title={\href{http://dx.doi.org/10.1007/s40306-015-0126-z}%
+    {Tate resolutions for products of projective spaces}},
+  journal={Acta Math. Vietnam.},
+  volume={40},
+  date={2015},
+  number={1},
+  pages={5--36},
+  % issn={0251-4184},
+  % review={\MR{3331930}},
+  % doi={10.1007/s40306-015-0126-z},
+}
+
+\bib{EFS}{article}{
+   author={Eisenbud, David},
+   author={Fl\o ystad, Gunnar},
+   author={Schreyer, Frank-Olaf},
+   title={Sheaf cohomology and free resolutions over exterior algebras},
+   journal={Trans. Amer. Math. Soc.},
+   volume={355},
+   date={2003},
+   number={11},
+   pages={4397--4426 (electronic)},
+%   issn={0002-9947},
+%   review={\MR{1990756 (2004f:14031)}},
+%   doi={10.1090/S0002-9947-03-03291-4},
+}
+
+
+%\bib{maclagan-smith}{article}{
+%   author={Maclagan, Diane},
+%   author={Smith, Gregory G.},
+%   title={Multigraded Castelnuovo-Mumford regularity},
+%   journal={J. Reine Angew. Math.},
+%   volume={571},
+%   date={2004},
+%   pages={179--212},
+%   issn={0075-4102},
+%   review={\MR{2070149 (2005g:13027)}},
+%   doi={10.1515/crll.2004.040},
+%}
+
+\bib{M2}{misc}{
+    label={M2},
+    author={Grayson, Daniel~R.},
+    author={Stillman, Michael~E.},
+    title = {Macaulay2, a software system for research
+	    in algebraic geometry},
+    note = {Available at \url{http://www.math.uiuc.edu/Macaulay2/}},
+}
+
+\bib{M2BGG}{misc}{
+    label={M2-BGG},
+    author = {Abo, Hirotachi},
+    author = {Decker, Wolfram},
+    author = {Eisenbud, David},
+    author={Schreyer, Frank-Olaf},
+    author = {Smith, Gregory~G.},
+author={Stillman, Michael~E.},
+    title = {BGG, package for Macaulay2},
+    note = {Available at \url{http://www.math.uiuc.edu/Macaulay2/}},
+}
+
+\bib{TateOnProducts}{misc}{
+    label={M2-Tate},
+    author={Eisenbud, David},
+    author={Erman, Daniel},
+    author={Schreyer, Frank-Olaf},
+    title = {TateOnProducts, package for Macaulay2},
+    note = {Available at \url{http://www.math.uni-sb.de/ag-schreyer/home/computeralgebra}},
+}
+
+\end{biblist}
+\end{bibdiv}
+
+%\bibliographystyle{ABC99}
+%\begin{thebibliography}{ABC99}
 
 %\bibitem{Bass1963} Bass, Hyman
 %On the ubiquity of Gorenstein rings.
@@ -646,7 +933,7 @@ strands etc
 %\bibitem[V05]{V05} C.~Voisin: 
 %Green's canonical syzygy conjecture for generic curves of odd genus. Compos. Math. 141 (2005) 1163--1190. 
 
-\end{thebibliography}
+%\end{thebibliography}
 
 %\bigskip
 %
