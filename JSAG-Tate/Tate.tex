@@ -283,7 +283,7 @@ By simply reading off Betti numbers of $\bT(\sF)$, we can then immediately compu
 % \medskip
 
 \subsection{Products of projective spaces}
-We now consider a product of projective spaces $\PP = \PP^{n_1}\times \ldots \times \PP^{n_t}$.  The Cox ring of $\PP$ is a $\ZZ^{t}$-graded polynomial ring $S=\Sym (W_1\oplus W_2 \oplus \cdots \oplus W_t)$ where $\dim W_i=n_i+1$ and where the elements of $W_1$ have degree $(1,0,\dots,0)$, the elements of $W_2$ have degree $(0,1,0,\dots,0)$ and so on.  As before, we let $V_i=W_i^*$ for all $i$, and define a $\ZZ^{t}$-graded exterior algebra $E=\Lambda (V_1\oplus V_2\oplus \cdots \oplus V_t)$ where $\deg(W_i)=\deg(V_i)$.  When comparing multidegrees in $\ZZ^t$, we always take the termwise partial order.  
+We now consider a product of projective spaces $\PP = \PP^{n_1}\times \ldots \times \PP^{n_{t}}$.  The Cox ring of $\PP$ is a $\ZZ^{t}$-graded polynomial ring $S=\Sym (W_1\oplus W_2 \oplus \cdots \oplus W_t)$ where $\dim W_i=n_i+1$ and where the elements of $W_1$ have degree $(1,0,\dots,0)$, the elements of $W_2$ have degree $(0,1,0,\dots,0)$ and so on.  As before, we let $V_i=W_i^*$ for all $i$, and define a $\ZZ^{t}$-graded exterior algebra $E=\Lambda (V_1\oplus V_2\oplus \cdots \oplus V_t)$ where $\deg(W_i)=\deg(V_i)$.  When comparing multidegrees in $\ZZ^t$, we always take the termwise partial order.  
 
 By a nearly identical computation as before, the BGG correspondence $M\mapsto bgg(M)$ sends a multigraded $S$-module to a linear, mulitgraded, free, $t$-fold multil-complex of $E$-modules.  For instance, if $t=2$, then $bgg(M_{\ge(i,j)})$ is a total complex of  double complex:
 \begin{equation}\label{eqn:uppercorner}
@@ -342,12 +342,14 @@ computes a subquotient complex of $\bT(\sF)$ that contains all summands generate
 
 For example, let $\PP=\PP^1\times \PP^2$ and let $M=S^1$ be a module representing $\sF=\cO_{\PP^1\times \PP^2}$.  The input
 \begin{verbatim}
-tateResolution(M,{-3,-3},{0,0})
+T = tateResolution(M,{-3,-3},{0,0})
 \end{verbatim}
 produces the output
-
-
-
+{\small \begin{verbatim}      21      6      1      2      6      14      29     E   <-- E  <-- E  <-- E  <-- E  <-- E   <-- E                                                       -2      -1     0      1      2      3       4\end{verbatim}}
+\noindentwith Betti table with respect to total degree{\small \begin{verbatim}
+betti T            -2 -1 0 1 2  3  4     total: 21  6 1 2 6 14 29        -1: 21  6 . . .  .  .         0:  .  . 1 . .  .  .         1:  .  . . 1 2  3  4         2:  .  . . 1 3  6 10         3:  .  . . . 1  5 15\end{verbatim}}
+\noindent
+Strictly speaking the two terms in homological degree $-2$ and $-1$ are not part of the Tate resolution but rather trailing terms, which come from the construction of $T$ as a corner complex. We will return to this issue in \ref{sec:corner complex}.
 
 \section{Computing Cohomology Tables}\label{sec:cohom tables}
 To compactly represent the dimensions of all the cohomology vector spaces of a given coherent sheaf $\sF$ we introduce the ``cohomology polynomial''
@@ -414,13 +416,13 @@ Let $\sF$ be a coherent sheaf on $\PP^n$.
 Let $\CU$ denote the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
 $$ 0 \to \CU \to W\otimes \sO \to \sO(1) \to 0.$$ 
 In~\cite{beilinson}, Beilinson shows that both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
-$\{ \Lambda^k \CU | k=0, \ldots, n\}$ form what is nowadays called a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP^n)$.
+$\{ \Lambda^k \CU | k=0, \ldots, n\}$ form what is nowadays called a semi-orthogonal full exceptional  sequences for $D^b(\PP^n)$.
 %A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
 %$$ 
 %0 \to \Lambda^n \CU \boxtimes \sO(-n) \to \ldots \to \CU \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
 %$$
 %where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
-The Beilinson monad of $\sF$ provides a way to represent $\sF$ in terms of the second of these exceptional collections $\CU$.  See~\cite{beilinson,ancona-ottaviani,???} for discussion of Beilinson monads.
+The Beilinson monad of $\sF$ provides a way to represent $\sF$ in terms of the second of these exceptional collections $\CU$.  See~\cite{beilinson,ancona-ottaviani,EFS,Huybrechts} for discussion of Beilinson monads.
 
 %There is a functor:
 % $$\diagram
@@ -438,10 +440,12 @@ $$
 $$
 the tensor product of the pullbacks to $\PP$ of exterior powers of the $\CU_i$. The set $\{\Lambda^a \CU | 0 \leq a \leq n=(n_1,n_2,\dots,n_t)\}$ forms a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP)$, and the Beilinson monad for $\PP$ represents a sheaf $\sF$ in terms of this exceptional collection.  See~\cite[\S2]{EES} for more details.
 
-Beilinson monads can also easily be computed from a bounded part of a Tate resolution.  A key observation is that $\Hom(\Lambda^a \CU,\Lambda^b\CU) \cong E_{a-b}$.  Writing $\neg z$ for the map corresponding to $z\in E$, there is thus a functor:
+Beilinson monads can also easily be computed from a bounded part of a Tate resolution.  A key observation is that $\Hom(\Lambda^a \CU,\Lambda^b\CU) \cong \Lambda^{a-b} V=E_{a-b}$.  Writing $\neg z$ for the map corresponding to $z\in E$, there is thus a functor
+$
+\bU: \{ \hbox{free $E$-modules}\} \longrightarrow \{ \hbox{coherent sheaves on $\PP$} \}  \\
+$ defined by
 \[
 \xymatrix{
-\bU: &\{ \hbox{free $E$-modules}\} \ar[r]& \{ \hbox{coherent sheaves on $\PP$} \}  \\
 &E(-a)\ar[r]^-{\bU}\ar[d]^-{\cdot z}&\Lambda^a \CU\ar[d]^{\neg z}\\
 &E(-b)\ar[r]^-{\bU}&\Lambda^b \CU\\
 }
@@ -457,7 +461,7 @@ Beilinson monads can also easily be computed from a bounded part of a Tate resol
 One of Beilinson's main theorems implies that the complex $\bU(\sF)$ is quasi-isomorphic to the original sheaf $\sF$.  Namely: $\bU(\sF)$ only has homology at position $0$, and there we have $ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$
 
 
-Since this $\Lambda^a \CU$ is only nonzero for $a$ in the range $0 \le a \le n$, the complex $\bU(\sF)$ depends only on the bounded part of $\bT(\sF)$ generated in degrees $0\lq a \le n$.  This range is known as the {\bf Beilinson window}.  We can thus easily computed a Beilinson monad for $\sF$ from any piece of the Tate resolution $\bT(\sF)$ which contains the Beilinson.
+Since this $\Lambda^a \CU$ is only nonzero for $a$ in the range $0 \le a \le n$, the complex $\bU(\sF)$ depends only on the bounded part of $\bT(\sF)$ generated in degrees $0\le a \le n$.  This range is known as the {\bf Beilinson window}.  We can thus easily computed a Beilinson monad for $\sF$ from any piece of the Tate resolution $\bT(\sF)$ which contains the Beilinson.
 
 We now turn to the commands.  If $M$ is a module representing the coherent sheaf $\sF$ on $\PP$, then
 \begin{verbatim}
@@ -561,6 +565,19 @@ To see that they are the same sheaves, we need only truncate high enough.
 
 
 \section{Computing $R\pi_*$ of a Sheaf}\label{sec:push forward}
+
+Let $I \subset \{0,\ldots,t-1 \}$ be a proper subset and let
+$$ \pi \colon\PP \to  \PP^I=\prod_{i \in  I} \PP^{n_{i+1}}$$
+be the projection to the corresponding factors. (Note that Macaulay2 prefers integers sequences starting with $0$ in many commands, which is the reason of re-indexing.) Given an coherent sheaf $\sF$ on $\PP$ represented by an $S$-module $M$
+the function
+\begin{verbatim}
+directImageComplex(M,I)
+\end{verbatim}
+computes the direct image complex $R\pi_* \sF$ in terms of a complex of $S_I = \Sym (\oplus_{i \in I} W_{i+1)}$-modules, whose sheafication
+is the (minimal) Beilinson complex representing in $D^b(\PP^I)$. Key point is that  strand
+$$strand(T,c,J)$$
+of the Tate resolution $T=\bT(\sF)$ with $J=\{0,\ldots,t-1\} \setminus I$ defined by the contribution of $H^p(\sF(a))$ with $a_{j+1}=c_{j+1}$ for $j \in J$ regarded as a complex over $E_I= \Lambda( \oplus_{i\in I} V_{i+1})$ for $c=0 \in \ZZ^t$ is the Tate resolution of $R\pi_* \sF \in D^b(\PP^I)$.
+Thus apply the $\bU$ functor on $\PP^I$ yields the Beilinson representative.
 \begin{verbatim}
  
   Key
