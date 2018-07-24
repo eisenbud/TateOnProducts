@@ -40,6 +40,7 @@
 \def\cF{{\cal F}}
 \def\cG{{\cal G}}
 \def\cH{{\cal H}}
+\def\cornerT#1{{T_{\Rsh \kern -1pt #1}}}
 \def\cHom{{{\cal H}om}}
 \def\fix#1{{\bf ***Fix:} #1 {\bf ***}}
 \def\david#1{{\bf *** David:} #1 {\bf ***}}
@@ -166,7 +167,7 @@ This package implements three main applications related to sheaf cohomology on p
 \begin{enumerate}
 	\item  {\tt cohomologyHashTable} computes all of the cohomology groups of a coherent sheaf within a specified range of multidegrees.
 	\item  {\tt beilinsonMonad} computes the Beilinson monad of a sheaf on a product of projective spaces.
-	\item {\tt pushForward} computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
+	\item {\tt diectImageComplex} computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
 \end{enumerate}
 %First, the code cohomologyTable computes all of the graded cohomology groups of a coherent sheaf within a specified range of multidegrees.  Second, the code beilinsonMonad computes the Beilinson monad of a sheaf on a product of projective spaces (see for background on this construction).  Third, the code pushForward computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
 
@@ -266,7 +267,7 @@ By \cite[Theorem x.y] {EFS}, the Betti numbers of $\bT(\sF)$ encode the ranks of
 $$\bT^d(\sF) =T^d= \sum_{i=0}^n H^i(\PP^n,\sF(d-i)) \otimes E(d-i).$$
 Computing (a part of) $\bT(\sF)$ thus amounts to a syzygy computation over the exterior algebra $E$.  
 
-By simply reading off Betti numbers of $\bT(\sF)$, we can then immediately compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range $low \le k \le high$ for $low,high \in \ZZ$.  The Beilinson monad of $\sF$ is also easily obtained from its Tate resolution, as discussed in Section~~\ref{sec:beilinson monad}.
+By simply reading off Betti numbers of $\bT(\sF)$, we can then immediately compute all cohomology groups $H^i(\PP^n,\sF(k))$ in any bounded range $low \le k \le high$ for $low,high \in \ZZ$.  The Beilinson monad of $\sF$ is also easily obtained from its Tate resolution, as discussed in Section~~\ref{sec:cornerComplex}.
 
 % 
 % $$\diagram
@@ -345,11 +346,27 @@ For example, let $\PP=\PP^1\times \PP^2$ and let $M=S^1$ be a module representin
 T = tateResolution(M,{-3,-3},{0,0})
 \end{verbatim}
 produces the output
-{\small \begin{verbatim}      21      6      1      2      6      14      29     E   <-- E  <-- E  <-- E  <-- E  <-- E   <-- E                                                       -2      -1     0      1      2      3       4\end{verbatim}}
-\noindentwith Betti table with respect to total degree{\small \begin{verbatim}
-betti T            -2 -1 0 1 2  3  4     total: 21  6 1 2 6 14 29        -1: 21  6 . . .  .  .         0:  .  . 1 . .  .  .         1:  .  . . 1 2  3  4         2:  .  . . 1 3  6 10         3:  .  . . . 1  5 15\end{verbatim}}
+{\small \begin{verbatim}
+
+      21      6      1      2      6      14      29
+     E   <-- E  <-- E  <-- E  <-- E  <-- E   <-- E
+                                                  
+     -2      -1     0      1      2      3       4
+\end{verbatim}}
 \noindent
-Strictly speaking the two terms in homological degree $-2$ and $-1$ are not part of the Tate resolution but rather trailing terms, which come from the construction of $T$ as a corner complex. We will return to this issue in \ref{sec:corner complex}.
+with Betti table with respect to total degree
+{\small \begin{verbatim}
+betti T
+            -2 -1 0 1 2  3  4
+     total: 21  6 1 2 6 14 29
+        -1: 21  6 . . .  .  .
+         0:  .  . 1 . .  .  .
+         1:  .  . . 1 2  3  4
+         2:  .  . . 1 3  6 10
+         3:  .  . . . 1  5 15
+\end{verbatim}}
+\noindent
+Strictly speaking the two terms in homological degree $-2$ and $-1$ are not part of the Tate resolution but rather trailing terms, which come from the construction of $T$ as a corner complex. We will return to this issue in Section \ref{sec:corner complex}.
 
 \section{Computing Cohomology Tables}\label{sec:cohom tables}
 To compactly represent the dimensions of all the cohomology vector spaces of a given coherent sheaf $\sF$ we introduce the ``cohomology polynomial''
@@ -578,168 +595,140 @@ is the (minimal) Beilinson complex representing in $D^b(\PP^I)$. Key point is th
 $$strand(T,c,J)$$
 of the Tate resolution $T=\bT(\sF)$ with $J=\{0,\ldots,t-1\} \setminus I$ defined by the contribution of $H^p(\sF(a))$ with $a_{j+1}=c_{j+1}$ for $j \in J$ regarded as a complex over $E_I= \Lambda( \oplus_{i\in I} V_{i+1})$ for $c=0 \in \ZZ^t$ is the Tate resolution of $R\pi_* \sF \in D^b(\PP^I)$.
 Thus apply the $\bU$ functor on $\PP^I$ yields the Beilinson representative.
+{\small \begin{verbatim}
+phi=matrix{{x_(1,0),x_(1,1)},{x_(1,1),x_(1,2)}}|
+matrix{{x_(0,0),x_(0,1),0},{0,x_(0,0),x_(0,1)}}
+
+     | x_(1,0) x_(1,1) x_(0,0) x_(0,1) 0       |
+     | x_(1,1) x_(1,2) 0       x_(0,0) x_(0,1) |
+
+              2       5
+      Matrix S  <--- S
+
+radical annihilator coker phi
+
+                          2
+      ideal (x   , x   , x    - x   x   )
+              0,1   0,0   1,1    1,0 1,2
+
+M=(ker phi);
+\end{verbatim}}
+$M$ represents a rank 3 vector bundle $\sF$ on $\PP^1\times \PP^2$, since  $\coker \phi$ sheafifies to the zero sheaf. We compute the jumping loci, i.e. the loci of points $p \in \PP^2$ where $\sF\otimes \sO_{\PP^1\times p} \not\cong \sO_{\PP^1}^3(-1)$.
+{\small \begin{verbatim}
+T=tateResolution(M,low,high); 
+cohomologyMatrix(T,low,high)
+      | 74h  52h  30h 8h  14   36   58   |
+      | 42h  30h  18h 6h  6    18   30   |
+      | 19h  14h  9h  4h  1    6    11   |
+      | 5h   4h   3h  2h  h    0    1    |
+      | 0    0    0   0   0    0    0    |
+      | 4h3  2h3  0   2h2 4h2  6h2  8h2  |
+      | 17h3 10h3 3h3 4h2 11h2 18h2 25h2 |
+cohomologyMatrix(strand(T,{0,0},{0}),low,high)
+      | 0 0 0 8h  0 0 0 |
+      | 0 0 0 6h  0 0 0 |
+      | 0 0 0 4h  0 0 0 |
+      | 0 0 0 2h  0 0 0 |
+      | 0 0 0 0   0 0 0 |
+      | 0 0 0 2h2 0 0 0 |
+      | 0 0 0 4h2 0 0 0 | 
+RpiM=directImageComplex(M,{1});
+betti RpiM
+             -1 0
+      total:  2 2
+          1:  2 2
+RpiM.dd_0
+      | -x_(0,0) x_(0,1)  |
+      | x_(0,1)  -x_(0,2) |
+HH^1 RpiM
+      cokernel | -x_(0,0) x_(0,1)  |
+               | x_(0,1)  -x_(0,2) |
+HH^0 RpiM == 0 
+     true 
+ \end{verbatim}}
+Thus the curve jumping line is a conic in $\PP^2$, which is easily seen to be correctly computed by the presentation matrix $\phi$.
+
+Our second example is in a somewhat more general setting: We are given a projective scheme $X \subset \PP^n$, a morphism
+$$\pi \colon X \to \PP^m$$ and a coherent sheaf $\sF$ on $X$. We will compute $Rf_* \sF \in D^b(\PP^m)$.
+
+To specify these input data, we suppose that $X$ is specified by its homogeneous ideal $J \subset R = K[x_0,\ldots,x_n]$. 
+We present the morphism $\pi$ by a $k \times (m+1)$ matrix $\phi=(\phi_{ij})$ of homogeneous forms in $R$ of constant degrees  $\deg phi_{ij} = d_i$ in the rows such that
+\begin{itemize}
+\item the $2\times 2$ minors of $\phi$ are contained in $J$,
+\item the entries of $\phi$ have no common zero on $X=V(J)$.
+\end{itemize}
+So the ration of the rows specifies a well defined point in $\PP^m$. Finally we assume that $N$ is specified by a homogeneous $R$-module,
+whose annihilator contains $J$. Thefunction
 \begin{verbatim}
- 
-  Key
-    directImageComplex
-    (directImageComplex,Module,List)
-    (directImageComplex,Ideal,Module,Matrix)
-  Headline
-    compute the direct image complex 
-  Usage
-    RpiM = directImageComplex(M,I)
-    RphiN = directImageComplex(J,N,phi)
-  Inputs
-    M: Module
-       representing a sheaf F on a product of projective spaces
-    I: List
-      corresponding to the factors to which pi projects
-    J: Ideal
-      the saturated ideal of a projective scheme X in some P^n
-    N: Module
-      representing a sheaf on X
-    phi: Matrix
-      a kx(m+1) matrix of homogeneous polynomials on P^n
-      which define a morphism or rational map phi:X -> P^m,
-      i.e. the 2x2 minors of phi vanish on X.      
-  Outputs
-    RpiM: ChainComplex
-       a chain complex of modules over a symmetric algebra
-    RphiN: ChainComplex
-       a chain complex of modules over the coordinate ring of P^m
-  Description
-     Text
-       Let M represent a coherent sheaf F on a product P=P^{n_0}x..xP^{n_{t-1}} 
-       of t projective space. 
-       
-       Let $pi: P -> P^I= X_{i \in I} P^{n_i}$ denote the projection onto some factors. 
-       We compute a chain complex of S_I modules whose
-       sheafication is $Rpi_* F$. 
-       
-       The algorithm is based on the properties of strands,
-       and the beilinson functor on $P^I$, see       
-       @ HREF("http://arxiv.org/abs/1411.5724","Tate Resolutions on Products of Projective Spaces") @.
-       Note that the resulting complex is a chain complex instead of a cochain complex,
-       so that for example HH^1 RpiM is the module representing $R^1 pi_* F$
-       
-             In the second version we start with a projective scheme X =Proj(R/J) defined by J in some 
-       P^n= Proj R with R \cong K[x_0..x_n] a polynomial ring,
-       an  R-module N of representing a sheaf on X, and a matrix phi of homogeneous
-       forms who's rows define a morphism phi: X -> P^m. In particular
-       the 2x2 minors of phi vanish on X, and phi defines a morphism if and only if
-       the entries of phi have no common zero in X.
-       The algorithm passes to the graph of phi in P^n x P^m, and calls the first version
-       of this function.
+RphiN = directImageComplex(J,N,phi)
+\end{verbatim} 
+returns the desired complex as a complex of graded $T$-modules, where the $T$ denotes  the homogeneous coordinate ring of $\PP^m$.
 
-
-       As an example of the second version, we consider the ruled cubic surface scroll
-       X subset P^4 defined by the 2x2 minors of the matrix
-       $$ m= matrix \{ \{x_0,x_1,x_3\},\{x_1,x_2,x_4\} \},$$
-       and the morphism f: X -> P^1 onto the base.
-       f is defined by ratio of the two rows of m, hence by the 3x2 matrix phi=m^t.
-       
-       As a module N we take a symmetric power of the cokernel m, twisted by R^{d}.
-
-
-
-i39 :        s=3,d=1
-
-o39 = (3, 1)
-
-o39 : Sequence
-
-i40 :        N=symmetricPower(s,coker m)**R^{d};
-
-i41 :        RphiN = directImageComplex(J,N,phi)
-
-         ZZ              11        ZZ              9
-o41 = (-----[x   , x   ])   <-- (-----[x   , x   ])
-       32003  0,0   0,1          32003  0,0   0,1
-                                 
-      0                         1
-
-o41 : ChainComplex
-
-i42 :        T=ring RphiN
-
-o42 = T
-
-o42 : PolynomialRing
-
-i43 :        netList apply(toList(min RphiN.. max RphiN),i-> 
-      	   {-i, saturate annihilator HH^(-i) RphiN,betti res HH^(-i) RphiN})
-
-      +--+--------+-----------+
-      |  |        |        0 1|
-o43 = |0 |ideal ()|total: 11 9|
-      |  |        |    0: 11 9|
-      +--+--------+-----------+
-      |  |        |           |
-      |-1|ideal 1 |total:     |
-      +--+--------+-----------+
-
-i44 :        R0=prune HH^0 RphiN
-
-o44 = cokernel | -x_(0,1) 0        0        0        0        0        0        0        0        |
-               | x_(0,0)  -x_(0,1) 0        0        0        0        0        0        0        |
-               | 0        x_(0,0)  -x_(0,1) 0        0        0        0        0        0        |
-               | 0        0        x_(0,0)  -x_(0,1) 0        0        0        0        0        |
-               | 0        0        0        x_(0,0)  -x_(0,1) 0        0        0        0        |
-               | 0        0        0        0        x_(0,0)  0        0        0        0        |
-               | 0        0        0        0        0        -x_(0,1) 0        0        0        |
-               | 0        0        0        0        0        x_(0,0)  -x_(0,1) 0        0        |
-               | 0        0        0        0        0        0        x_(0,0)  -x_(0,1) 0        |
-               | 0        0        0        0        0        0        0        x_(0,0)  -x_(0,1) |
-               | 0        0        0        0        0        0        0        0        x_(0,0)  |
-
-                             11
-o44 : T-module, quotient of T
-
-i45 :        dim R0, degree R0
-
-o45 = (2, 2)
-
-o45 : Sequence
-
-i46 :        betti (sR0Dual = syz transpose presentation R0)
-
+As a concrete example we take the cubic scroll $X \subset \PP^4$ defined by the minors of the $2\times 3$ matrix
+$$
+m=\begin{pmatrix}
+x_0& x_1 & x_3 \cr
+x_1 & x_2 & x_4 \cr
+\end{pmatrix}   
+$$
+and the morphism $\pi :X \to \PP^1$ defined by the ratio of the rows of $\phi=m^t$. For $N$ we take a symmetric of the coker of $\phi$.
+{\small\begin{verbatim}
+kk=ZZ/101;
+R=kk[x_0..x_4];
+m=matrix{{x_0,x_1,x_3},{x_1,x_2,x_4}}
+       | x_0 x_1 x_3 |
+       | x_1 x_2 x_4 |
+J=minors(2,m);
+N=symmetricPower(2,coker m)**R^{1};
+phi=transpose m;
+RpiN=directImageComplex(J,N,phi);
+T=ring RpiN;
+RpiN
+        9      7
+       T  <-- T               
+       0      1
+betti RpiN
               0 1
-o46 = total: 11 2
-          0: 11 .
-          1:  . .
-          2:  . .
-          3:  . 1
-          4:  . 1
+       total: 9 7
+           0: 9 7
+dim HH^0 RpiN, degree HH^0 RpiN
+       (2, 2)
+HH^(-1) RpiN == 0
+       true
+s=transpose syz transpose presentation HH^0 RpiN;
+               2       9
+       Matrix T  <--- T
+degrees target s
+       {{-3}, {-4}} 
+\end{verbatim} }
+Thus $R^1\pi_* \sF \cong \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$ which is correct, since  $X= \PP(\sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1))$, $\widetilde{R^{1}}=\sO_{\PP^4}(1)$ and thus $\pi_* \sO_X(1)\cong \sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1)$ while $\widetilde N \cong \pi^*\sO_{\PP^1}(1)$.
 
-o46 : BettiTally
+\section{Corner complexes and BGG monads.}\label{sec:corner complex}
 
-i47 :        saturate annihilator coker transpose sR0Dual
+The construction of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S$-module $M$ representing $\sF$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is azyclic.
+The function \begin{verb} coarseMultigradedRegularity(M) \end{verb} returns such an $c$.
 
-o47 = ideal 1
+Then let $N$ to be the kernel of the multiplication map
+$$ M_c \otimes E(c) \to \bigoplus_{d=c+e_k}M_{d} \otimes E(d) $$
+where $e_k \in \ZZ^t$ run through the set of unit vectors. 
+Thus $bgg(M_{\ge c})$ is an injective resolution of $N$
+In case $t=2$ and $c=(i,j)$ this is the map displayed in diagram (\ref{eqn:uppercorner})
+ 
+In \cite{EES} we prove that
+the projective resolution of $N(1,\ldots,1)$ is the precisely the part of the Tate resolution whose terms corresponding to cohomology groups
+$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_k\le c_k -1$ for all $k$. 
+Note that combining the projective resolution  complex 
+ with the injective resolution $bgg(N)(1,\ldots,1)$  is double infinite exact complex of finitely generated graded free $E$-modules,
+which is in some sense generalizes  the Tate resolution on $\PP^n$ to many factors, which is a special cases of what we call a {\bf corner complex}. 
+It depends however on the choice of $c$. To obtain an intrinsic
+complex we construct $\bT(\sF)$
+as the limit of the projective parts for $c \to \infty$.
 
-o47 : Ideal of T
-
-i48 :        dual source sR0Dual       
-
-       2
-o48 = T
-
-o48 : T-module, free, degrees {-4, -5}
-
-i49 :        We conclude that the sheaf represented by R0 is O(-4)+O(-5) on P^1. 
-\end{verbatim}
+$\bT(\sF)$  has many intrinsically defined free subquotient complex called {\bf region complexes} many of which are exact. The most interesting complexes are obtained from $t$ exact half space complexes which combines terms corresponding to $a\in \ZZ^t$ in a last quadrant with terms in a first quadrant, at an arbitrary $c \in \ZZ^t$ as an origin. These corner complexes $\cornerT c (\sF)$ coincide for $c$ in the multi-regularity range with the complexes described above. For general $c$ however neither the first quadrant part nor the last quadrant part are double complexes. Moreover the contribution to a term ${\cornerT c}^d (\sF)$ of both quadrants can overlap.
+However what ist true that for any $c\in \ZZ^t$ the zeroes syzygy module $N = \ker({\cornerT c}^0 (\sF) \to {\cornerT c}^1 (\sF))$
+is an finitely generated $E$ module such that $bgg(N)$ is linear complex of $S$-modules, which sheafifies to a monad for $\sF$.
 
 
-%
-%\section{The Tate Resolution and its properties}\label{TateRes}
-%
-%The definition of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S=\Sym(W_1 \oplus \ldots \oplus W_t)$-module $M$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is azyclic.
-%Then taking $N$ to be the kernel of the multiplication map
-%$$ M_c \otimes E \to \oplus_{j=1}^t M_{(c_1,\ldots,c_j+1,\ldots,c_t)} \otimes E $$
-%then the free resolution of $N(1,\ldots,1)$ is the part of the Tate resolution  with terms corresponding to cohomology groups
-%$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_1\le c_1 +1, \ldots, a_t \le c_t+1$. 
-%Note that this is an infinite complex with finitely generated $E$ modules.
-%The complete Tate resolution is obtained by taking the limit of these complexes for $c \to \infty$.
 %
 %
 %strands etc
