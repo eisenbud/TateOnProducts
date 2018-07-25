@@ -5745,6 +5745,10 @@ restart
 loadPackage("TateOnProducts",Reload=>true)
 (S,E) = productOfProjectiveSpaces{1,2}
 low = {-3,-3},high = {3,3};
+T=tateResolution(S^1,{-2,-2},{0,0})
+betti T
+T.dd_1
+cohomologyMatrix(T,4*low,high)
 cohomologyMatrix(S^1,low,high)
 M =  S^{{1,1}}** ker vars S;
 cohomologyMatrix (M,low, high)
@@ -5756,3 +5760,40 @@ isIsomorphic(HH^0 B ,M)
 trunc = {0,0}
 isIsomorphic (truncate(trunc,HH^0 B),truncate(trunc,M))
 --M' has a generator in degree {-1,1}, but HH^0 B' does not.
+M =  S^{{-3,2}}** ker vars S;
+T=tateResolution(M,low,high)
+cohomologyMatrix (M,low, high)
+RpiM=directImageComplex(M,{1})
+
+prune  HH^1 RpiM
+betti oo
+cohomologyMatrix(strand(T,{0,0},{0}),low,high)
+
+use S
+phi=matrix{{x_(1,0),x_(1,1)},{x_(1,1),x_(1,2)}}|
+matrix{{x_(0,0),x_(0,1),0},{0,x_(0,0),x_(0,1)}}
+radical annihilator coker phi
+M=(ker phi)
+elapsedTime T=tateResolution(M,low,high);
+cohomologyMatrix(T,low,high)
+cohomologyMatrix(strand(T,{0,0},{0}),low,high)
+
+RpiM=directImageComplex(M,{1})
+betti RpiM
+RpiM.dd_0
+HH^1 RpiM
+HH^0 RpiM == 0 
+
+kk=ZZ/101
+R=kk[x_0..x_4]
+phi1=matrix{{x_0,x_1,x_3},{x_1,x_2,x_4}}
+J=minors(2,phi1)
+N= symmetricPower(2,coker phi1)**R^{1};
+phi=transpose phi1
+RfN=directImageComplex(J,N,phi);
+T=ring RfN
+RfN
+betti RfN
+prune HH^0 RfN
+HH^(-1) RfN == 0
+betti syz transpose presentation HH^0 RfN
