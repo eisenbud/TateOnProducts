@@ -5748,14 +5748,16 @@ low = {-3,-3}
 high = {3,3}
 cohomologyMatrix(S^1,low,high)
 
-M =  S^{{1,1}}** ker vars S
+M =  S^{{1,1}} ** ker vars S
 cohomologyMatrix (M,low, high)
 B = beilinsonMonad M
+B.dd
+
+
 T=tateResolution(M,low,high);
 W = beilinsonWindow T
 cohomologyMatrix(W,low, high)
 
 isIsomorphic(HH^0 B ,M)
-trunc = {0,0}
-isIsomorphic (truncate(trunc,HH^0 B),truncate(trunc,M))
+isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
 --M' has a generator in degree {-1,1}, but HH^0 B' does not.
