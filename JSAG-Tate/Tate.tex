@@ -580,16 +580,32 @@ isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
 
 Let $I \subset \{0,\ldots,t-1 \}$ be a proper subset and let
 $$ \pi \colon\PP \to  \PP^I=\prod_{i \in  I} \PP^{n_{i+1}}$$
-be the projection to the corresponding factors. (Note that Macaulay2 prefers integers sequences starting with $0$ in many commands, which is the reason for the re-indexing.) Given an coherent sheaf $\sF$ on $\PP$ represented by an $S$-module $M$
+be the projection to the corresponding factors. (Note that Macaulay2 prefers integers sequences starting with $0$ in many commands, which is the reason for the re-indexing.) Given a coherent sheaf $\sF$ on $\PP$, represented by an $S$-module $M$,
 the function
 {\small \begin{verbatim}
 directImageComplex(M,I)
 \end{verbatim}}
-computes the direct image complex $R\pi_* \sF$ in terms of a complex of $S_I = \Sym (\oplus_{i \in I} W_{i+1})$-modules, whose sheafication
-is the (minimal) Beilinson complex representing in $D^b(\PP^I)$. Key point is that  strand
-$$strand(T,c,J)$$
-of the Tate resolution $T=\bT(\sF)$ with $J=\{0,\ldots,t-1\} \setminus I$ defined by the contribution of $H^p(\sF(a))$ with $a_{j+1}=c_{j+1}$ for $j \in J$ regarded as a complex over $E_I= \Lambda( \oplus_{i\in I} V_{i+1})$ for $c=0 \in \ZZ^t$ is the Tate resolution of $R\pi_* \sF \in D^b(\PP^I)$.
-Thus apply the $\bU$ functor on $\PP^I$ yields the Beilinson representative.
+\noindent computes a complex of $S_I = \Sym (\oplus_{i \in I} W_{i+1})$-modules, whose sheafication
+is the (minimal) Beilinson complex representing the direct image complex $R\pi_* \sF$ in $D^b(\PP^I)$. 
+
+Let $J=\{0,\ldots,t-1\} \setminus I$.
+The routine uses 
+the "strand" complex
+$$
+strand(T,c,J)
+$$
+defined from the Tate resolution $T=\bT(\sF)$ as the sum of the terms
+corresponding to the vector spaces $H^p(\sF(a))$ with $a_{j+1}=c_{j+1}$ for $j \in J$.
+This sum is a complex over $E_I= \Lambda( \oplus_{i\in I} V_{i+1})$.
+ The key fact is that, for $c=(0,\dots,0) \in \ZZ^t$, 
+ $
+strand(T,c,J)
+$
+ is the Tate resolution of $R\pi_* \sF \in D^b(\PP^I)$.
+Thus applying the $\bU$ functor on $\PP^I$
+gives the Beilinson monad for $R\pi_* \sF \in D^b(\PP^I)$.
+
+Here is an example:
 {\small \begin{verbatim}
 m=matrix{{x_(1,0),x_(1,1)},{x_(1,1),x_(1,2)}}|
 matrix{{x_(0,0),x_(0,1),0},{0,x_(0,0),x_(0,1)}}
@@ -605,7 +621,7 @@ M=ker m;
 \end{verbatim}}
  
  \noindent
-$M$ represents a rank 3 vector bundle $\sF$ on $\PP^1\times \PP^2$, since  $\coker \m$ sheafifies to the zero sheaf. We compute the jumping loci, i.e. the loci of points $p \in \PP^2$ where $\sF\otimes \sO_{\PP^1\times p} \not\cong \sO_{\PP^1}^3(-1)$.
+$M$ represents a rank 3 vector bundle $\sF$ on $\PP^1\times \PP^2$, since  $\coker \m$ sheafifies to the zero sheaf. We compute the \emph{jumping locus},  that is, the locus of points $p \in \PP^2$ where $\sF\otimes \sO_{\PP^1\times p} \not\cong \sO_{\PP^1}^3(-1)$.
 {\small \begin{verbatim}
 T=tateResolution(M,low,high); 
 cohomologyMatrix(T,low,high)
@@ -629,9 +645,15 @@ betti RpiM
              -1 0
       total:  2 2
           1:  2 2
+\end{verbatim}
+\noindent The one differential of this complex is
+\begin{verbatim}
 RpiM.dd_0
       | -x_(0,0) x_(0,1)  |
       | x_(0,1)  -x_(0,2) |
+\end{verbatim}
+\noindent and thus the jumping locus is the conic defined by the determinant of this matrix. We can also compute:
+\begin{verbatim}
 HH^1 RpiM
       cokernel | -x_(0,0) x_(0,1)  |
                | x_(0,1)  -x_(0,2) |
@@ -639,11 +661,11 @@ HH^0 RpiM == 0
      true 
  \end{verbatim}}
 
- \noindent
-Thus the curve jumping lines is a conic in $\PP^2$, which is easily seen to be correctly computed by inspecting the matrix $m$.
+Given a projective scheme $X \subset \PP^n$, a morphism
+$$\pi \colon X \to \PP^m$$ and a coherent sheaf $\sF$ on $X$, we can use our methods to compute $R\pi_* \sF \in D^b(\PP^m)$:
 
-Our second example is in a somewhat more general setting: Given a projective scheme $X \subset \PP^n$, a morphism
-$$\pi \colon X \to \PP^m$$ and a coherent sheaf $\sF$ on $X$. We will compute $R\pi_* \sF \in D^b(\PP^m)$.
+%%%%%%%revised to here.
+
 To specify the input data, we suppose that $X$ is specified by its homogeneous ideal $J \subset R = K[x_0,\ldots,x_n]$. 
 We present the morphism $\pi$ by a $k \times (m+1)$ matrix $\phi=(\phi_{ij})$ of homogeneous forms in $R$ of constant degrees  $\deg \phi_{ij} = d_i$ in the rows such that
 \begin{itemize}
