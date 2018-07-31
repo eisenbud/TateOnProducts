@@ -5748,6 +5748,8 @@ low = {-3,-3},high = {3,3};
 T=tateResolution(S^1,{-2,-2},{0,0})
 betti T
 T.dd_1
+eT=eulerPolynomialTable(S^1,low,high)
+eT#{2,-3}
 cohomologyMatrix(T,4*low,high)
 cohomologyMatrix(S^1,low,high)
 
@@ -5759,6 +5761,8 @@ B.dd
 
 T=tateResolution(M,low,high);
 W = beilinsonWindow T
+tallyDegrees W
+betti W
 cohomologyMatrix(W,low, high)
 isIsomorphic(HH^0 B ,M)
 isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
