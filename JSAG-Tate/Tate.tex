@@ -295,7 +295,7 @@ By a nearly identical computation as before, the BGG correspondence $M\mapsto bg
  M_{i,j}\otimes E(i,j) \ar[r]\ar[u]& M_{i+1,j}\otimes E(i+1,j) \ar[u]  \ar[r] & \cdots \\
 }
 \end{equation}
-If $t=3$ then $bgg(M)$ is a triple complex, and so on.
+In general, $bgg(M)$ is the total complex of a $t$-fold complex.
 
 
 \begin{remark}\label{rmk:conventions}
@@ -578,6 +578,10 @@ isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
 
 \section{Computing $R\pi_*$ of a Sheaf}\label{sec:push forward}
 
+In this section we explain how to compute the pushforward complex of a sheaf along a morphism
+to projective space. The main ingredient is the pushforward to a factor in a product of projective
+spaces, and we explain this first.
+
 Let $I \subset \{0,\ldots,t-1 \}$ be a proper subset and let
 $$ \pi \colon\PP \to  \PP^I=\prod_{i \in  I} \PP^{n_{i+1}}$$
 be the projection to the corresponding factors. (Note that Macaulay2 prefers integers sequences starting with $0$ in many commands, which is the reason for the re-indexing.) Given a coherent sheaf $\sF$ on $\PP$, represented by an $S$-module $M$,
@@ -661,32 +665,52 @@ HH^0 RpiM == 0
      true 
  \end{verbatim}}
 
-Given a projective scheme $X \subset \PP^n$, a morphism
-$$\pi \colon X \to \PP^m$$ and a coherent sheaf $\sF$ on $X$, we can use our methods to compute $R\pi_* \sF \in D^b(\PP^m)$:
+We now return to the general problem of the pushforward $R\pi_* \sF$ of a sheaf $\sF$ on a projective scheme $X$ under a morphism 
+$$
+\pi \colon X \to \PP^m
+$$
+The result will be a complex of graded modules that represents
+$R\pi_* \sF \in D^b(\PP^m)$.
 
-%%%%%%%revised to here.
-
-To specify the input data, we suppose that $X$ is specified by its homogeneous ideal $J \subset R = K[x_0,\ldots,x_n]$. 
-We present the morphism $\pi$ by a $k \times (m+1)$ matrix $\phi=(\phi_{ij})$ of homogeneous forms in $R$ of constant degrees  $\deg \phi_{ij} = d_i$ in the rows such that
-\begin{itemize}
+To specify the morphism $\pi$, we suppose that $X$ is given by its homogeneous ideal $J \subset R = K[x_0,\ldots,x_n]$. Locally near any point of $X$ the morphism can be given by $m+1$ homogeneous
+forms of the same degree, but a different representation is necessary points where all these forms are 0. To represent $\pi$
+at every point of $X$ at once, we thus allow $k$ such representations, which we package as a
+ $k \times (m+1)$ matrix $\phi=(\phi_{ij})$ of homogeneous forms in $R$, such that any two forms
+ in the same row have the same degree. To ensure that the different rows define the same
+ morphism where both are nonzero, we insist that
+ \begin{itemize}
 \item the $2\times 2$ minors of $\phi$ are contained in $J$,
+\end{itemize}
+and to ensure that at least one of the definitions is valid at each point we insist that
+\begin{itemize}
 \item the entries of $\phi$ have no common zero on $X=V(J)$.
 \end{itemize}
-So the ration of the rows specifies a well defined point in $\PP^m$. Finally we assume that $N$ is specified by a homogeneous $R$-module,
-whose annihilator contains $J$. The function
-{\small \begin{verbatim}
-RpiN = directImageComplex(J,N,phi)
-\end{verbatim} }
-returns the desired complex as a complex of graded $T$-modules, where the $T$ denotes  the homogeneous coordinate ring of $\PP^m$.
 
-As a concrete example we take the cubic scroll $X \subset \PP^4$ defined by the minors of the $2\times 3$ matrix
+Representing $\sF$ by  a homogeneous $R$-module $N$
+whose annihilator contains $J$, the function
+{\small \begin{verbatim}
+directImageComplex(J,N,phi)
+\end{verbatim} }
+returns a complex as a complex of graded $T$-modules representing $R\pi_* \sF \in D^b(\PP^m)$, where the $T$ denotes  the homogeneous coordinate ring of $\PP^m$.
+
+As a concrete example we take the cubic scroll 
+$$\PP(\sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1))\cong X\subset \PP^4
+$$ 
+defined by the ideal of minors of the $2\times 3$ matrix
 $$
 m=\begin{pmatrix}
 x_0& x_1 & x_3 \cr
 x_1 & x_2 & x_4 \cr
 \end{pmatrix}   
 $$
-and the morphism $\pi :X \to \PP^1$ defined by the ratio of the rows of $\phi=m^t$. For $N$ we take a symmetric of the cokernel of $\phi$ twisted.
+and the morphism $\pi :X \to \PP^1$ defined at each point by the ratio of (at least) one of 
+the columns of $m$, so that the map $\pi$ is represented, in the sense above,
+by the matrix $\phi = {\rm transpose}\ m$. 
+
+For this example we take $\sF = \pi^*\sO_{\PP^1}(1)$, which is the sheaf associated to the
+graded module
+$N$ that is the first twist of the second symmetric power of the cokernel 
+of $m$.
 {\small\begin{verbatim}
 kk=ZZ/101;
 R=kk[x_0..x_4];
@@ -708,117 +732,148 @@ betti RpiN
            0: 9 7
 dim HH^0 RpiN, degree HH^0 RpiN
        (2, 2)
-HH^(-1) RpiN == 0
-       true
-s=transpose syz transpose presentation HH^0 RpiN;
+\end{verbatim}
+\noindent Thus $\pi_*N = R^0\pi_*N$ is a vector bundle on $\P^1$ of rank 2.
+To decide which bundle, we compute
+\begin{verbatim}
+ s=transpose syz transpose presentation HH^0 RpiN;
                2       9
        Matrix T  <--- T
 degrees target s
        {{-3}, {-4}} 
 \end{verbatim} }
-Thus $R^1\pi_* \sF \cong \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$ which is correct, since  $X= \PP(\sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1))$, $\widetilde{R^{1}}=\sO_{\PP^4}(1)$ and thus $\pi_* \sO_X(1)\cong \sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1)$ while $\widetilde N \cong \pi^*\sO_{\PP^1}(1)$.
+\noindent and we see that $R^1\pi_* \sF \cong \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$.
+Of course this result could have been deduced from the abstract description of $X$ and $\sF$
+above, as well.
 
-\section{Corner complexes and BGG monads.}\label{sec:cornercomplex}
+\section{Corner complexes.}\label{sec:cornercomplex}
 
-The construction of the Tate resolution of a coherent sheaf $\sF$ on $\PP$ starts with a multigraded $S$-module $M$ representing $\sF$. At a first step we determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is acyclic.
+We now explain how we go about computing a given finite part of the Tate resolution
+of a sheaf $\sF$ on $\PP$ from a finitely generated, multi-graded module $M$
+representing $\sF$.
+
+We first determine a muti-degree $c \in \ZZ^t$ such that $bgg(M_{ \ge c})$ is acyclic.
 The function {\tt coarseMultigradedRegularity(M)} returns such a $c$.
 
-Then let $N$ to be the kernel of the multiplication map
-$$ M_c \otimes E(c) \to \bigoplus_{d=c+e_k}M_{d} \otimes E(d) $$
-where $e_k \in \ZZ^t$ run through the set of unit basis vectors. 
-Thus $bgg(M_{\ge c})$ is an injective resolution of $N$.
-In case $t=2$ and $c=(i,j)$ this is the map displayed in diagram (\ref{eqn:uppercorner})
+Set $N$ equal to the kernel of the multiplication map
+$$ 
+M_c \otimes E(c) \to \bigoplus_{d=c+e_k}M_{d} \otimes E(d) 
+$$
+where $e_k \in \ZZ^t$ runs through the set of unit basis vectors,
+so that, by Theorem~\ref{Reciprocity}, the complex $bgg(M_{\ge c})$ is an injective resolution of $N$.
+In case $t=2$ and $c=(i,j)$ this is the total complex of the double complex displayed in the diagram (\ref{eqn:uppercorner})
  
 In \cite{EES} we prove that
-the projective resolution of $N(1,\ldots,1)$ is the precisely the part of the Tate resolution whose terms corresponding to cohomology groups
-$H^p(\PP, \sF(a))$ for all $a \in \ZZ^t$ with $a_k\le c_k -1$ for all $k$. 
-Note that combining the projective resolution  
- with the injective resolution $bgg(N)(1,\ldots,1)$  is double infinite exact complex of finitely generated graded free $E$-modules,
-which  in some sense generalizes  the Tate resolution on $\PP^n$ to many factors. These are  special cases of what we call a {\bf corner complex}. 
-It depends however on the choice of $c$. To obtain an intrinsic
-complex we construct $\bT(\sF)$
-as the limit of the projective parts for $c \to \infty$.
+the projective resolution of $N(1,\ldots,1)$ is the part of the Tate resolution whose terms correspond to the cohomology groups
+$H^p(\PP, \sF(a))$ for  $a \in \ZZ^t$ with $a_k\le c_k -1$ for all $k$. 
 
-$\bT(\sF)$  has many intrinsically defined free subquotient complexes, called {\bf region complexes}, many of which are exact. The most interesting complexes are obtained from $t$ exact half space complexes which combines terms corresponding to $a\in \ZZ^t$ in a last quadrant with terms in a first quadrant, at an arbitrary $c \in \ZZ^t$ as an origin. These corner complexes $\cornerT c (\sF)$ coincide for $c$ in the multi-regularity range with the complexes described above. For general $c$ however neither the first quadrant part nor the last quadrant part are double complexes. Moreover the contribution to a term ${\cornerT c}^d (\sF)$ of both quadrants can overlap.
-However, what ist true is that for any $c\in \ZZ^t$ the zeroes syzygy module $N = \ker({\cornerT c}^0 (\sF) \to {\cornerT c}^1 (\sF))$
-is an finitely generated $E$-module such that $bgg(N)$ is linear complex of $S$-modules, which sheafifies to a monad for $\sF$.
-We illustrate this in an example taking from the function {\tt composedFunctions}. It corresponds to a rank $3$ vector bundle on $\PP^1\times \PP^1$. 
-{\small \begin{verbatim}
-n={1,1}, v=n +{1,1};
-high=3*n, low=-high;
+Combining this projective resolution  
+ with the injective resolution 
+ $$
+ bgg(N)(1,\ldots,1)
+ $$
+   we get a doubly infinite exact complex of finitely generated graded free $E$-modules.
+This is what we call a {\bf corner complex} with corner at $c$, denoted
+${\bf \cornerT c} (\sF))$. If $t=1$, then the corner complex
+is independent of $c$, and is the Tate resolution. 
+
+However if $t>1$ neither of these statements is true; the modules in the corner complex, unlike those in the Tate resolution, are finitely generated, and the corner complex depends  on $c$ and computes only
+some of the cohomology groups of $\sF$. The Tate resolution  $\bT(\sF)$ is actually 
+ the limit of the projective parts of the corner complexes as  $c \to \infty$.
+ 
+ Since our goal is to compute the finite part of a Tate resolution containing all the free summands corresponding to the $H^p(\PP, \sF(a))$ for  indices $a$ in some bounded region of $\ZZ^t$, 
+it suffices to compute the projective part of the corner complex ${\bf \cornerT c} (\sF))$ for sufficiently
+positive $c$.
+
+%$\bT(\sF)$  has many intrinsically defined free subquotient complexes, called {\bf region complexes}, many of which are exact. The most interesting complexes are obtained from $t$ exact half space complexes which combines terms corresponding to $a\in \ZZ^t$ in a last quadrant with terms in a first quadrant, at an arbitrary $c \in \ZZ^t$ as an origin. These corner complexes $\cornerT c (\sF)$ coincide for $c$ in the multi-regularity range with the complexes described above. For general $c$ however neither the first quadrant part nor the last quadrant part are double complexes. Moreover the contribution to a term ${\cornerT c}^d (\sF)$ of both quadrants can overlap.
+%However, what ist true is that for any $c\in \ZZ^t$ the zeroes syzygy module $N = \ker({\cornerT c}^0 (\sF) \to {\cornerT c}^1 (\sF))$
+%is an finitely generated $E$-module such that $bgg(N)$ is linear complex of $S$-modules, which sheafifies to a monad for $\sF$.
+We illustrate this in an example taking from the function {\tt composedFunctions}. We work on 
+$\PP^1\times \PP^1$, with homogeneous coordinate ring $S$, and take
+$\sF$ to be the rank $3$ vector bundle represented by the graded module
+$M$ that is the kernel of the map given by the variables of $S$.
+We begin by defining the multi-graded polynomial ring $S$ and corresponding exterior algebra $E$ 
+and the module $M$:
+{\small 
+\begin{verbatim}
+n={1,1}, 
 (S,E)=productOfProjectiveSpaces n;
-P=(image transpose gens trim (ideal vars E)^2)**E^{n}
-     image {-1, -3} | -e_(1,0)e_(1,1) |
-           {-2, -2} | -e_(0,1)e_(1,1) |
-           {-2, -2} | -e_(0,0)e_(1,1) |
-           {-2, -2} | -e_(0,1)e_(1,0) |
-           {-2, -2} | -e_(0,0)e_(1,0) |
-           {-3, -1} | -e_(0,0)e_(0,1) |
-betti P
-            0 1
-     total: 1 4
-        -2: 1 .
-        -1: . .
-         0: . 4
-LP=bgg P 
-      6      4      1
-     S  <-- S  <-- S                    
-     0      1      2
-M = (HH^0 LP)**S^{-n}
-     cokernel {2, 0} | x_(1,1)  -x_(1,0) 0       0        |
-              {1, 1} | -x_(0,0) 0        x_(1,0) 0        |
-              {1, 1} | 0        -x_(0,0) x_(1,1) 0        |
-              {1, 1} | -x_(0,1) 0        0       x_(1,0)  |
-              {1, 1} | 0        -x_(0,1) 0       x_(1,1)  |
-              {0, 2} | 0        0        x_(0,1) -x_(0,0) |
-betti res M
-            0 1 2
-      total: 6 4 1
-         2: 6 4 1
-T = tateResolution(M,low,high); 
-cohomologyMatrix(T,low,high)
-      | 28h  18h  8h  2  12  22  32  |
-      | 20h  13h  6h  1  8   15  22  |
-      | 12h  8h   4h  0  4   8   12  |
-      | 4h   3h   2h  h  0   1   2   |
-      | 4h2  2h2  0   2h 4h  6h  8h  |
-      | 12h2 7h2  2h2 3h 8h  13h 18h |
-      | 20h2 12h2 4h2 4h 12h 20h 28h |
-\end{verbatim}}
+ M = ker vars S;
+\end{verbatim}
+%We will construct $M$ from a module $P$ over the exterior algebra:
+%\begin{verbatim}
+%P=(image transpose gens trim (ideal vars E)^2)**E^{n}
+%     image {-1, -3} | -e_(1,0)e_(1,1) |
+%           {-2, -2} | -e_(0,1)e_(1,1) |
+%           {-2, -2} | -e_(0,0)e_(1,1) |
+%           {-2, -2} | -e_(0,1)e_(1,0) |
+%           {-2, -2} | -e_(0,0)e_(1,0) |
+%           {-3, -1} | -e_(0,0)e_(0,1) |
+%LP=bgg P 
+%      6      4      1
+%     S  <-- S  <-- S                    
+%     0      1      2
+%M = (HH^0 LP)**S^{-n}
+%     cokernel {2, 0} | x_(1,1)  -x_(1,0) 0       0        |
+%              {1, 1} | -x_(0,0) 0        x_(1,0) 0        |
+%              {1, 1} | 0        -x_(0,0) x_(1,1) 0        |
+%              {1, 1} | -x_(0,1) 0        0       x_(1,0)  |
+%              {1, 1} | 0        -x_(0,1) 0       x_(1,1)  |
+%              {0, 2} | 0        0        x_(0,1) -x_(0,0) |
+%\end{verbatim}
+%We can now compute a piece of the Tate resolution of $M$ sufficient to give the cohomology
+%in a given range bounded by indices "low" and "high", and we can use the function
+%cohomologyMatrix on this Tate resolution to see this cohomology:
+%\begin{verbatim}
+%low = {-3,-3}, high={3,3};
+%T = tateResolution(M,low,high); 
+%cohomologyMatrix(T,low,high)
+%      | 28h  18h  8h  2  12  22  32  |
+%      | 20h  13h  6h  1  8   15  22  |
+%      | 12h  8h   4h  0  4   8   12  |
+%      | 4h   3h   2h  h  0   1   2   |
+%      | 4h2  2h2  0   2h 4h  6h  8h  |
+%      | 12h2 7h2  2h2 3h 8h  13h 18h |
+%      | 20h2 12h2 4h2 4h 12h 20h 28h |
+%\end{verbatim}}
+%
+%\noindent
+%We can recover $M$ from the Beilinson monad derived from T:
+%{\small \begin{verbatim}
+%B=beilinson T
+%       1      4
+%      S  <-- S              
+%      -1     0
+%M'=prune HH^0 B
+% cokernel{1, 1}|-x_(1,1) 0        0        -x_(0,1)|
+%         {0, 2}|x_(0,0)  x_(0,1)  0        0       |
+%         {1, 1}|-x_(1,0) 0        -x_(0,1) 0       |
+%         {1, 1}|0        -x_(1,0) x_(0,0)  0       |
+%         {1, 1}|0        -x_(1,1) 0        x_(0,0) |
+%         {2, 0}|0        0        -x_(1,1) x_(1,0) |
+%prune HH^1 B
+%      cokernel | x_(1,1) x_(1,0) x_(0,1) x_(0,0) |
+%isIsomorphic(M,M')
+%      true
+%\end{verbatim}}
 
 \noindent
-Alternatively we can recover $M$ from its Beilinson monad derived from T.
+We now compute the corner complex of $M$ at $c={0,0}$.
 {\small \begin{verbatim}
-B=beilinson T
-       1      4
-      S  <-- S              
-      -1     0
-M'=prune HH^0 B
- cokernel{1, 1}|-x_(1,1) 0        0        -x_(0,1)|
-         {0, 2}|x_(0,0)  x_(0,1)  0        0       |
-         {1, 1}|-x_(1,0) 0        -x_(0,1) 0       |
-         {1, 1}|0        -x_(1,0) x_(0,0)  0       |
-         {1, 1}|0        -x_(1,1) 0        x_(0,0) |
-         {2, 0}|0        0        -x_(1,1) x_(1,0) |
-prune HH^1 B
-      cokernel | x_(1,1) x_(1,0) x_(0,1) x_(0,0) |
-isIsomorphic(M,M')
-      true
-\end{verbatim}}
-
-\noindent
-Next we study the corner complex of $T$ at $c={0,0}$.
-{\small \begin{verbatim}
-C=cornerComplex(T,{0,0}); 
-betti C      
-             -7 -6 -5 -4 -3 -2 -1 0  1  2  3   4
-      total: 55 32 44 39 20  6  1 4 15 36 70 120
-         -1: 55  .  .  .  .  .  . .  .  .  .   .
-          0:  . 32 44 39 20  6  . .  .  .  .   .
-          1:  .  .  .  .  .  .  1 .  .  .  .   .
-          2:  .  .  .  .  .  .  . .  .  .  .   .
-          3:  .  .  .  .  .  .  . 4 15 36 70 120
-cohomologyMatrix(C,low,high)
+c = {0,0};
+C = cornerComplex(M,c,low,high);
+betti C
+total: 32 44 39 20  6  1 4 15 36 70 120 189
+    0: 32 44 39 20  6  . .  .  .  .   .   .
+    1:  .  .  .  .  .  1 .  .  .  .   .   .
+    2:  .  .  .  .  .  . .  .  .  .   .   .
+    3:  .  .  .  .  .  . 4 15 36 70 120 189
+\end{verbatim}
+Applying the function cohomologyMatrix to $C$ and to $M$ 
+we see that the corner complex has captured just the
+cohomology in the regions $a\leq c$ and $a\geq c+n$:
+\begin{verbatim}
+ cohomologyMatrix(C,low,high)
       | 0    0    0   2 12 22 32 |
       | 0    0    0   1 8  15 22 |
       | 0    0    0   0 4  8  12 |
@@ -826,29 +881,28 @@ cohomologyMatrix(C,low,high)
       | 4h3  2h3  0   0 0  0  0  |
       | 12h3 7h3  2h3 0 0  0  0  |
       | 20h3 12h3 4h3 0 0  0  0  |
-betti C.dd_0
-             0 1
-      total: 1 4
-          0: 1 .
-          1: . .
-          2: . 4
-P=ker C.dd_0**E^{v};
-LP=bgg P;
-             -3 -2 -1  0
-      total:  4 16 24 15
-          0:  4 16 24 15
-coLP=apply(toList(min LP..max LP),i->prune HH^(-i) LP);
-apply(coLP,h->dim h)
-      {0, -1, 0, 4}
-M1=HH^0 LP;
-betti M1,betti M
-              0 1         0 1
-      (total: 6 4, total: 6 4)
-           2: 6 4      2: 6 4
-isIsomorphic(M,M1)
-      true
 \end{verbatim}}
-
+%betti C.dd_0
+%             0 1
+%      total: 1 4
+%          0: 1 .
+%          1: . .
+%          2: . 4
+%P=ker C.dd_0**E^{v};
+%LP=bgg P;
+%             -3 -2 -1  0
+%      total:  4 16 24 15
+%          0:  4 16 24 15
+%coLP=apply(toList(min LP..max LP),i->prune HH^(-i) LP);
+%apply(coLP,h->dim h)
+%      {0, -1, 0, 4}
+%M1=HH^0 LP;
+%betti M1,betti M
+%              0 1         0 1
+%      (total: 6 4, total: 6 4)
+%           2: 6 4      2: 6 4
+%isIsomorphic(M,M1)
+%      true
 
 The last command we would like to point out is {\tt tateExtension}. Any object in $D^b(\PP)$ can be obtained by applying the functor $\bU$ to a finite free complex of $E$-modules with terms only in the Beilinson window. The function {\tt tateExtension} recovers the Tate resolution of the corresponding object,  and allows for example to compute its hyper cohomology without passing through the corresponding complexes of $S$-modules. This is of interest even in case of a single projective space. 
 {\small \begin{verbatim}
