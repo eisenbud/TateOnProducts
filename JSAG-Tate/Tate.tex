@@ -733,7 +733,7 @@ and the morphism $\pi :X \to \PP^1$ defined at each point by the ratio of (at le
 the columns of $m$, so that the map $\pi$ is represented, in the sense above,
 by the matrix $\phi = {\rm transpose}\ m$. 
 
-For this example we take $\sF = \pi^*\sO_{\PP^1}(1)$, which is the sheaf associated to the
+For this example we take $\sF = \sO_X(1)\otimes \pi^*\sO_{\PP^1}(2)$, which is the sheaf associated to the
 graded module
 $N$ that is the first twist of the second symmetric power of the cokernel 
 of $m$.
@@ -884,7 +884,7 @@ n={1,1},
 %\end{verbatim}}
 
 \noindent
-We now compute the corner complex of $M$ at $c={0,0}$.
+We now compute the corner complex of $M$ at $c=\{0,0\}$.
 {\small \begin{verbatim}
 c = {0,0};
 C = cornerComplex(M,c,low,high);
@@ -895,6 +895,7 @@ total: 32 44 39 20  6  1 4 15 36 70 120 189
     2:  .  .  .  .  .  . .  .  .  .   .   .
     3:  .  .  .  .  .  . 4 15 36 70 120 189
 \end{verbatim}
+\frank{unfortunately the numbers in the injective part are wrong. 39 should be 45 and so on. The reason is that we obtained C by the corner construction from a complex which already was a corner complex. So this is a bug in our package!}
 %Applying the function cohomologyMatrix to $C$ and to $M$ 
 %we see that the corner complex has captured just the
 %cohomology in the regions $a\leq c$ and $a\geq c+n$:
@@ -931,7 +932,7 @@ total: 32 44 39 20  6  1 4 15 36 70 120 189
 %      true
 
 \noindent
-For further information we refer to the documentation for the function \\ {\tt composedFunctions}
+For further information, for examples for the definition of the corner complex $\cornerT c (\sF)$ for arbitrary $c \in \ZZ^t$, we refer \cite[Section 3]{EES} and to  the documentation for the function  {\tt composedFunctions}
  in our package.
 %
 %
