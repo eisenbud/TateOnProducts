@@ -333,7 +333,7 @@ of multidegrees with $low, \, high \in \ZZ^t $ and this is sufficient for all of
 %Challenge of toric varieties.
 
 
-\section{Computing Tate Resolutions}\label{sec:tate resolutions}
+\section{Tate Resolutions}\label{sec:tate resolutions}
 Each of the major applications in this package stem from the computation of a bounded part of the Tate resolution.
 Let $M$ be a finitely generated $\ZZ^t$-graded $S$-module, and let $\sF$ be the 
 corresponding sheaf on $\PP$. Let
@@ -431,7 +431,7 @@ of $H^m(\sF(i,j))$ is $d_m$.
 Among the things to note about this matrix are that the $-1$ column and both the $-2$ and $-3$ rows consist of  zeros. This corresponds to the fact that $\sF(i,j)$ has no cohomology whatsoever when $i=-1$ or when $j=-1$ or $-2$.
 
     
-\section{Computing the Beilinson Monad}\label{sec:beilinson monad}
+\section{The Beilinson Monad}\label{sec:beilinson monad}
 Let $\sF$ be a coherent sheaf on $\PP^n$. 
 Let $\CU$ denote the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
 $$ 0 \to \CU \to W\otimes \sO \to \sO(1) \to 0.$$ 
@@ -510,7 +510,11 @@ T=tateResolution(M,low,high);
 W = beilinsonWindow T
         6      1
        E  <-- E
-betti W             0 1      total: 6 1          0: 6 .          1: . 1
+betti W
+             0 1
+      total: 6 1
+          0: 6 .
+          1: . 1
  \end{verbatim}}
 
 The Beilinson monad itself is obtained by applying the $\bU$ functor to any piece of $\bT(\sF)$ which contains the Beilinson window.  This can be computed directly from the module $M$ via:
@@ -554,7 +558,8 @@ cohomologyMatrix(W,low, high)
      | 0 0 h 0 0 0 0 |
      | 0 0 0 0 0 0 0 |
      | 0 0 0 0 0 0 0 |
-tallyDegrees W      (Tally{{0, 0} => 6}, Tally{{1, 1} => 1})
+tallyDegrees W
+      (Tally{{0, 0} => 6}, Tally{{1, 1} => 1})
  \end{verbatim}}
 
 The 0th-cohomology of the Beilinson monad is a module representing the sheaf $\sF$,
@@ -570,8 +575,34 @@ isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
    true
 \end{verbatim}}
 
+Since the Beilinson window of a complex determines the complex, it determines the Tate resolution, 
+and we can compute this directly using the command {\tt tateExtension}. This allows us to compute the hypercohomology of a complex directly from the Beilinson window, a computation of interest even in case of a single projective space. For an example on $\P^1\times \P^1$, consider the Beilinson window consisting of the map defined by the variables of the exterior algebra  associated to the Cox ring.
+{\small \begin{verbatim}
+ W=beilinsonWindow T
+       1      4
+      E  <-- E              
+      -1     0
+ cohomologyMatrix(W,low,high)
+      | 0 0 0  0  0 0 0 |
+      | 0 0 0  0  0 0 0 |
+      | 0 0 0  0  0 0 0 |
+      | 0 0 2h h  0 0 0 |
+      | 0 0 0  2h 0 0 0 |
+      | 0 0 0  0  0 0 0 |
+      | 0 0 0  0  0 0 0 |
+T'=tateExtension W; 
+cohomologyMatrix(T',low,high) 
+      | 28h  18h  8h  2  12  22  32  |
+      | 20h  13h  6h  1  8   15  22  |
+      | 12h  8h   4h  0  4   8   12  |
+      | 4h   3h   2h  h  0   1   2   |
+      | 4h2  2h2  0   2h 4h  6h  8h  |
+      | 12h2 7h2  2h2 3h 8h  13h 18h |
+      | 20h2 12h2 4h2 4h 12h 20h 28h |
+\end{verbatim}}
 
-\section{Computing $R\pi_*$ of a Sheaf}\label{sec:push forward}
+
+\section{$R\pi_*$}\label{sec:push forward}
 
 In this section we explain how to compute the pushforward complex of a sheaf along a morphism
 to projective space. The main ingredient is the pushforward to a factor in a product of projective
@@ -783,7 +814,7 @@ positive $c$.
 %$\bT(\sF)$  has many intrinsically defined free subquotient complexes, called {\bf region complexes}, many of which are exact. The most interesting complexes are obtained from $t$ exact half space complexes which combines terms corresponding to $a\in \ZZ^t$ in a last quadrant with terms in a first quadrant, at an arbitrary $c \in \ZZ^t$ as an origin. These corner complexes $\cornerT c (\sF)$ coincide for $c$ in the multi-regularity range with the complexes described above. For general $c$ however neither the first quadrant part nor the last quadrant part are double complexes. Moreover the contribution to a term ${\cornerT c}^d (\sF)$ of both quadrants can overlap.
 %However, what ist true is that for any $c\in \ZZ^t$ the zeroes syzygy module $N = \ker({\cornerT c}^0 (\sF) \to {\cornerT c}^1 (\sF))$
 %is an finitely generated $E$-module such that $bgg(N)$ is linear complex of $S$-modules, which sheafifies to a monad for $\sF$.
-We illustrate this in an example taking from the function {\tt composedFunctions}. We work on 
+We illustrate this in an example . We work on 
 $\PP^1\times \PP^1$, with homogeneous coordinate ring $S$, and take
 $\sF$ to be the rank $3$ vector bundle represented by the graded module
 $M$ that is the kernel of the map given by the variables of $S$.
@@ -864,19 +895,19 @@ total: 32 44 39 20  6  1 4 15 36 70 120 189
     2:  .  .  .  .  .  . .  .  .  .   .   .
     3:  .  .  .  .  .  . 4 15 36 70 120 189
 \end{verbatim}
-Applying the function cohomologyMatrix to $C$ and to $M$ 
-we see that the corner complex has captured just the
-cohomology in the regions $a\leq c$ and $a\geq c+n$:
-\begin{verbatim}
- cohomologyMatrix(C,low,high)
-      | 0    0    0   2 12 22 32 |
-      | 0    0    0   1 8  15 22 |
-      | 0    0    0   0 4  8  12 |
-      | 0    0    0   h 0  1  2  |
-      | 4h3  2h3  0   0 0  0  0  |
-      | 12h3 7h3  2h3 0 0  0  0  |
-      | 20h3 12h3 4h3 0 0  0  0  |
-\end{verbatim}}
+%Applying the function cohomologyMatrix to $C$ and to $M$ 
+%we see that the corner complex has captured just the
+%cohomology in the regions $a\leq c$ and $a\geq c+n$:
+%\begin{verbatim}
+% cohomologyMatrix(C,low,high)
+%      | 0    0    0   2 12 22 32 |
+%      | 0    0    0   1 8  15 22 |
+%      | 0    0    0   0 4  8  12 |
+%      | 0    0    0   h 0  1  2  |
+%      | 4h3  2h3  0   0 0  0  0  |
+%      | 12h3 7h3  2h3 0 0  0  0  |
+%      | 20h3 12h3 4h3 0 0  0  0  |
+%\end{verbatim}}
 %betti C.dd_0
 %             0 1
 %      total: 1 4
@@ -899,32 +930,9 @@ cohomology in the regions $a\leq c$ and $a\geq c+n$:
 %isIsomorphic(M,M1)
 %      true
 
-The last command we would like to point out is {\tt tateExtension}. Any object in $D^b(\PP)$ can be obtained by applying the functor $\bU$ to a finite free complex of $E$-modules with terms only in the Beilinson window. The function {\tt tateExtension} recovers the Tate resolution of the corresponding object,  and allows for example to compute its hyper cohomology without passing through the corresponding complexes of $S$-modules. This is of interest even in case of a single projective space. 
-{\small \begin{verbatim}
- W=beilinsonWindow T
-       1      4
-      E  <-- E              
-      -1     0
- cohomologyMatrix(W,low,high)
-      | 0 0 0  0  0 0 0 |
-      | 0 0 0  0  0 0 0 |
-      | 0 0 0  0  0 0 0 |
-      | 0 0 2h h  0 0 0 |
-      | 0 0 0  2h 0 0 0 |
-      | 0 0 0  0  0 0 0 |
-      | 0 0 0  0  0 0 0 |
-T'=tateExtension W; 
-cohomologyMatrix(T',low,high) 
-      | 28h  18h  8h  2  12  22  32  |
-      | 20h  13h  6h  1  8   15  22  |
-      | 12h  8h   4h  0  4   8   12  |
-      | 4h   3h   2h  h  0   1   2   |
-      | 4h2  2h2  0   2h 4h  6h  8h  |
-      | 12h2 7h2  2h2 3h 8h  13h 18h |
-      | 20h2 12h2 4h2 4h 12h 20h 28h |
-\end{verbatim}}
 \noindent
-For further information we refer to  {\tt composedFunctions} and its documentation in our package.
+For further information we refer to the documentation for the function {\tt composedFunctions}
+in in our package.
 %
 %
 %strands etc
