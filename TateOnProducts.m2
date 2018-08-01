@@ -5805,3 +5805,13 @@ betti RfN
 prune HH^0 RfN
 HH^(-1) RfN == 0
 betti syz transpose presentation HH^0 RfN
+
+n={1,1}
+high=2*n,low=-high
+(S,E)=productOfProjectiveSpaces n
+M=ker vars S
+T=tateResolution(M,low,high)
+C=cornerComplex(T,{0,0})
+cohomologyMatrix(C,low,high)
+cohomologyMatrix(C,2*low-n,2*high)
+cohomologyMatrix(T,low-6*n,2*high)
