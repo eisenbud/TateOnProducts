@@ -174,17 +174,15 @@ The main functions implemented in this package are:
 
 The algorithms employed exploit the Koszul duality between polynomial rings and exterior algebras, thus turning questions of cohomology of sheaves into questions about free resolutions of modules over an exterior algebra.  The core algorithm of the package is the computation of a finite part of the {\bf Tate resolution} of a coherent sheaf, which is a doubly infinite, multigraded, free complex of free modules over an exterior algebra whose.  The functions mentioned above are easy to compute once this is done.
 
-Tate resolutions were introduced for sheaves on $\PP^n$ in \cite{EFS}.  The Macaulay2 package {\tt BGG} implements an algorithm for computing Tate resolutions for such sheaves, and for using them to compute sheaf cohomology and Beilinson monads~\cite{M2BGG}.  Tate resolutions for products of projective spaces are treated in \cite{EES}.  In for sheaves on such a product there is a major new difficulty: for a product of two or more projective spaces, each term of the Tate resolution is a free module of infinite rank.  In this package we compute  a part of this infinite object that we call a {\bf corner complex}.  Corner complexes play an essential role in \cite{EES}, and they are sufficient for our applications.
+Tate resolutions were introduced for sheaves on $\PP^n$ in \cite{EFS}.  The Macaulay2 package {\tt BGG} implements an algorithm for computing Tate resolutions for such sheaves, and for using them to compute sheaf cohomology and Beilinson monads~\cite{M2BGG}.  Tate resolutions for products of projective spaces are introduced in \cite{EES}.  
+For a product of two or more projective spaces, there is a major new difficulty, as each term of the Tate resolution is a free module of infinite rank.  
+%For sheaves on such a product there is a major new difficulty: for a product of two or more projective spaces, each term of the Tate resolution is a free module of infinite rank.  
+In this package we compute a part of this infinite object that we call a {\bf corner complex}.  Corner complexes play an essential role in \cite{EES}, and they are sufficient for our applications.
 
 This paper is organized as follows.  In Section~\ref{sec:background}, we briefly review the BGG correspondence and Tate resolution.  In Section~\ref{sec:tate resolutions}, we describe the finite part of a Tate resolution that we can actually compute.  In Section~\ref{sec:cohom tables}, we discuss the command {\tt cohomologyTable}.  
 In Section~\ref{sec:beilinson monad}, we provide a brief discussion of Beilinson monads, and discuss the command {\tt beilinsonMonad}.  In Section~\ref{sec:push forward}, we discuss derived push forward algorithms. In the final Section~\ref{sec:cornercomplex}, we introduce the corner complexes, which play a mayor role in the construction of the Tate resolutions and in many of our applications.
- 
-%a sinstead of computing the entire Tate resolution in specified homological e thus compute instead of computing , \cite{EES} also shows that certain quotientThus the theory that worked for $\PP^n$, which relied 
-%associates to sheaves are generally all infinite-dimensional. In this package we compute .
-%
 
 \section{The BGG correspondence and Tate resolutions}\label{sec:background}
-%This 
 
 %This package exploits the Koszul duality between polynomial rings and exterior algebras to turn questions of cohomology of sheaves on a product of projective space into questions about free resolutions of modules over an exterior algebra. This was done for the case of a sheaf on $\PP^n$ in
 %\cite{EFS}. The case of products of projective spaces is treated in \cite{EES}. For a product of two or more projective
@@ -194,6 +192,7 @@ In Section~\ref{sec:beilinson monad}, we provide a brief discussion of Beilinson
 
 \subsection{Review of Tate Resolutions for Projective spaces}
 Fix a field $k$ and an $(n+1)$-dimensional vector space $W$.  We let $S=\Sym W$ be the symmetric algebra, with generators in degree $1$.  We also set $V=W^*$ and let $E=\Lambda V$ be the exterior algebra on $E$, with generators in degree $1$.\footnote{Our conventions in this paper are consistent with the conventions in the Macaulay2 packages {\tt BGG} and {\tt TateOnProducts}.  See Remark~\ref{rmk:conventions} for a detailed comparison of how these conventions differ from those in \cite{EFS,EES}.}  The BGG correspondence stems from two simple observations.
+\daniel{Why is there no footnote number?}
 
 First, if $A, B, C$ are finite-dimensional vector spaces over $k$, then there is a natural bijection between  homomorphisms $A\otimes_kB\to C$ and homomorphisms
 $ B \to C\otimes_k A^*$.
@@ -224,22 +223,22 @@ $$
 A formal computation confirms that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
 
 In exactly the same way, a graded $E$-module $N$ gives rise to a linear  complex of free $S$-modules
-$$bgg(N): \ldots \to N_i \otimes S(i) \to N_{i+1} \otimes  S(i+1) \to \ldots $$.
+$$bgg(N): \ldots \to N_i \otimes S(i) \to N_{i+1} \otimes  S(i+1) \to \ldots $$
 
 Tate resolutions, as defined below, are exact complexes, and our computation depends on the fact that such a complex is
-determined by any differential. However, in general, only a truncation of the complex $bgg(M)$ exact. This corresponds to a truncation of $M$ at a degree sufficiently high to have a linear resolution over $S$. The following useful criterion shows that such a truncation is necessary, and sufficient:
+determined by any differential. However, in general, only a truncation of the complex $bgg(M)$ is exact. This corresponds to a truncation of $M$ at a degree sufficiently high to have a linear resolution over $S$. The following useful criterion shows that such a truncation is necessary, and sufficient:
 
 \begin{theorem}[Reciprocity] \cite[Theorem 3.7 and Corollary 2.4] {EFS}\label{Reciprocity}. With notation as above:
 \begin{enumerate}
  \item $bgg(M)$ is an injective resolution of the $E$-module $N$ if and only if
 $bgg(N)$ is a free resolution of $M$.
 
-\item These conditions are satisfies if and only if the Castelnuovo-Mumford regularity of $M$ is 0 and $M$ has no submodule of finite length.
+\item These conditions are satisfied if and only if the Castelnuovo-Mumford regularity of $M$ is 0 and $M$ has no submodule of finite length.
 \end{enumerate}
 \end{theorem}
 
 
-In their 1978 paper, Bernstein-Gelfand-Gelfand \cite{BGG} used the BGG correspondence to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with stable module category of $E$ module. In the same volume \cite{beilinson} Beilinson  described
+In their 1978 paper, Bernstein-Gelfand-Gelfand \cite{BGG} used the BGG correspondence to identify  the derived category $D^b(\PP^n)$ of bounded complexes of coherent sheaves on $\PP^n$ with the stable category of $E$-modules. In the same volume \cite{beilinson} Beilinson described
 $D^b(\PP^n)$ in terms of exceptional sequences.  (See Section~\ref{sec:beilinson monad} for more on Beilinson's work.)
 
 %Namely, let 
@@ -334,7 +333,7 @@ of multidegrees with $low, \, high \in \ZZ^t $ and this is sufficient for all of
 
 
 \section{Tate Resolutions}\label{sec:tate resolutions}
-Each of the major applications in this package stem from the computation of a bounded part of the Tate resolution.
+Each of the major applications in this package stems from the computation of a bounded part of the Tate resolution.
 Let $M$ be a finitely generated $\ZZ^t$-graded $S$-module, and let $\sF$ be the 
 corresponding sheaf on $\PP$. Let
 $low\leq high\in \ZZ^t$ be multi-degrees defining an interval.  The function
@@ -372,7 +371,7 @@ betti T
 \noindent
 
 \section{Computing Cohomology Tables}\label{sec:cohom tables}
-To compactly represent the dimensions of all the cohomology vector spaces of a given coherent sheaf $\sF$ we introduce the ``cohomology polynomial''
+To compactly represent the dimensions of all of the cohomology vector spaces of a given coherent sheaf $\sF$ we introduce the ``cohomology polynomial''
 $$
 \sum_{i\geq 0} (\dim H^i(\PP, \sF))h^i\in \ZZ[h].
 $$
@@ -414,8 +413,9 @@ we have:
 %$S^1$:
 {\small \begin{verbatim}
 cohomologyMatrix(S^1, low,high)
-\end{verbatim}
+\end{verbatim}}
 \noindent gives output
+{\small 
 \begin{verbatim}
      | 20h 10h 0 10 20  30  40  |
      | 12h 6h  0 6  12  18  24  |
@@ -461,9 +461,9 @@ $$
 the tensor product of the pullbacks to $\PP$ of exterior powers of the $\CU_i$. The set $\{\Lambda^a \CU | 0 \leq a \leq n=(n_1,n_2,\dots,n_t)\}$ forms a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP)$, and the Beilinson monad for $\PP$ represents a sheaf $\sF$ in terms of this exceptional collection.  See~\cite[\S2]{EES} for more details.
 
 A Beilinson monad for $\sF$ can be computed from the Tate resolution of $\sF$.  A key observation is that $\Hom(\Lambda^a \CU,\Lambda^b\CU) \cong \Lambda^{a-b} V=E_{a-b}$.  Writing $\neg z$ for the map corresponding to $z\in E$, there is thus a functor
-$
-\bU: \{ \hbox{free $E$-modules}\} \longrightarrow \{ \hbox{coherent sheaves on $\PP$} \}  \\
-$ defined by
+\[
+\bU: \{ \hbox{free $E$-modules}\} \longrightarrow \{ \hbox{coherent sheaves on $\PP$} \}  
+\] defined by
 \[
 \xymatrix{
 &E(-a)\ar[r]^-{\bU}\ar[d]^-{\cdot z}&\Lambda^a \CU\ar[d]^{\neg z}\\
