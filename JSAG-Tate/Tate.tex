@@ -93,6 +93,9 @@
 \def\gr{{\rm gr}}
 \def\init{{\rm in}}
 
+\makeatletter
+\def\blfootnote{\xdef\@thefnmark{}\@footnotetext}
+\makeatother
 
 \def\frank#1{{\bf *** Frank:} #1 {\bf ***}}
 \def\david#1{{\bf *** David:} #1 {\bf ***}}
@@ -153,7 +156,7 @@ on products of projective spaces and the derived category pushForward of a sheaf
 \maketitle
 
 %\section*{Introduction} 
-\let\thefootnote\relax\footnote{
+\blfootnote{
 \noindent AMS Subject Classification:
 Primary: 14F05 ,
 Secondary: 13D02, 14Q99 \smallbreak
@@ -168,7 +171,7 @@ The main functions implemented in this package are:
 	\item  {\tt cohomologyHashTable}, which computes all of the cohomology groups of a coherent sheaf on a product
 	of projective spaces, within a specified range of multidegrees;
 	\item  {\tt beilinsonMonad}, which computes the Beilinson monad of a sheaf on a product of projective spaces; and
-	\item {\tt diectImageComplex}, which computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
+	\item {\tt directImageComplex}, which computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
 \end{enumerate}
 %First, the code cohomologyTable computes all of the graded cohomology groups of a coherent sheaf within a specified range of multidegrees.  Second, the code beilinsonMonad computes the Beilinson monad of a sheaf on a product of projective spaces (see for background on this construction).  Third, the code pushForward computes the derived push forward of a coherent sheaf with respect to any of the natural projection maps from a product of projective spaces.
 
@@ -191,8 +194,8 @@ In Section~\ref{sec:beilinson monad}, we provide a brief discussion of Beilinson
 %part of this infinite object.
 
 \subsection{Review of Tate Resolutions for Projective spaces}
-Fix a field $k$ and an $(n+1)$-dimensional vector space $W$.  We let $S=\Sym W$ be the symmetric algebra, with generators in degree $1$.  We also set $V=W^*$ and let $E=\Lambda V$ be the exterior algebra on $E$, with generators in degree $1$.\footnote{Our conventions in this paper are consistent with the conventions in the Macaulay2 packages {\tt BGG} and {\tt TateOnProducts}.  See Remark~\ref{rmk:conventions} for a detailed comparison of how these conventions differ from those in \cite{EFS,EES}.}  The BGG correspondence stems from two simple observations.
-\daniel{Why is there no footnote number?}
+Fix a field $k$ and an $(n+1)$-dimensional vector space $W$.  We let $S=\Sym W$ be the symmetric algebra, with generators in degree $1$.  We also set $V=W^*$ and let $E=\Lambda V$ be the exterior algebra on $E$, with generators in degree\footnote{Our conventions in this paper are consistent with the conventions in the Macaulay2 packages {\tt BGG} and {\tt TateOnProducts}.  See Remark~\ref{rmk:conventions} for a detailed comparison of how these conventions differ from those in \cite{EFS,EES}.}  $1$.   The BGG correspondence stems from two simple observations.
+
 
 First, if $A, B, C$ are finite-dimensional vector spaces over $k$, then there is a natural bijection between  homomorphisms $A\otimes_kB\to C$ and homomorphisms
 $ B \to C\otimes_k A^*$.
