@@ -433,7 +433,77 @@ of $H^m(\sF(i,j))$ is $d_m$.
 
 Among the things to note about this matrix are that the $-1$ column and both the $-2$ and $-3$ rows consist of  zeros. This corresponds to the fact that $\sF(i,j)$ has no cohomology whatsoever when $i=-1$ or when $j=-1$ or $-2$.
 
+
+\section{Short Beilinson Monad}\label{sec:beilinson monad}
+Let $\sF$ be a coherent sheaf on $\PP$.  The Beilinson monad of $\sF$ provides a way to represent $\sF$ in terms of a particular exceptional collection on $\PP$ built from exterior powers of the cotangent bundles on the factors.  See~\cite{beilinson,AO,EFS,Huy} for discussion of Beilinson monads and ~\cite[\S2]{EES} for a discussion in the context of $\PP$.  As explained in~\cite[\S2]{EES}, the Beilnson mood for $\sF$ is determined by the subquotient complex of $\bT(\sF)$ consisting of summands generated in the finite range of degrees $0\leq a \leq n$.  This range of degrees is known as the {\em Beilinson window,} and a Beilinson monad for a $\sF$ can be easily computed from any finite part of the Tate resolution that contains the Beilinson window.  
+
+For the computation, we start with a module $M$ representing a coherent sheaf $\sF$ on $\PP$. Executing
+{\small \begin{verbatim}
+B = beilinsonMonad M
+\end{verbatim}}
+\noindent produces a complex $B$ of graded $S$-modules such that the corresponding complex $\widetilde{B}$ of sheaves on $\PP$ is the Beilinson monad for $\sF$.
     
+For example, if we take $M$ to be a twist of the syzygy module of the maximal ideal in the bihomogeneous
+coordinate ring $S$ of $\PP=\PP^1\times \PP^2$, we can execute:
+{\small \begin{verbatim}
+M =  S^{{1,1}} ** ker vars S
+%cohomologyMatrix (M,{-3,-3}, {3,3})
+\end{verbatim}}
+%This outputs:
+%{\small \begin{verbatim}
+%      | 75h 30h 15  60  105 150  195  |
+%      | 48h 20h 8   36  64  92   120  |
+%      | 27h 12h 3   18  33  48   63   |
+%      | 12h 6h  0   6   12  18   24   |
+%      | 3h  2h  h   0   1   2    3    |
+%      | 0   0   0   0   0   0    0    |
+%      | 3h3 0   3h2 6h2 9h2 12h2 15h2 |
+%\end{verbatim}}
+     %Since $\bU E(a)$ is nonzero only when $a$ is in the range $-n\leq a \leq 0$, the output of the functor $\bU$ only depends on the piece of $\bT(\sF)$ with generators lying in the Beilinson window.  
+The command \verb beilinsonWindow \ computes the subquotient complex of the Tate resolution in the degrees $0\leq a \leq n$.  In our example, this complex only have two terms:
+{\small \begin{verbatim}
+T=tateResolution(M,low,high);
+W = beilinsonWindow T
+        6      1
+       E  <-- E
+betti W
+             0 1
+      total: 6 1
+          0: 6 .
+          1: . 1
+ \end{verbatim}}
+The Beilinson monad itself is obtained by applying a certain $\bU$ functor (see \cite[\S2]{EES}) to any piece of $\bT(\sF)$ which contains the Beilinson window.  This is computed directly from the module $M$ via:
+\begin{verbatim}
+B = beilinsonMonad M
+\end{verbatim}
+which, in this case, gives a two-term complex:
+{\small
+\begin{verbatim}     
+ 6
+S  <-- cokernel {1, 1} | x_(1,2)  |
+                {1, 1} | -x_(1,1) |
+                {1, 1} | x_(1,0)  |
+\end{verbatim}}
+Macaulay2 computes this by computing sufficiently many terms of the Tate resolution
+of $\sF$, extracting the terms
+that belong to the Beilinson window, and then applying the functor $\bU$.
+
+The 0th-cohomology of the Beilinson monad is a module representing the sheaf $\sF$,
+while the other cohomology is trivial as a sheaf. However, one caveat is worth highlighting.   Since $B$ is a complex of $S$-modules, 
+its 0th-cohomology will only equal the module $M$ in sufficiently high degrees.
+For instance:
+{\small
+\begin{verbatim}
+isIsomorphic(HH^0 B ,M)
+   false
+isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
+   true
+\end{verbatim}}
+\noindent Similarly, the other cohomology of $B$ will only be trivial in sufficiently high degrees. 
+
+    
+
+
 \section{The Beilinson Monad}\label{sec:beilinson monad}
 Let $\sF$ be a coherent sheaf on $\PP^n$. 
 Let $\CU$ denote the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
