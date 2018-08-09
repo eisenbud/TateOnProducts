@@ -434,7 +434,7 @@ of $H^m(\sF(i,j))$ is $d_m$.
 Among the things to note about this matrix are that the $-1$ column and both the $-2$ and $-3$ rows consist of  zeros. This corresponds to the fact that $\sF(i,j)$ has no cohomology whatsoever when $i=-1$ or when $j=-1$ or $-2$.
 
 
-\section{Short Beilinson Monad}\label{sec:beilinson monad}
+\section{The Beilinson Monad}\label{sec:beilinson monad}
 Let $\sF$ be a coherent sheaf on $\PP$.  The Beilinson monad of $\sF$ is a complex of sheaves $\sB$ whose terms are direct sums of sheaves from an exceptional collection on $\PP$ built from exterior powers of the cotangent bundles on the factors, and whose homology groups satisfy
 $$
 H^{i}\sB = \begin{cases} \sF & if\  $i=0$\\
@@ -454,8 +454,8 @@ For example, if we take $M$ to be a twist of the syzygy module of the maximal id
 coordinate ring $S$ of $\PP=\PP^1\times \PP^2$, we can execute:
 {\small \begin{verbatim}
 M =  S^{{1,1}} ** ker vars S
-%cohomologyMatrix (M,{-3,-3}, {3,3})
 \end{verbatim}}
+%cohomologyMatrix (M,{-3,-3}, {3,3})
 %This outputs:
 %{\small \begin{verbatim}
 %      | 75h 30h 15  60  105 150  195  |
@@ -507,188 +507,187 @@ isIsomorphic(HH^0 B ,M)
 isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
    true
 \end{verbatim}}
-\noindent Similarly, the other cohomology of $B$ will have irrelevant support, and therefore will be 0 in sufficiently positive degree. 
+\noindent Similarly, the other cohomology of $B$ will have irrelevant support, and therefore will be 0 in sufficiently positive multi-degrees.
 \fix{do we need to clarify that ``sufficiently positive degree`` is NOT the same as ``sufficiently high total degree''?}
 
     
-
-
-\section{The Beilinson Monad}\label{sec:beilinson monad}
-Let $\sF$ be a coherent sheaf on $\PP^n$. 
-Let $\CU$ denote the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
-$$ 0 \to \CU \to W\otimes \sO \to \sO(1) \to 0.$$ 
-In~\cite{beilinson}, Beilinson shows that both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
-$\{ \Lambda^k \CU | k=0, \ldots, n\}$ form what is nowadays called a semi-orthogonal full exceptional  sequences for $D^b(\PP^n)$.
-%A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
-%$$ 
-%0 \to \Lambda^n \CU \boxtimes \sO(-n) \to \ldots \to \CU \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
+%
+%
+%\section{The Beilinson Monad}\label{sec:beilinson monad}
+%Let $\sF$ be a coherent sheaf on $\PP^n$. 
+%Let $\CU$ denote the universal rank $n$ subbundle on $\PP^n=\PP(W)$:
+%$$ 0 \to \CU \to W\otimes \sO \to \sO(1) \to 0.$$ 
+%In~\cite{beilinson}, Beilinson shows that both $\{ \sO(-k) | k=1,\ldots,n\}$ and 
+%$\{ \Lambda^k \CU | k=0, \ldots, n\}$ form what is nowadays called a semi-orthogonal full exceptional  sequences for $D^b(\PP^n)$.
+%%A key point is, that the diagonal $\Delta \subset \PP^n \times \PP^n$ has a Koszul resolution
+%%$$ 
+%%0 \to \Lambda^n \CU \boxtimes \sO(-n) \to \ldots \to \CU \boxtimes \sO(-1) \to \sO \to \sO_\Delta \to 0
+%%$$
+%%where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
+%The Beilinson monad of $\sF$ provides a way to represent $\sF$ in terms of the second of these exceptional collections $\CU$.  See~\cite{beilinson,AO,EFS,Huy} for discussion of Beilinson monads.
+%
+%%There is a functor:
+%% $$\diagram
+%% \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
+%%  &\omega_E(i) & \mapsto & \Lambda^i \CU \subset \Lambda^i W \otimes \sO \cr
+%%&\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
+%%&\omega_E(j) &\mapsto& \Lambda^j \CU \subset \Lambda^j W \otimes \sO \cr
+%%\enddiagram
+%%$$
+%
+%
+%Beilinson's results carry over to products of projective spaces.  We let $\CU_i$ denote the universal rank $n_i$ subbundle on $\PP^{n_i}$.  For $a\in \ZZ^{t}$ we set
 %$$
-%where $A \boxtimes B = pr_1^* A \otimes pr_2^* B$ for  coherent sheaf $A,B$ on $\PP^n$ denotes their tensor product on $\PP^n \times \PP^n$ after pull back along the first and second projection.
-The Beilinson monad of $\sF$ provides a way to represent $\sF$ in terms of the second of these exceptional collections $\CU$.  See~\cite{beilinson,AO,EFS,Huy} for discussion of Beilinson monads.
-
-%There is a functor:
-% $$\diagram
-% \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP^n$} \}   \cr
-%  &\omega_E(i) & \mapsto & \Lambda^i \CU \subset \Lambda^i W \otimes \sO \cr
-%&\dTo^{a\cdot}&&   \dTo_{\neg a} \cr
-%&\omega_E(j) &\mapsto& \Lambda^j \CU \subset \Lambda^j W \otimes \sO \cr
-%\enddiagram
+%\Lambda^a \CU := \boxtimes_{i=1}^t \Lambda^{a_i} \CU_i=\pi_1^*\Lambda^{a_1}\CU_1 \otimes \cdots \otimes \pi_t^*\Lambda^{a_t} \CU_t,
 %$$
+%the tensor product of the pullbacks to $\PP$ of exterior powers of the $\CU_i$. The set $\{\Lambda^a \CU | 0 \leq a \leq n=(n_1,n_2,\dots,n_t)\}$ forms a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP)$, and the Beilinson monad for $\PP$ represents a sheaf $\sF$ in terms of this exceptional collection.  See~\cite[\S2]{EES} for more details.
+%
+%A Beilinson monad for $\sF$ can be computed from the Tate resolution of $\sF$.  A key observation is that $\Hom(\Lambda^a \CU,\Lambda^b\CU) \cong \Lambda^{a-b} V=E_{a-b}$.  Writing $\neg z$ for the map corresponding to $z\in E$, there is thus a functor
+%\[
+%\bU: \{ \hbox{free $E$-modules}\} \longrightarrow \{ \hbox{coherent sheaves on $\PP$} \}  
+%\] defined by
+%\[
+%\xymatrix{
+%&E(-a)\ar[r]^-{\bU}\ar[d]^-{\cdot z}&\Lambda^a \CU\ar[d]^{\neg z}\\
+%&E(-b)\ar[r]^-{\bU}&\Lambda^b \CU\\
+%}
+%\]
+%% $$\diagram
+%% \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP$} \}   \cr
+%%  &E(a) & \mapsto & \Lambda^a \CU \cr
+%%&\dTo^{z\cdot}&&   \dTo_{\neg z} \cr
+%%&E(b) &\mapsto& \Lambda^b \CU  \cr
+%%\enddiagram.
+%%$$
+% %to $\bT(\sF)$ for $a \in \Lambda^{i-j} V \subset E$ a homogeneous element of degree $j-i$. 
+%One of Beilinson's main theorems, transposed to the case of a product of projective spaces, shows that the complex $\bU(\sF)$ is quasi-isomorphic to the original sheaf $\sF$.  Namely: $\bU(\sF)$ only has homology at position $0$, and there we have $ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$
+%
+%Since  $\Lambda^a \CU$ is only nonzero for $a$ in the range $0 \le a \le n$, the complex $\bU(\sF)$ in fact depends only on the  part of $\bT(\sF)$ consisting of free $E$-modules generated in degrees $0\le a \le n$.  This range is known as the {\bf Beilinson window}.  We can thus  compute a Beilinson monad for $\sF$ from any piece of the Tate resolution $\bT(\sF)$ which contains the Beilinson window.
+%
+%For the computation, we start with a module $M$ representing a coherent sheaf $\sF$ on $\PP$. Executing
+%{\small \begin{verbatim}
+%B = beilinsonMonad M
+%\end{verbatim}}
+%produces a complex $B$ of graded $S$-modules such that the corresponding complex $\widetilde{B}$ of sheaves on $\PP$ is the Beilinson monad $\bU(\sF)$.  For example, if we take $M$ to be a twist of the syzygy module of the maximal ideal in the bihomogeneous
+%coordinate ring $S$ of $\PP=\PP^1\times \PP^2$, we can execute:
+%{\small \begin{verbatim}
+%M =  S^{{1,1}} ** ker vars S
+%cohomologyMatrix (M,{-3,-3}, {3,3})
+%\end{verbatim}}
+%This outputs:
+%{\small \begin{verbatim}
+%      | 75h 30h 15  60  105 150  195  |
+%      | 48h 20h 8   36  64  92   120  |
+%      | 27h 12h 3   18  33  48   63   |
+%      | 12h 6h  0   6   12  18   24   |
+%      | 3h  2h  h   0   1   2    3    |
+%      | 0   0   0   0   0   0    0    |
+%      | 3h3 0   3h2 6h2 9h2 12h2 15h2 |
+%\end{verbatim}}
+%     
+%
+%Since $\bU E(a)$ is nonzero only when $a$ is in the range $-n\leq a \leq 0$, the output of the functor $\bU$ only depends on the piece of $\bT(\sF)$ with generators lying in the Beilinson window.  The command \verb beilinsonWindow \ computes the corresponding subquotient complex of the Tate resolution:
+%{\small \begin{verbatim}
+%T=tateResolution(M,low,high);
+%W = beilinsonWindow T
+%        6      1
+%       E  <-- E
+%betti W
+%             0 1
+%      total: 6 1
+%          0: 6 .
+%          1: . 1
+% \end{verbatim}}
+%
+%The Beilinson monad itself is obtained by applying the $\bU$ functor to any piece of $\bT(\sF)$ which contains the Beilinson window.  This can be computed directly from the module $M$ via:
+%\begin{verbatim}
+%B = beilinsonMonad M
+%\end{verbatim}
+%which, in this case, gives a two-term complex:
+%{\small
+%\begin{verbatim}     
+% 6
+%S  <-- cokernel {1, 1} | x_(1,2)  |
+%                {1, 1} | -x_(1,1) |
+%                {1, 1} | x_(1,0)  |
+%\end{verbatim}}
+%
+%\noindent
+%whose differential is given by the matrix
+%{\small
+%\begin{verbatim}
+%   | x_(0,1)x_(1,1)  x_(0,1)x_(1,2)  0               | 
+%   | -x_(0,0)x_(1,1) -x_(0,0)x_(1,2) 0               | 
+%   | -x_(0,1)x_(1,0) 0               x_(0,1)x_(1,2)  |
+%   | x_(0,0)x_(1,0)  0               -x_(0,0)x_(1,2) |
+%   | 0               -x_(0,1)x_(1,0) -x_(0,1)x_(1,1) |
+%   | 0               x_(0,0)x_(1,0)  x_(0,0)x_(1,1)  |
+%\end{verbatim}
+%}
+%
+%Macaulay2 computes this by first computing sufficiently many terms of the Tate resolution
+%of $\sF$, extracting  the terms
+%that belong to the "Beilinson window", and  applying the Beilinson functor.
+%We can take the cohomology matrix of the Beilinson window to understand
+%the terms that are there:
+%{\small
+%\begin{verbatim}
+%cohomologyMatrix(W,low, high)
+%     | 0 0 0 0 0 0 0 |
+%     | 0 0 0 0 0 0 0 |
+%     | 0 0 0 0 0 0 0 |
+%     | 0 0 0 6 0 0 0 |
+%     | 0 0 h 0 0 0 0 |
+%     | 0 0 0 0 0 0 0 |
+%     | 0 0 0 0 0 0 0 |
+%tallyDegrees W
+%      (Tally{{0, 0} => 6}, Tally{{1, 1} => 1})
+% \end{verbatim}}
+%
+%The 0th-cohomology of the Beilinson monad is a module representing the sheaf $\sF$,
+%while the other cohomology is trivial as a sheaf. However, one should be careful, 
+%as this is not necessarily true as modules!
+% In our example, $M$ has a generator in degree $\{-1,1\}$, but ${\rm H}^0 B$ does not.
+%To see that they are the same sheaves, we need to truncate appropriately;
+%{\small
+%\begin{verbatim}
+%isIsomorphic(HH^0 B ,M)
+%   false
+%isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
+%   true
+%\end{verbatim}}
+%
+%Since the Beilinson window of a complex determines the complex, it determines the Tate resolution, 
+%and we can compute this directly using the command {\tt tateExtension}. This allows us to compute the hypercohomology of a complex directly from the Beilinson window, a computation of interest even in case of a single projective space. For an example on $\P^1\times \P^1$, consider the Beilinson window consisting of the map defined by the variables of the exterior algebra  associated to the Cox ring.
+%{\small \begin{verbatim}
+% W=beilinsonWindow T
+%       1      4
+%      E  <-- E              
+%      -1     0
+% cohomologyMatrix(W,low,high)
+%      | 0 0 0  0  0 0 0 |
+%      | 0 0 0  0  0 0 0 |
+%      | 0 0 0  0  0 0 0 |
+%      | 0 0 2h h  0 0 0 |
+%      | 0 0 0  2h 0 0 0 |
+%      | 0 0 0  0  0 0 0 |
+%      | 0 0 0  0  0 0 0 |
+%T'=tateExtension W; 
+%cohomologyMatrix(T',low,high) 
+%      | 28h  18h  8h  2  12  22  32  |
+%      | 20h  13h  6h  1  8   15  22  |
+%      | 12h  8h   4h  0  4   8   12  |
+%      | 4h   3h   2h  h  0   1   2   |
+%      | 4h2  2h2  0   2h 4h  6h  8h  |
+%      | 12h2 7h2  2h2 3h 8h  13h 18h |
+%      | 20h2 12h2 4h2 4h 12h 20h 28h |
+%\end{verbatim}}
 
 
-Beilinson's results carry over to products of projective spaces.  We let $\CU_i$ denote the universal rank $n_i$ subbundle on $\PP^{n_i}$.  For $a\in \ZZ^{t}$ we set
-$$
-\Lambda^a \CU := \boxtimes_{i=1}^t \Lambda^{a_i} \CU_i=\pi_1^*\Lambda^{a_1}\CU_1 \otimes \cdots \otimes \pi_t^*\Lambda^{a_t} \CU_t,
-$$
-the tensor product of the pullbacks to $\PP$ of exterior powers of the $\CU_i$. The set $\{\Lambda^a \CU | 0 \leq a \leq n=(n_1,n_2,\dots,n_t)\}$ forms a semi-orthogonal full exceptional exceptional sequences for $D^b(\PP)$, and the Beilinson monad for $\PP$ represents a sheaf $\sF$ in terms of this exceptional collection.  See~\cite[\S2]{EES} for more details.
-
-A Beilinson monad for $\sF$ can be computed from the Tate resolution of $\sF$.  A key observation is that $\Hom(\Lambda^a \CU,\Lambda^b\CU) \cong \Lambda^{a-b} V=E_{a-b}$.  Writing $\neg z$ for the map corresponding to $z\in E$, there is thus a functor
-\[
-\bU: \{ \hbox{free $E$-modules}\} \longrightarrow \{ \hbox{coherent sheaves on $\PP$} \}  
-\] defined by
-\[
-\xymatrix{
-&E(-a)\ar[r]^-{\bU}\ar[d]^-{\cdot z}&\Lambda^a \CU\ar[d]^{\neg z}\\
-&E(-b)\ar[r]^-{\bU}&\Lambda^b \CU\\
-}
-\]
-% $$\diagram
-% \bU: &\{ \hbox{free $E$-modules}\} & \rTo & \{ \hbox{coherent sheaves on $\PP$} \}   \cr
-%  &E(a) & \mapsto & \Lambda^a \CU \cr
-%&\dTo^{z\cdot}&&   \dTo_{\neg z} \cr
-%&E(b) &\mapsto& \Lambda^b \CU  \cr
-%\enddiagram.
-%$$
- %to $\bT(\sF)$ for $a \in \Lambda^{i-j} V \subset E$ a homogeneous element of degree $j-i$. 
-One of Beilinson's main theorems, transposed to the case of a product of projective spaces, shows that the complex $\bU(\sF)$ is quasi-isomorphic to the original sheaf $\sF$.  Namely: $\bU(\sF)$ only has homology at position $0$, and there we have $ \rH^* \bU(\sF) = \rH^0 \bU(\sF) \cong \sF.$
-
-Since  $\Lambda^a \CU$ is only nonzero for $a$ in the range $0 \le a \le n$, the complex $\bU(\sF)$ in fact depends only on the  part of $\bT(\sF)$ consisting of free $E$-modules generated in degrees $0\le a \le n$.  This range is known as the {\bf Beilinson window}.  We can thus  compute a Beilinson monad for $\sF$ from any piece of the Tate resolution $\bT(\sF)$ which contains the Beilinson window.
-
-For the computation, we start with a module $M$ representing a coherent sheaf $\sF$ on $\PP$. Executing
-{\small \begin{verbatim}
-B = beilinsonMonad M
-\end{verbatim}}
-produces a complex $B$ of graded $S$-modules such that the corresponding complex $\widetilde{B}$ of sheaves on $\PP$ is the Beilinson monad $\bU(\sF)$.  For example, if we take $M$ to be a twist of the syzygy module of the maximal ideal in the bihomogeneous
-coordinate ring $S$ of $\PP=\PP^1\times \PP^2$, we can execute:
-{\small \begin{verbatim}
-M =  S^{{1,1}} ** ker vars S
-cohomologyMatrix (M,{-3,-3}, {3,3})
-\end{verbatim}}
-This outputs:
-{\small \begin{verbatim}
-      | 75h 30h 15  60  105 150  195  |
-      | 48h 20h 8   36  64  92   120  |
-      | 27h 12h 3   18  33  48   63   |
-      | 12h 6h  0   6   12  18   24   |
-      | 3h  2h  h   0   1   2    3    |
-      | 0   0   0   0   0   0    0    |
-      | 3h3 0   3h2 6h2 9h2 12h2 15h2 |
-\end{verbatim}}
-     
-
-Since $\bU E(a)$ is nonzero only when $a$ is in the range $-n\leq a \leq 0$, the output of the functor $\bU$ only depends on the piece of $\bT(\sF)$ with generators lying in the Beilinson window.  The command \verb beilinsonWindow \ computes the corresponding subquotient complex of the Tate resolution:
-{\small \begin{verbatim}
-T=tateResolution(M,low,high);
-W = beilinsonWindow T
-        6      1
-       E  <-- E
-betti W
-             0 1
-      total: 6 1
-          0: 6 .
-          1: . 1
- \end{verbatim}}
-
-The Beilinson monad itself is obtained by applying the $\bU$ functor to any piece of $\bT(\sF)$ which contains the Beilinson window.  This can be computed directly from the module $M$ via:
-\begin{verbatim}
-B = beilinsonMonad M
-\end{verbatim}
-which, in this case, gives a two-term complex:
-{\small
-\begin{verbatim}     
- 6
-S  <-- cokernel {1, 1} | x_(1,2)  |
-                {1, 1} | -x_(1,1) |
-                {1, 1} | x_(1,0)  |
-\end{verbatim}}
-
-\noindent
-whose differential is given by the matrix
-{\small
-\begin{verbatim}
-   | x_(0,1)x_(1,1)  x_(0,1)x_(1,2)  0               | 
-   | -x_(0,0)x_(1,1) -x_(0,0)x_(1,2) 0               | 
-   | -x_(0,1)x_(1,0) 0               x_(0,1)x_(1,2)  |
-   | x_(0,0)x_(1,0)  0               -x_(0,0)x_(1,2) |
-   | 0               -x_(0,1)x_(1,0) -x_(0,1)x_(1,1) |
-   | 0               x_(0,0)x_(1,0)  x_(0,0)x_(1,1)  |
-\end{verbatim}
-}
-
-Macaulay2 computes this by first computing sufficiently many terms of the Tate resolution
-of $\sF$, extracting  the terms
-that belong to the "Beilinson window", and  applying the Beilinson functor.
-We can take the cohomology matrix of the Beilinson window to understand
-the terms that are there:
-{\small
-\begin{verbatim}
-cohomologyMatrix(W,low, high)
-     | 0 0 0 0 0 0 0 |
-     | 0 0 0 0 0 0 0 |
-     | 0 0 0 0 0 0 0 |
-     | 0 0 0 6 0 0 0 |
-     | 0 0 h 0 0 0 0 |
-     | 0 0 0 0 0 0 0 |
-     | 0 0 0 0 0 0 0 |
-tallyDegrees W
-      (Tally{{0, 0} => 6}, Tally{{1, 1} => 1})
- \end{verbatim}}
-
-The 0th-cohomology of the Beilinson monad is a module representing the sheaf $\sF$,
-while the other cohomology is trivial as a sheaf. However, one should be careful, 
-as this is not necessarily true as modules!
- In our example, $M$ has a generator in degree $\{-1,1\}$, but ${\rm H}^0 B$ does not.
-To see that they are the same sheaves, we need to truncate appropriately;
-{\small
-\begin{verbatim}
-isIsomorphic(HH^0 B ,M)
-   false
-isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
-   true
-\end{verbatim}}
-
-Since the Beilinson window of a complex determines the complex, it determines the Tate resolution, 
-and we can compute this directly using the command {\tt tateExtension}. This allows us to compute the hypercohomology of a complex directly from the Beilinson window, a computation of interest even in case of a single projective space. For an example on $\P^1\times \P^1$, consider the Beilinson window consisting of the map defined by the variables of the exterior algebra  associated to the Cox ring.
-{\small \begin{verbatim}
- W=beilinsonWindow T
-       1      4
-      E  <-- E              
-      -1     0
- cohomologyMatrix(W,low,high)
-      | 0 0 0  0  0 0 0 |
-      | 0 0 0  0  0 0 0 |
-      | 0 0 0  0  0 0 0 |
-      | 0 0 2h h  0 0 0 |
-      | 0 0 0  2h 0 0 0 |
-      | 0 0 0  0  0 0 0 |
-      | 0 0 0  0  0 0 0 |
-T'=tateExtension W; 
-cohomologyMatrix(T',low,high) 
-      | 28h  18h  8h  2  12  22  32  |
-      | 20h  13h  6h  1  8   15  22  |
-      | 12h  8h   4h  0  4   8   12  |
-      | 4h   3h   2h  h  0   1   2   |
-      | 4h2  2h2  0   2h 4h  6h  8h  |
-      | 12h2 7h2  2h2 3h 8h  13h 18h |
-      | 20h2 12h2 4h2 4h 12h 20h 28h |
-\end{verbatim}}
-
-
-\section{$R\pi_*$}\label{sec:push forward}
-
-In this section we explain how to compute the pushforward complex of a sheaf along a morphism
+\section{The direct image complex}\label{sec:push forward}
+This package also enables the computation of the pushforward complex of a sheaf along a morphism
 to projective space. The main ingredient is the pushforward to a factor in a product of projective
-spaces, and we explain this first.
+spaces, and we explain this first. 
 
 Let $I \subset \{0,\ldots,t-1 \}$ be a proper subset and let
 $$ \pi \colon\PP \to  \PP^I=\prod_{i \in  I} \PP^{n_{i+1}}$$
@@ -698,127 +697,154 @@ the function
 directImageComplex(M,I)
 \end{verbatim}}
 \noindent computes a complex of $S_I = \Sym (\oplus_{i \in I} W_{i+1})$-modules, whose sheafication
-is the (minimal) Beilinson complex representing the direct image complex $R\pi_* \sF$ in $D^b(\PP^I)$. 
+is the (minimal) Beilinson complex representing the direct image complex $R\pi_* \sF$ in $D^b(\PP^I)$.  (See~\cite[Corollary 0.3]{EES} for the related theorem).
 
-Let $J=\{0,\ldots,t-1\} \setminus I$.
-The routine uses 
-the "strand" complex
-$$
-strand(T,c,J)
-$$
-defined from the Tate resolution $T=\bT(\sF)$ as the sum of the terms
-corresponding to the vector spaces $H^p(\sF(a))$ with $a_{j+1}=c_{j+1}$ for $j \in J$.
-This sum is a complex over $E_I= \Lambda( \oplus_{i\in I} V_{i+1})$.
- The key fact is that, for $c=(0,\dots,0) \in \ZZ^t$, 
- $
-strand(T,c,J)
+
+The key idea is that an appropriate multi-graded strand of the Tate resolution of $\sF$ is a Tate resolutions for $R\pi_*(\sF)$ on the image.  (While we have focused on Tate resolutions of sheaves, one can also define the Tate resolution for a complex of sheaves, or for an element of the derived category such as $R\pi_*(\sF)$.)
+
+For example, let $\sF=\cO_{\PP^1\times \PP^2}$, represented by the module $S^1$ and let $\pi:\PP^1\times \PP^2\to \PP^1$.  As in \S3, we have:
+\begin{verbatim}
+{\small 
+cohomologyMatrix(S^1, {-3,-3},{3,3})
+\begin{verbatim}
+     | 20h 10h 0 10 20  30  40  |
+     | 12h 6h  0 6  12  18  24  |
+     | 6h  3h  0 3  6   9   12  |
+     | 2h  h   0 1  2   3   4   |
+     | 0   0   0 0  0   0   0   |
+     | 0   0   0 0  0   0   0   |
+     | 2h3 h3  0 h2 2h2 3h2 4h2 |
+\end{verbatim}
+The far left vertical column of this matrix corresponds to the subquotient of $\bT(\sF)$ consisting of summands generated in degree $(-3,*)$.  That subcomplex, which can be computed by
+\begin{verbatim}
+T = tateResolution(S^1,{-3,-3},{3,3});
+strand(T,??,{1})
+\end{verbatim}
+is the Tate resolution of $R\pi_*(\sF(-3,0))$ on $\PP^2$.  (Note that by the K\"unneth formula, $R^0\pi_* \sF(-3,0))=0$ and
+\[
+R^1\pi_*\sF(-3,0)\cong H^1(\PP^1,\cO_{\PP^1}(-3))\otimes \cO_{\PP^2}[-1] \cong \cO_{\PP^2}^2[-1]
+\]
+where $[-1]$ indicates that the sheaf lies in cohomological degree $1$.)  Since we can construct a Beilinson monad from a Tate resolution, as described in \S\ref{sec:beilinson monad}, we can compute a Beilinson monad for $R\pi_*(\sF(-3,0))$ directly from the $(-3,*)$-strand of its Tate resolution.
+
+
+%
+%
+%
+%Let $J=\{0,\ldots,t-1\} \setminus I$.
+%The routine uses 
+%the "strand" complex
+%$$
+%strand(T,c,J)
+%$$
+%defined from the Tate resolution $T=\bT(\sF)$ as the sum of the terms
+%corresponding to the vector spaces $H^p(\sF(a))$ with $a_{j+1}=c_{j+1}$ for $j \in J$.
+%This sum is a complex over $E_I= \Lambda( \oplus_{i\in I} V_{i+1})$.
+% The key fact is that, for $c=(0,\dots,0) \in \ZZ^t$, 
+% $
+%strand(T,c,J)
+%$
+% is the Tate resolution of $R\pi_* \sF \in D^b(\PP^I)$.
+%Thus applying the $\bU$ functor on $\PP^I$
+%gives the Beilinson monad for $R\pi_* \sF \in D^b(\PP^I)$.
+
+%Here is an example:
+%{\small \begin{verbatim}
+%m=matrix{{x_(1,0),x_(1,1)},{x_(1,1),x_(1,2)}}|
+%matrix{{x_(0,0),x_(0,1),0},{0,x_(0,0),x_(0,1)}}
+%     | x_(1,0) x_(1,1) x_(0,0) x_(0,1) 0       |
+%     | x_(1,1) x_(1,2) 0       x_(0,0) x_(0,1) |
+%              2       5
+%      Matrix S  <--- S
+%radical annihilator coker m
+%                          2
+%      ideal (x   , x   , x    - x   x   )
+%              0,1   0,0   1,1    1,0 1,2
+%M=ker m;
+%\end{verbatim}}
+% 
+% \noindent
+%$M$ represents a rank 3 vector bundle $\sF$ on $\PP^1\times \PP^2$, since  $\coker \rm m$ sheafifies to the zero sheaf. We compute the \emph{jumping locus},  that is, the locus of points $p \in \PP^2$ where $\sF\otimes \sO_{\PP^1\times p} \not\cong \sO_{\PP^1}^3(-1)$.
+%{\small \begin{verbatim}
+%T=tateResolution(M,low,high); 
+%cohomologyMatrix(T,low,high)
+%      | 74h  52h  30h 8h  14   36   58   |
+%      | 42h  30h  18h 6h  6    18   30   |
+%      | 19h  14h  9h  4h  1    6    11   |
+%      | 5h   4h   3h  2h  h    0    1    |
+%      | 0    0    0   0   0    0    0    |
+%      | 4h3  2h3  0   2h2 4h2  6h2  8h2  |
+%      | 17h3 10h3 3h3 4h2 11h2 18h2 25h2 |
+%cohomologyMatrix(strand(T,{0,0},{0}),low,high)
+%      | 0 0 0 8h  0 0 0 |
+%      | 0 0 0 6h  0 0 0 |
+%      | 0 0 0 4h  0 0 0 |
+%      | 0 0 0 2h  0 0 0 |
+%      | 0 0 0 0   0 0 0 |
+%      | 0 0 0 2h2 0 0 0 |
+%      | 0 0 0 4h2 0 0 0 | 
+%RpiM=directImageComplex(M,{1});
+%betti RpiM
+%             -1 0
+%      total:  2 2
+%          1:  2 2
+%\end{verbatim}
+%\noindent The one differential of this complex is
+%\begin{verbatim}
+%RpiM.dd_0
+%      | -x_(0,0) x_(0,1)  |
+%      | x_(0,1)  -x_(0,2) |
+%\end{verbatim}
+%\noindent and thus the jumping locus is the conic defined by the determinant of this matrix. We can also compute:
+%\begin{verbatim}
+%HH^1 RpiM
+%      cokernel | -x_(0,0) x_(0,1)  |
+%               | x_(0,1)  -x_(0,2) |
+%HH^0 RpiM == 0 
+%     true 
+% \end{verbatim}}
+
+\medskip
+
+We now address the general problem of computing $R\pi_* \sF$ of a sheaf $\sF$ on a projective scheme $X$ under a morphism 
 $
- is the Tate resolution of $R\pi_* \sF \in D^b(\PP^I)$.
-Thus applying the $\bU$ functor on $\PP^I$
-gives the Beilinson monad for $R\pi_* \sF \in D^b(\PP^I)$.
-
-Here is an example:
-{\small \begin{verbatim}
-m=matrix{{x_(1,0),x_(1,1)},{x_(1,1),x_(1,2)}}|
-matrix{{x_(0,0),x_(0,1),0},{0,x_(0,0),x_(0,1)}}
-     | x_(1,0) x_(1,1) x_(0,0) x_(0,1) 0       |
-     | x_(1,1) x_(1,2) 0       x_(0,0) x_(0,1) |
-              2       5
-      Matrix S  <--- S
-radical annihilator coker m
-                          2
-      ideal (x   , x   , x    - x   x   )
-              0,1   0,0   1,1    1,0 1,2
-M=ker m;
-\end{verbatim}}
- 
- \noindent
-$M$ represents a rank 3 vector bundle $\sF$ on $\PP^1\times \PP^2$, since  $\coker \rm m$ sheafifies to the zero sheaf. We compute the \emph{jumping locus},  that is, the locus of points $p \in \PP^2$ where $\sF\otimes \sO_{\PP^1\times p} \not\cong \sO_{\PP^1}^3(-1)$.
-{\small \begin{verbatim}
-T=tateResolution(M,low,high); 
-cohomologyMatrix(T,low,high)
-      | 74h  52h  30h 8h  14   36   58   |
-      | 42h  30h  18h 6h  6    18   30   |
-      | 19h  14h  9h  4h  1    6    11   |
-      | 5h   4h   3h  2h  h    0    1    |
-      | 0    0    0   0   0    0    0    |
-      | 4h3  2h3  0   2h2 4h2  6h2  8h2  |
-      | 17h3 10h3 3h3 4h2 11h2 18h2 25h2 |
-cohomologyMatrix(strand(T,{0,0},{0}),low,high)
-      | 0 0 0 8h  0 0 0 |
-      | 0 0 0 6h  0 0 0 |
-      | 0 0 0 4h  0 0 0 |
-      | 0 0 0 2h  0 0 0 |
-      | 0 0 0 0   0 0 0 |
-      | 0 0 0 2h2 0 0 0 |
-      | 0 0 0 4h2 0 0 0 | 
-RpiM=directImageComplex(M,{1});
-betti RpiM
-             -1 0
-      total:  2 2
-          1:  2 2
-\end{verbatim}
-\noindent The one differential of this complex is
-\begin{verbatim}
-RpiM.dd_0
-      | -x_(0,0) x_(0,1)  |
-      | x_(0,1)  -x_(0,2) |
-\end{verbatim}
-\noindent and thus the jumping locus is the conic defined by the determinant of this matrix. We can also compute:
-\begin{verbatim}
-HH^1 RpiM
-      cokernel | -x_(0,0) x_(0,1)  |
-               | x_(0,1)  -x_(0,2) |
-HH^0 RpiM == 0 
-     true 
- \end{verbatim}}
-
-We now return to the general problem of the pushforward $R\pi_* \sF$ of a sheaf $\sF$ on a projective scheme $X$ under a morphism 
-$$
-\pi \colon X \to \PP^m
-$$
-The result will be a complex of graded modules that represents
-$R\pi_* \sF \in D^b(\PP^m)$.
-
+\pi \colon X \to \PP^m.
+$
+%The result will be a complex of graded modules that represents
+%$R\pi_* \sF \in D^b(\PP^m)$.
+%
 To specify the morphism $\pi$, we suppose that $X$ is given by its homogeneous ideal $J \subset R = K[x_0,\ldots,x_n]$. Locally near any point of $X$ the morphism can be given by $m+1$ homogeneous
-forms of the same degree, but a different representation is necessary points where all these forms are 0. To represent $\pi$
+forms of the same degree, but a different representation is necessary at points where all these forms are 0. To represent $\pi$
 at every point of $X$ at once, we thus allow $k$ such representations, which we package as a
  $k \times (m+1)$ matrix $\phi=(\phi_{ij})$ of homogeneous forms in $R$, such that any two forms
  in the same row have the same degree. To ensure that the different rows define the same
- morphism where both are nonzero, we insist that
- \begin{itemize}
-\item the $2\times 2$ minors of $\phi$ are contained in $J$,
-\end{itemize}
-and to ensure that at least one of the definitions is valid at each point we insist that
-\begin{itemize}
-\item the entries of $\phi$ have no common zero on $X=V(J)$.
-\end{itemize}
+ morphism where both are nonzero, we insist that the $2\times 2$ minors of $\phi$ are contained in $J$;
+ to ensure that at least one of the definitions is valid at each point we insist that the entries of $\phi$ have no common zero on $X=V(J)$.
 
 Representing $\sF$ by  a homogeneous $R$-module $N$
 whose annihilator contains $J$, the function
 {\small \begin{verbatim}
 directImageComplex(J,N,phi)
 \end{verbatim} }
-returns a complex as a complex of graded $T$-modules representing $R\pi_* \sF \in D^b(\PP^m)$, where the $T$ denotes  the homogeneous coordinate ring of $\PP^m$.
+\noindent returns a complex as a complex of graded $T$-modules representing $R\pi_* \sF \in D^b(\PP^m)$, where the $T$ denotes  the homogeneous coordinate ring of $\PP^m$.
 
-As a concrete example we take the cubic scroll 
-$$\PP(\sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1))\cong X\subset \PP^4
-$$ 
+\begin{example}
+Consider the cubic scroll 
+$\PP(\sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1))\cong X\subset \PP^4
+$ 
 defined by the ideal of minors of the $2\times 3$ matrix
 $$
 m=\begin{pmatrix}
 x_0& x_1 & x_3 \cr
 x_1 & x_2 & x_4 \cr
-\end{pmatrix}   
+\end{pmatrix}   .
 $$
-and the morphism $\pi :X \to \PP^1$ defined at each point by the ratio of (at least) one of 
+Let $\pi :X \to \PP^1$ be defined at each point by the ratio of (at least) one of 
 the columns of $m$, so that the map $\pi$ is represented, in the sense above,
 by the matrix $\phi = {\rm transpose}\ m$. 
 
-For this example we take $\sF = \sO_X(1)\otimes \pi^*\sO_{\PP^1}(2)$, which is the sheaf associated to the
-graded module
-$N$ that is the first twist of the second symmetric power of the cokernel 
-of $m$.
+Let $\sF = \sO_X(1)\otimes \pi^*\sO_{\PP^1}(2)$, which is the sheaf associated to the
+graded module $N$ that is the first twist of the second symmetric power of the cokernel 
+of $m$.  We compute:
 {\small\begin{verbatim}
 kk=ZZ/101;
 R=kk[x_0..x_4];
@@ -834,25 +860,199 @@ RpiN
         9      7
        T  <-- T               
        0      1
-betti RpiN
-              0 1
-       total: 9 7
-           0: 9 7
-dim HH^0 RpiN, degree HH^0 RpiN
-       (2, 2)
-\end{verbatim}
-\noindent Thus $\pi_*N = R^0\pi_*N$ is a vector bundle on $\P^1$ of rank 2.
-To decide which bundle, we compute
-\begin{verbatim}
- s=transpose syz transpose presentation HH^0 RpiN;
-               2       9
-       Matrix T  <--- T
-degrees target s
-       {{-3}, {-4}} 
-\end{verbatim} }
-\noindent and we see that $R^1\pi_* \sF \cong \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$.
-Of course this result could have been deduced from the abstract description of $X$ and $\sF$
-above, as well.
+\end{verbatim}    }   
+%betti RpiN
+%              0 1
+%       total: 9 7
+%           0: 9 7
+%dim HH^0 RpiN, degree HH^0 RpiN
+%       (2, 2)
+%\end{verbatim}
+\noindent We have thus $R\pi_*\sF$ is represented by the complex $\cO_{\PP^1}^9\gets \cO_{\PP^1}(-1)^7$.  Using this, one can $R^1\pi_*\sF=0$ and $R^0\pi_*\sF\cong  \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$.
+\end{example}
+% is a vector bundle on $\P^1$ of rank 2.
+%To decide which bundle, we compute
+%\begin{verbatim}
+% s=transpose syz transpose presentation HH^0 RpiN;
+%               2       9
+%       Matrix T  <--- T
+%degrees target s
+%       {{-3}, {-4}} 
+%\end{verbatim} }
+%\noindent and we see that $R^1\pi_* \sF \cong \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$.
+%Of course this result could have been deduced from the abstract description of $X$ and $\sF$
+%above, as well.
+%
+%
+%\section{OId section}
+%In this section we explain how to compute the pushforward complex of a sheaf along a morphism
+%to projective space. The main ingredient is the pushforward to a factor in a product of projective
+%spaces, and we explain this first.
+%
+%Let $I \subset \{0,\ldots,t-1 \}$ be a proper subset and let
+%$$ \pi \colon\PP \to  \PP^I=\prod_{i \in  I} \PP^{n_{i+1}}$$
+%be the projection to the corresponding factors. (Note that Macaulay2 prefers integers sequences starting with $0$ in many commands, which is the reason for the re-indexing.) Given a coherent sheaf $\sF$ on $\PP$, represented by an $S$-module $M$,
+%the function
+%{\small \begin{verbatim}
+%directImageComplex(M,I)
+%\end{verbatim}}
+%\noindent computes a complex of $S_I = \Sym (\oplus_{i \in I} W_{i+1})$-modules, whose sheafication
+%is the (minimal) Beilinson complex representing the direct image complex $R\pi_* \sF$ in $D^b(\PP^I)$. 
+%
+%Let $J=\{0,\ldots,t-1\} \setminus I$.
+%The routine uses 
+%the "strand" complex
+%$$
+%strand(T,c,J)
+%$$
+%defined from the Tate resolution $T=\bT(\sF)$ as the sum of the terms
+%corresponding to the vector spaces $H^p(\sF(a))$ with $a_{j+1}=c_{j+1}$ for $j \in J$.
+%This sum is a complex over $E_I= \Lambda( \oplus_{i\in I} V_{i+1})$.
+% The key fact is that, for $c=(0,\dots,0) \in \ZZ^t$, 
+% $
+%strand(T,c,J)
+%$
+% is the Tate resolution of $R\pi_* \sF \in D^b(\PP^I)$.
+%Thus applying the $\bU$ functor on $\PP^I$
+%gives the Beilinson monad for $R\pi_* \sF \in D^b(\PP^I)$.
+%
+%Here is an example:
+%{\small \begin{verbatim}
+%m=matrix{{x_(1,0),x_(1,1)},{x_(1,1),x_(1,2)}}|
+%matrix{{x_(0,0),x_(0,1),0},{0,x_(0,0),x_(0,1)}}
+%     | x_(1,0) x_(1,1) x_(0,0) x_(0,1) 0       |
+%     | x_(1,1) x_(1,2) 0       x_(0,0) x_(0,1) |
+%              2       5
+%      Matrix S  <--- S
+%radical annihilator coker m
+%                          2
+%      ideal (x   , x   , x    - x   x   )
+%              0,1   0,0   1,1    1,0 1,2
+%M=ker m;
+%\end{verbatim}}
+% 
+% \noindent
+%$M$ represents a rank 3 vector bundle $\sF$ on $\PP^1\times \PP^2$, since  $\coker \rm m$ sheafifies to the zero sheaf. We compute the \emph{jumping locus},  that is, the locus of points $p \in \PP^2$ where $\sF\otimes \sO_{\PP^1\times p} \not\cong \sO_{\PP^1}^3(-1)$.
+%{\small \begin{verbatim}
+%T=tateResolution(M,low,high); 
+%cohomologyMatrix(T,low,high)
+%      | 74h  52h  30h 8h  14   36   58   |
+%      | 42h  30h  18h 6h  6    18   30   |
+%      | 19h  14h  9h  4h  1    6    11   |
+%      | 5h   4h   3h  2h  h    0    1    |
+%      | 0    0    0   0   0    0    0    |
+%      | 4h3  2h3  0   2h2 4h2  6h2  8h2  |
+%      | 17h3 10h3 3h3 4h2 11h2 18h2 25h2 |
+%cohomologyMatrix(strand(T,{0,0},{0}),low,high)
+%      | 0 0 0 8h  0 0 0 |
+%      | 0 0 0 6h  0 0 0 |
+%      | 0 0 0 4h  0 0 0 |
+%      | 0 0 0 2h  0 0 0 |
+%      | 0 0 0 0   0 0 0 |
+%      | 0 0 0 2h2 0 0 0 |
+%      | 0 0 0 4h2 0 0 0 | 
+%RpiM=directImageComplex(M,{1});
+%betti RpiM
+%             -1 0
+%      total:  2 2
+%          1:  2 2
+%\end{verbatim}
+%\noindent The one differential of this complex is
+%\begin{verbatim}
+%RpiM.dd_0
+%      | -x_(0,0) x_(0,1)  |
+%      | x_(0,1)  -x_(0,2) |
+%\end{verbatim}
+%\noindent and thus the jumping locus is the conic defined by the determinant of this matrix. We can also compute:
+%\begin{verbatim}
+%HH^1 RpiM
+%      cokernel | -x_(0,0) x_(0,1)  |
+%               | x_(0,1)  -x_(0,2) |
+%HH^0 RpiM == 0 
+%     true 
+% \end{verbatim}}
+%
+%We now return to the general problem of the pushforward $R\pi_* \sF$ of a sheaf $\sF$ on a projective scheme $X$ under a morphism 
+%$$
+%\pi \colon X \to \PP^m
+%$$
+%The result will be a complex of graded modules that represents
+%$R\pi_* \sF \in D^b(\PP^m)$.
+%
+%To specify the morphism $\pi$, we suppose that $X$ is given by its homogeneous ideal $J \subset R = K[x_0,\ldots,x_n]$. Locally near any point of $X$ the morphism can be given by $m+1$ homogeneous
+%forms of the same degree, but a different representation is necessary points where all these forms are 0. To represent $\pi$
+%at every point of $X$ at once, we thus allow $k$ such representations, which we package as a
+% $k \times (m+1)$ matrix $\phi=(\phi_{ij})$ of homogeneous forms in $R$, such that any two forms
+% in the same row have the same degree. To ensure that the different rows define the same
+% morphism where both are nonzero, we insist that
+% \begin{itemize}
+%\item the $2\times 2$ minors of $\phi$ are contained in $J$,
+%\end{itemize}
+%and to ensure that at least one of the definitions is valid at each point we insist that
+%\begin{itemize}
+%\item the entries of $\phi$ have no common zero on $X=V(J)$.
+%\end{itemize}
+%
+%Representing $\sF$ by  a homogeneous $R$-module $N$
+%whose annihilator contains $J$, the function
+%{\small \begin{verbatim}
+%directImageComplex(J,N,phi)
+%\end{verbatim} }
+%returns a complex as a complex of graded $T$-modules representing $R\pi_* \sF \in D^b(\PP^m)$, where the $T$ denotes  the homogeneous coordinate ring of $\PP^m$.
+%
+%As a concrete example we take the cubic scroll 
+%$$\PP(\sO_{\PP^1}(2) \oplus \sO_{\PP^1}(1))\cong X\subset \PP^4
+%$$ 
+%defined by the ideal of minors of the $2\times 3$ matrix
+%$$
+%m=\begin{pmatrix}
+%x_0& x_1 & x_3 \cr
+%x_1 & x_2 & x_4 \cr
+%\end{pmatrix}   
+%$$
+%and the morphism $\pi :X \to \PP^1$ defined at each point by the ratio of (at least) one of 
+%the columns of $m$, so that the map $\pi$ is represented, in the sense above,
+%by the matrix $\phi = {\rm transpose}\ m$. 
+%
+%For this example we take $\sF = \sO_X(1)\otimes \pi^*\sO_{\PP^1}(2)$, which is the sheaf associated to the
+%graded module
+%$N$ that is the first twist of the second symmetric power of the cokernel 
+%of $m$.
+%{\small\begin{verbatim}
+%kk=ZZ/101;
+%R=kk[x_0..x_4];
+%m=matrix{{x_0,x_1,x_3},{x_1,x_2,x_4}}
+%       | x_0 x_1 x_3 |
+%       | x_1 x_2 x_4 |
+%J=minors(2,m);
+%N=symmetricPower(2,coker m)**R^{1};
+%phi=transpose m;
+%RpiN=directImageComplex(J,N,phi);
+%T=ring RpiN;
+%RpiN
+%        9      7
+%       T  <-- T               
+%       0      1
+%betti RpiN
+%              0 1
+%       total: 9 7
+%           0: 9 7
+%dim HH^0 RpiN, degree HH^0 RpiN
+%       (2, 2)
+%\end{verbatim}
+%\noindent Thus $\pi_*N = R^0\pi_*N$ is a vector bundle on $\P^1$ of rank 2.
+%To decide which bundle, we compute
+%\begin{verbatim}
+% s=transpose syz transpose presentation HH^0 RpiN;
+%               2       9
+%       Matrix T  <--- T
+%degrees target s
+%       {{-3}, {-4}} 
+%\end{verbatim} }
+%\noindent and we see that $R^1\pi_* \sF \cong \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$.
+%Of course this result could have been deduced from the abstract description of $X$ and $\sF$
+%above, as well.
+%
 
 \section{Corner complexes.}\label{sec:cornercomplex}
 
