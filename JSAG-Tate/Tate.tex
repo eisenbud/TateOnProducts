@@ -345,7 +345,7 @@ tateResolution(M,low,high)
 \end{verbatim}
 computes a subquotient complex of $\bT(\sF)$ that contains all summands generated in degrees $low\leq a \leq  high$.  To compute this, Macaulay2 first uses  {\tt coarseMultigradedRegularity(M)} to find some $b\gg 0$ such that the total complex of $bgg(M_{\geq b})$ is acyclic.\footnote{This is closely related to the question of computing the multigraded regularity of $M$. Finding an efficient algorithm for that computation remains an interesting question.}  Then, it resolves the kernel of  the first map in $bgg(M_{\geq b})$, continuing until it covers all of the degrees in the desired range.  
 
-For instance, if $t=2$ then we would compute the kernel of the map:
+For instance, if $t=2$ then we would resolve the kernel of the map:
 \[
 M_b \otimes E(b) \to 
 \begin{matrix}
