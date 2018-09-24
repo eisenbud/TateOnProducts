@@ -384,14 +384,13 @@ betti T
          2:  .  . . 1 3  6 10
          3:  .  . . . 1  5 15
 \end{verbatim}}
-\fix{Let's make this example and the example in the corner complex section coincide.  That would help for comparisons.}
 
 \section{Computing Cohomology Tables}\label{sec:cohom tables}
 To compactly encode the dimensions of the sheaf cohomology groups of a coherent sheaf $\sF$, we introduce the {\bf Euler polynomial}
 $$
 \sum_{i\geq 0} (\dim H^i(\PP, \sF))h^i\in \ZZ[h].
 $$
-\fix{I change it to ``Euler polynomial'' to match the name in the package''.}
+\fix{I changed it to ``Euler polynomial'' to match the name in the package''.}
 For concision, we often write $H^i(\sF)$ in place of $H^i(\PP, \sF)$.
 Let $M$ be a finitely generated $\ZZ^t$-graded $S$-module, and let $\sF$ be the 
 corresponding sheaf on $\PP$. Let
@@ -518,8 +517,7 @@ isIsomorphic(HH^0 B ,M)
 isIsomorphic (truncate({0,0},HH^0 B),truncate({0,0},M))
    true
 \end{verbatim}}
-\noindent Similarly, the other cohomology of $B$ will have irrelevant support, and therefore will be 0 in sufficiently positive multi-degrees.
-\fix{do we need to clarify that ``sufficiently positive degree`` is NOT the same as ``sufficiently high total degree''?}
+\noindent Similarly, the other cohomology of $B$ will have irrelevant support, and therefore will be 0 in sufficiently positive\footnote{For the precise meaning of a {\bf sufficiently positive degree} see~\cite[Definition~1.8]{EES}.} multi-degrees.
 
     
 %
@@ -728,15 +726,24 @@ cohomologyMatrix(S^1, {-3,-3},{3,3})
 } 
 The far left vertical column of this matrix corresponds to the subquotient of $\bT(\sF)$ consisting of summands generated in degree $(-3,i)$ for some $-3 \leq i\leq 3$.  That subcomplex, which only involves exterior variables corresponding to the $\PP^2$-factor, is a finite part of the Tate resolution of $R\pi_*(\sF(-3,0))$ on $\PP^2$.  It can be computed by
 \begin{verbatim}
+(S,E) = productOfProjectiveSpaces {1,2};
 T = tateResolution(S^1,{-3,-3},{3,3});
-strand(T,??,{1});
+s = strand(T,{-3,0},{0});
 \end{verbatim}
-\fix{Add the computation of the strand here.}
 Note that by the K\"unneth formula, $R^0\pi_* \sF(-3,0))=0$ and
 \[
 R^1\pi_*\sF(-3,0)\cong H^1(\PP^1,\cO_{\PP^1}(-3))\otimes \cO_{\PP^2}[-1] \cong \cO_{\PP^2}^2[-1]
 \]
-where $[-1]$ indicates that the sheaf lies in cohomological degree $1$. 
+where $[-1]$ indicates that the sheaf lies in cohomological degree $1$.   This can be considering the Betti table of the strandard:
+\begin{verbatim}
+betti s
+             -1  0 1 2 3 4  5  6
+o76 = total: 20 12 6 2 2 6 12 20
+          1: 20 12 6 2 . .  .  .
+          2:  .  . . . . .  .  .
+          3:  .  . . . 2 6 12 20
+\end{verbatim}
+\fix{This is what the code spits out, but it looks off to me.  Isn't the shift too much?  I think the issue comes from the TateResolution code. See my email.}
 
 Combining this with the methods of \S\ref{sec:beilinson monad}, we can compute a Beilinson monad for $R\pi_*(\sF(-3,0))$ directly from this strand of its Tate resolution.
 
@@ -885,7 +892,7 @@ RpiN
 %\end{verbatim}
 \noindent We have thus $R\pi_*\sF$ is represented by the complex $\cO_{\PP^1}^9\gets \cO_{\PP^1}(-1)^7$.  Using this, one can check that $R^1\pi_*\sF=0$ and $R^0\pi_*\sF\cong  \sO_{\PP^1}(3) \oplus \sO_{\PP^1}(4)$.
 \end{example}
-\fix{Did I understand this last part correctly?  I didn't do the computation on my own.}
+%\fix{Did I understand this last part correctly?  I didn't do the computation on my own.}
 % is a vector bundle on $\P^1$ of rank 2.
 %To decide which bundle, we compute
 %\begin{verbatim}
@@ -1079,33 +1086,34 @@ The corner complex is an exact complex of the form
 \]
 The exactness of the corner complexes, and the fact that $\operatorname{Tail}_c(M)$ equals a subquotient complex of $\bT(\sF)$ in appropriate degrees, are the essential features which allow one to compute Tate resolutions in the first place.  
 
-Since corner complexes are so fundamental to this theory, we also introduced a function {\tt cornerComplex} for computing any portion of a corner complex at $c$, at least assuming that $bgg(M_{\geq c})$ is acyclic.  \fix{Does the code need $c\gg 0$?}  In \S\ref{sec:tate resolutions}, we described how to compute $\operatorname{Tail}_c(M)$ in this case.  By also computing enough terms of the injective resolution $bgg(M_{\geq c})$, which by \ref{subsec:products} amounts to linear algebra, we can thus compute any portion of a corner complex.   
+Since corner complexes are so fundamental to this theory, we also introduced a function {\tt cornerComplex} for computing any portion of a corner complex at $c$, at least assuming that $bgg(M_{\geq c})$ is acyclic.  In \S\ref{sec:tate resolutions}, we described how to compute $\operatorname{Tail}_c(M)$ in this case.  By also computing enough terms of the injective resolution $bgg(M_{\geq c})$, which by \ref{subsec:products} amounts to linear algebra, we can thus compute any portion of a corner complex.   
 
 
 \begin{example}
-Consider 
-$\PP^1\times \PP^1$, with homogeneous coordinate ring $S$.
-Let $\sF$ be the rank $3$ vector bundle represented by the graded module
-$M$ that is the kernel of the map given by the variables of $S$.
-We compute the corner complex of $M$ at $c=\{0,0\}$ in the range 
-{\small 
-\begin{verbatim}
-(S,E)=productOfProjectiveSpaces {1,1};
-M = ker vars S;
-c = {0,0};
-C = cornerComplex(M,c,low,high);
-betti C
-total: 32 44 39 20  6  1 4 15 36 70 120 189
-    0: 32 44 39 20  6  . .  .  .  .   .   .
-    1:  .  .  .  .  .  1 .  .  .  .   .   .
-    2:  .  .  .  .  .  . .  .  .  .   .   .
-    3:  .  .  .  .  .  . 4 15 36 70 120 189 
-\end{verbatim}
-}
-The terms from $6$ and to the left are part of $bgg(M_{\geq c})$, while the terms from $1$ and to the right form the $\operatorname{Tail}_c(M)$ complex.
-\fix{What are low and high in this example?  Is this last sentence correct?  Also Frank had noted a bug in the package (relating to the injective part) which presumably needs to be fixed in the package.}
+We again consider 
+$\PP^1\times \PP^2$, with homogeneous coordinate ring $S$.
+%Let $\sF$ be the rank $3$ vector bundle represented by the graded module
+%$M$ that is the kernel of the map given by the variables of $S$.
+We compute the corner complex of $S^1$ at $c=\{0,0\}$:
+\daniel{The corner complex code is messed up because it only computes based on the Tate resolution, whereas it should work the opposite way around.  See my email.}
+%{\small 
+%\begin{verbatim}
+%(S,E)=productOfProjectiveSpaces {1,1};
+%M = ker vars S;
+%c = {0,0};
+%C = cornerComplex(M,c,low,high);
+%betti C
+%total: 32 44 39 20  6  1 4 15 36 70 120 189
+%    0: 32 44 39 20  6  . .  .  .  .   .   .
+%    1:  .  .  .  .  .  1 .  .  .  .   .   .
+%    2:  .  .  .  .  .  . .  .  .  .   .   .
+%    3:  .  .  .  .  .  . 4 15 36 70 120 189 
+%\end{verbatim}
+%}
+%The terms from $6$ and to the left are part of $bgg(M_{\geq c})$, while the terms from $1$ and to the right form the $\operatorname{Tail}_c(M)$ complex.
+%\fix{What are low and high in this example?  Is this last sentence correct?  Also Frank had noted a bug in the package (relating to the injective part) which presumably needs to be fixed in the package.}
 \end{example}
-For further information on corner complexes, see \cite[\S3]{EES} andthe documentation for the function  {\tt composedFunctions}.
+For further information on corner complexes, see \cite[\S3]{EES} and the documentation for the function  {\tt composedFunctions}.
 
 %In \cite{EES} we prove that
 %the projective resolution of $N(1,\ldots,1)$ is the part of the Tate resolution whose terms correspond to the cohomology groups
