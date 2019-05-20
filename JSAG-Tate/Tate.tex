@@ -205,24 +205,6 @@ linear maps of graded free $E$-modules
 $$ 
 bgg(M): \cdots \to M_i\otimes E(i) \to M_{i+1}\otimes E(i+1) \to \cdots
 $$
-%\daniel{If we are using $E$ instead of $\omega_E$ then let's at least be consistent.  Also why no grading here?}
-%Applying the first observation, this  naturally
-%\begin{enumerate}
-% \item If $A, B, C$ are finite-dimensional vector spaces over $k$, then there is a natural bijection between  homomorphisms $A\otimes_kB\to C$ and homomorphisms
-%$ B \to C\otimes A^*$.
-%\item %Consider the polynomial ring $S = \oplus_k \Sym_kW$ with generators in degree $1$ and the exterior algebra $E = \Lambda V= \oplus_k \Lambda^kV$, with $V=W^*$ and generators in degree -1.
-%If $M = \oplus_{i\geq i_0} M_i$ is a finitely generated graded module over $S$, then the sequence of maps 
-%$$
-%W\otimes M_i \to M_{i+1}
-%$$
-% defining the module structure give rise, by the correspondence above,
-%to a sequence of maps $M_i\to M_{i+1}\otimes V$, which in turn correspond to a sequence of
-%linear maps of graded free $E$-modules 
-%$$ 
-%bgg(M): \cdots \to M_i\otimes \omega_E \to M_{i+1}\otimes \omega_E \to \cdots
-%$$
-%where $\omega_E:=\Lambda W=\Hom(E,K)$ is the free $E$-module generated in degree $n+1$, and as $M_j$ a $K$-vectorspace in degree $j$
-%\end{itemize}
 A formal computation confirms that the conditions of commutativity and associativity of the action of $S$ on $M$ exactly correspond to the condition that $bgg(M)$ is a complex; that is, consecutive maps compose to 0.
 
 In exactly the same way, a graded $E$-module $N$ gives rise to a linear  complex of free $S$-modules
@@ -364,25 +346,23 @@ T = tateResolution(M,{-3,-3},{0,0})
 \end{verbatim}
 computes a multi-graded complex of the form
 {\small \begin{verbatim}
-
-      21      6      1      2      6      14      29
-     E   <-- E  <-- E  <-- E  <-- E  <-- E   <-- E
-                                                      
-     -2      -1     0      1      2      3       4
+         1      2      6      14      29      55      97
+ 0  <-- E  <-- E  <-- E  <-- E   <-- E   <-- E   <-- E 
+                                                                  
+ -1     0      1      2      3       4       5       6  
 \end{verbatim}}
-\noindent which includes all the free summands in the Tate resolution that have generators in degree $(-3,-3)\leq a\leq (0,0)$. Here the numbers below the free modules are the homological degrees. (The map between the terms in homological degree $-2$ and $-1$ is actually not part of the Tate resolution but  comes from the construction of $\operatorname{Tail}_b(M)$ as a corner complex. See \S\ref{sec:cornercomplex}). 
-
+\noindent which includes all the free summands in the Tate resolution that have generators in degree $(-3,-3)\leq a\leq (0,0)$. The numbers below the free modules are the homological degrees.
+%(The map between the terms in homological degree $-2$ and $-1$ is actually not part of the Tate resolution but  comes from the construction of $\operatorname{Tail}_b(M)$ as a corner complex. See \S\ref{sec:cornercomplex}). 
 The Betti table of this complex with respect to total degree, is
 \goodbreak
 {\small \begin{verbatim}
 betti T
-            -2 -1 0 1 2  3  4
-     total: 21  6 1 2 6 14 29
-        -1: 21  6 . . .  .  .
-         0:  .  . 1 . .  .  .
-         1:  .  . . 1 2  3  4
-         2:  .  . . 1 3  6 10
-         3:  .  . . . 1  5 15
+        0 1 2  3  4  5  6
+ total: 1 2 6 14 29 55 97
+     0: 1 . .  .  .  .  .
+     1: . 1 2  3  4  5  6
+     2: . 1 3  6 10 15 21
+     3: . . 1  5 15 35 70
 \end{verbatim}}
 
 \section{Computing Cohomology Tables}\label{sec:cohom tables}
@@ -390,7 +370,6 @@ To compactly encode the dimensions of the sheaf cohomology groups of a coherent 
 $$
 \sum_{i\geq 0} (\dim H^i(\PP, \sF))h^i\in \ZZ[h].
 $$
-\fix{I changed it to ``Euler polynomial'' to match the name in the package''.}
 For concision, we often write $H^i(\sF)$ in place of $H^i(\PP, \sF)$.
 Let $M$ be a finitely generated $\ZZ^t$-graded $S$-module, and let $\sF$ be the 
 corresponding sheaf on $\PP$. Let
@@ -414,8 +393,8 @@ For example,  if $\PP=\PP^1\times \PP^2$ and   $\sF = \sO_{\PP^1\times \PP^2}$ i
 \end{verbatim}}
 \noindent gives output
 \begin{verb}
-3h2 
-\end{verb}
+3h2
+\end{verb}.
 This means that $H^2(\sF(2,-3))$ has rank $3$ and that $H^i(\sF(2,-3)) = 0$ for $i\ne 2$.
 
 In the case $t=2$, we can display the hash table as a matrix using the function
@@ -464,7 +443,7 @@ B = beilinsonMonad M
 For example, if we take $M$ to be a twist of the syzygy module of the maximal ideal in the bihomogeneous
 coordinate ring $S$ of $\PP=\PP^1\times \PP^2$, we can execute:
 {\small \begin{verbatim}
-M =  S^{{1,1}} ** ker vars S
+M =  S^{{1,1}} ** ker vars S;
 \end{verbatim}}
 %cohomologyMatrix (M,{-3,-3}, {3,3})
 %This outputs:
@@ -726,7 +705,6 @@ cohomologyMatrix(S^1, {-3,-3},{3,3})
 } 
 The far left vertical column of this matrix corresponds to the subquotient of $\bT(\sF)$ consisting of summands generated in degree $(-3,i)$ for some $-3 \leq i\leq 3$.  That subcomplex, which only involves exterior variables corresponding to the $\PP^2$-factor, is a finite part of the Tate resolution of $R\pi_*(\sF(-3,0))$ on $\PP^2$.  It can be computed by
 \begin{verbatim}
-(S,E) = productOfProjectiveSpaces {1,2};
 T = tateResolution(S^1,{-3,-3},{3,3});
 s = strand(T,{-3,0},{0});
 \end{verbatim}
@@ -734,7 +712,7 @@ Note that by the K\"unneth formula, $R^0\pi_* \sF(-3,0))=0$ and
 \[
 R^1\pi_*\sF(-3,0)\cong H^1(\PP^1,\cO_{\PP^1}(-3))\otimes \cO_{\PP^2}[-1] \cong \cO_{\PP^2}^2[-1]
 \]
-where $[-1]$ indicates that the sheaf lies in cohomological degree $1$.   This can be considering the Betti table of the strandard:
+where $[-1]$ indicates that the sheaf lies in cohomological degree $1$.   We can view the Betti table of this strand:
 \begin{verbatim}
 betti s
              -1  0 1 2 3 4  5  6
@@ -743,9 +721,7 @@ o76 = total: 20 12 6 2 2 6 12 20
           2:  .  . . . . .  .  .
           3:  .  . . . 2 6 12 20
 \end{verbatim}
-\fix{This is what the code spits out, but it looks off to me.  Isn't the shift too much?  I think the issue comes from the TateResolution code. See my email.}
-
-Combining this with the methods of \S\ref{sec:beilinson monad}, we can compute a Beilinson monad for $R\pi_*(\sF(-3,0))$ directly from this strand of its Tate resolution.
+Note that, since it is a strand, the terms retain the same homological that they had within the Tate resolution.  Combining this with the methods of \S\ref{sec:beilinson monad}, we can compute a Beilinson monad for $R\pi_*(\sF(-3,0))$ directly from this strand of its Tate resolution.
 
 
 %
@@ -1092,24 +1068,21 @@ Since corner complexes are so fundamental to this theory, we also introduced a f
 \begin{example}
 We again consider 
 $\PP^1\times \PP^2$, with homogeneous coordinate ring $S$.
-%Let $\sF$ be the rank $3$ vector bundle represented by the graded module
-%$M$ that is the kernel of the map given by the variables of $S$.
 We compute the corner complex of $S^1$ at $c=\{0,0\}$:
-\daniel{The corner complex code is messed up because it only computes based on the Tate resolution, whereas it should work the opposite way around.  See my email.}
-%{\small 
-%\begin{verbatim}
-%(S,E)=productOfProjectiveSpaces {1,1};
-%M = ker vars S;
-%c = {0,0};
-%C = cornerComplex(M,c,low,high);
-%betti C
-%total: 32 44 39 20  6  1 4 15 36 70 120 189
-%    0: 32 44 39 20  6  . .  .  .  .   .   .
-%    1:  .  .  .  .  .  1 .  .  .  .   .   .
-%    2:  .  .  .  .  .  . .  .  .  .   .   .
-%    3:  .  .  .  .  .  . 4 15 36 70 120 189 
-%\end{verbatim}
-%}
+{\small 
+\begin{verbatim}
+r = cornerComplex(S^1,{0,0},{-4,-4},{3,3});
+betti r
+             -6 -5 -4 -3 -2 -1 0 1 2  3  4  5   6   7
+      total: 40 54 50 35 15  5 1 1 5 15 35 70 126 210
+          0: 40 54 50 35 15  5 1 . .  .  .  .   .   .
+          1:  .  .  .  .  .  . . . .  .  .  .   .   .
+          2:  .  .  .  .  .  . . . .  .  .  .   .   .
+          3:  .  .  .  .  .  . . . .  .  .  .   .   .
+          4:  .  .  .  .  .  . . 1 5 15 35 70 126 210
+\end{verbatim}
+}
+This computation thus recovers terms corresponding to sheaf cohomology groups $H^0$ and $H^3$.  In particular, the corner map goes from $E^1(-2,-3)$ to $E^1$.  If we were to increase $c$, then we would recover some $H^1$ nad $H^2$ groups as well.
 %The terms from $6$ and to the left are part of $bgg(M_{\geq c})$, while the terms from $1$ and to the right form the $\operatorname{Tail}_c(M)$ complex.
 %\fix{What are low and high in this example?  Is this last sentence correct?  Also Frank had noted a bug in the package (relating to the injective part) which presumably needs to be fixed in the package.}
 \end{example}
