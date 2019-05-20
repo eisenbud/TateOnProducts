@@ -650,9 +650,7 @@ cornerComplex1(ChainComplex,List) := (C,c) -> (
 --	   print((betti A,betti AB,betti B));
 	   (A|AB)||(map(target B, source A,0)|B))
           );
-    return Ccorner[-min C-3-sum c])
-
-
+    return Ccorner[-min C-1])
 
 -*
 cornerComplex(Module, List, List) := (M,low, high) ->(
@@ -676,9 +674,13 @@ tateResolution(Module, List, List) := (M,low, high) ->(
     hi := apply(#regs, i->max(regs_i, high_i+1)); --hi
     N := presentation truncate(hi, M)**S^{hi};-- betti N
     Q := symExt(N,E); --betti Q
-    r := (res (coker Q,LengthLimit=>(sum hi-sum low)))**E^{hi}[sum hi];
-    trivialHomologicalTruncation(r,min r +2,max r)
+    (res (coker Q,LengthLimit=>(sum hi-sum low)))**E^{hi}[sum hi]
     )
+
+
+
+
+
 
 numFactors=method(TypicalValue=>List)
     -- given the symmetric or exterior Cox ring E of the product pf projective spaces
@@ -2104,7 +2106,7 @@ isIsomorphic(Module,Module) := (A,B) -> (
 ---------------------------------------------------
 -- Composed functions                            --
 ---------------------------------------------------
---This is the right corner complex--
+
 cornerComplex(Module,List,List,List) := (M,c,low,high) -> (
     -- form the Tate resolution T of M in the range high to low
     -- then make the corner complex of T at c
@@ -2112,14 +2114,8 @@ cornerComplex(Module,List,List,List) := (M,c,low,high) -> (
     T':= trivialHomologicalTruncation(T,-sum high, -sum low);
     cornerComplex(T',c)
     )
+
 ///
-(S,E)=productOfProjectiveSpaces{1,2}
-M = S^1; c = {0,0}; low = {-4,-4}; high = {3,3};
-T = tateResolution(M,low,high);
-betti T
-cornerComplex(M,c,low,high)
-
-
 (S,E)=productOfProjectiveSpaces{2,1}
 M=beilinson(E^{-{1,1}})
 c={1,1}
@@ -5810,7 +5806,7 @@ prune HH^0 RfN
 HH^(-1) RfN == 0
 betti syz transpose presentation HH^0 RfN
 
-n={1,2}
+n={1,1}
 high=2*n,low=-high
 (S,E)=productOfProjectiveSpaces n
 M=ker vars S
@@ -5819,21 +5815,3 @@ C=cornerComplex(T,{0,0})
 cohomologyMatrix(C,low,high)
 cohomologyMatrix(C,2*low-n,2*high)
 cohomologyMatrix(T,low-6*n,2*high)
-
-
-
---
-
-restart
-uninstallPackage "TateOnProducts"
-installPackage "TateOnProducts"
-
-(S,E)=productOfProjectiveSpaces {1,2};
-T = tateResolution(S^1,{-4,-4},{3,3})
-r = cornerComplex(S^1,{0,0},{-4,-4},{3,3});
-betti r
-r' = cornerComplex(S^1,{2,2},{-4,-4},{3,3});
-betti r'
-
-
-hilbertFunction({2,2},S)
