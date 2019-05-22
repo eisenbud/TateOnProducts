@@ -1,6 +1,6 @@
 
 ///
-restart
+RESTART
 uninstallPackage"TateOnProducts"
 restart
 installPackage("TateOnProducts")--,FileName=>schreyer/Dropbox/SVDComplexes/from-git/TateOnProducts.m2)
@@ -1096,7 +1096,7 @@ isMinimalChainComplex = C -> (
     )
 
 
-{*
+-*
 minimize = method (
     Options => {Check => false}
     )
@@ -1135,7 +1135,7 @@ minimize ChainComplex := o -> E ->(
     E'.cache.pruningMap = m[-min E];
     E'
     )
-*}
+*-
 isExact=method()
 isExact(ChainComplex):=(C) -> (
    if (all((min C,max C), i -> (prune HH_i(C) == 0))) then true else false
