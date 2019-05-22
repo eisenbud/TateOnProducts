@@ -2,6 +2,7 @@
 restart
 uninstallPackage "TateOnProducts"
 installPackage "TateOnProducts"
+viewHelp "TateOnProducts"
 
 --Section 2
 (S,E)=productOfProjectiveSpaces {1,2};
