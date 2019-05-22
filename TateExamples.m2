@@ -35,3 +35,4 @@ betti s
 --Section 6
 r = cornerComplex(S^1,{0,0},{-4,-4},{3,3});
 betti r
+
