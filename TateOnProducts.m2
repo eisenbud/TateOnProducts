@@ -159,6 +159,7 @@ findHashTableCorners = ht -> (
     low := apply(t, i -> min (L / (ell -> ell_0_0_i - 1)));
     gt := new MutableHashTable;
     apply(L, ell -> if ell_1 != 0 and ell_0_1 > 0 then (
+	    -- Check that higher local cohomology vanishes (i.e., H^i_I(M) = 0 for i > 1)
 	    gt#(ell_0_0) = true;
 	    apply(t, j -> gt#(ell_0_0 + degree P_j) = true);
 	    ));
@@ -674,7 +675,7 @@ tateResolution(Module, List, List) := (M,low, high) ->(
     hi := apply(#regs, i->max(regs_i, high_i+1)); --hi
     N := presentation truncate(hi, M)**S^{hi};-- betti N
     Q := symExt(N,E); --betti Q
-    r := (res (coker Q,LengthLimit=>(sum hi-sum low)))**E^{hi}[sum hi];
+    r := (res (coker Q,LengthLimit=>(sum hi-sum low)))**E^{hi}[sum hi + 2 - length hi];
     trivialHomologicalTruncation(r,min r +2,max r)
     )
 
