@@ -237,10 +237,11 @@ coarseMultigradedRegularity ChainComplex := o-> F -> (
     t := degreeLength ring F;
     range := toList(min F..max F-1);
     degsF := apply(range,i -> degrees (F_i));
-    lowerbounds := flatten flatten apply(range, i->(
-	    apply(degsF_i, d -> apply(LL(i,t), ell -> d-ell))
-	    ));
-    apply(t, i-> max apply(lowerbounds, ell->ell_i))
+    --lowerbounds := flatten flatten apply(range, i->(
+    --	  apply(degsF_i, d -> apply(LL(i,t), ell -> d-ell))
+    --	  ));
+    --only changes degsF if t=1
+    apply(t, i-> max apply(degsF, ell->ell_i))
     )
 
 coarseMultigradedRegularity Module := o-> M-> (
@@ -2866,10 +2867,7 @@ doc ///
      degree such that truncate(R,M) has linear resolution
    Description
     Text
-     Uses a free resolution and takes the maximum degree of a term
-     minus the homological position in each component. Then adjusts
-     so that the sum of the degrees is at least the ordinary
-     regularity.
+     Uses a free resolution and takes the maximum degree of the terms.
     Example
      (S,E) = productOfProjectiveSpaces{1,1,2}
      I = ideal(x_(0,0)^2,x_(1,0)^3,x_(2,0)^4)
@@ -2877,8 +2875,9 @@ doc ///
      N = truncate(R,S^1/I);
      betti res N
      netList toList tallyDegrees res N
-   Caveat
-    We haven't yet proven that this is right.
+   Text
+     See the proof of Proposition 2.7 in
+       @ HREF("https://arxiv.org/abs/1411.5724","Tate Resolutions on Products of Projective Spaces")@.
    SeeAlso
     productOfProjectiveSpaces
     tallyDegrees
