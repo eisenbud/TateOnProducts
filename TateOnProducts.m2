@@ -236,7 +236,7 @@ coarseMultigradedRegularity ChainComplex := o-> F -> (
     --we assume F starts in homol degree 0.
     t := degreeLength ring F;
     range := toList(min F..max F-1);
-    degsF := apply(range,i -> degrees (F_i));
+    degsF := flatten apply(range,i -> degrees (F_i));
     --lowerbounds := flatten flatten apply(range, i->(
     --	  apply(degsF_i, d -> apply(LL(i,t), ell -> d-ell))
     --	  ));
@@ -2875,7 +2875,7 @@ doc ///
      N = truncate(R,S^1/I);
      betti res N
      netList toList tallyDegrees res N
-   Text
+    Text
      See the proof of Proposition 2.7 in
        @ HREF("https://arxiv.org/abs/1411.5724","Tate Resolutions on Products of Projective Spaces")@.
    SeeAlso
